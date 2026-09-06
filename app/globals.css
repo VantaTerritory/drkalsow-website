@@ -1438,6 +1438,181 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 .testimonial-name { font-size: 13px; color: var(--text-primary); margin: 0; font-weight: 500; }
 .testimonial-meta { font-size: 11px; color: var(--text-tertiary); margin: 2px 0 0; letter-spacing: 0.04em; }
 
+/* Testimonials page */
+.testimonials-hero {
+  padding: var(--space-7) 0 var(--space-8);
+  background: var(--color-primary-100);
+  border-radius: 0 0 var(--radius-section) var(--radius-section);
+  overflow: hidden;
+}
+.testimonials-hero-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: var(--space-7);
+  align-items: center;
+}
+.testimonials-hero-copy { max-width: 470px; }
+.testimonials-hero-copy .h-display { margin-bottom: var(--space-4); }
+.testimonials-hero-copy > p {
+  max-width: 46ch;
+  margin: 0 0 var(--space-5);
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.testimonials-featured-video {
+  overflow: hidden;
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-900);
+  box-shadow: var(--shadow-modal);
+}
+.testimonials-featured-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-900);
+}
+.testimonials-featured-caption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 14px 12px 8px;
+  color: var(--color-primary-100);
+}
+.testimonials-featured-caption span {
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary-200);
+}
+.testimonials-featured-caption p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--text-on-dark);
+}
+.patient-stories { background: var(--bg-surface); }
+.patient-stories-intro {
+  max-width: 700px;
+  margin-bottom: var(--space-6);
+}
+.patient-stories-intro .h-sec { margin-bottom: var(--space-3); }
+.patient-stories-intro > p {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.patient-story-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.patient-story-card {
+  grid-column: span 4;
+  min-width: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-50);
+}
+.patient-story-card.story-card-wide,
+.patient-story-card.story-card-tall { grid-column: span 6; }
+.patient-story-media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-900);
+}
+.patient-story-media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.patient-story-caption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 14px 10px 10px;
+}
+.patient-story-name {
+  margin: 0 0 2px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+.patient-story-detail {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.testimonial-review-field {
+  padding-top: var(--space-9);
+  padding-bottom: var(--space-8);
+  overflow: hidden;
+  background: var(--bg-page);
+}
+.testimonial-review-content { position: relative; }
+.testimonial-review-intro {
+  max-width: 700px;
+  margin-bottom: var(--space-6);
+}
+.testimonial-review-intro .h-sec { margin-bottom: var(--space-3); }
+.testimonial-review-intro > p {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.testimonial-gallery-mask {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    var(--color-neutral-900) 0%,
+    var(--color-neutral-900) 72%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    var(--color-neutral-900) 0%,
+    var(--color-neutral-900) 72%,
+    transparent 100%
+  );
+}
+.testimonial-review-gallery {
+  columns: 3;
+  column-gap: var(--space-3);
+}
+.testimonial-gallery-card {
+  width: 100%;
+  margin: 0 0 var(--space-3);
+  break-inside: avoid;
+  box-shadow: var(--shadow-card);
+}
+.testimonial-review-cta {
+  position: relative;
+  z-index: var(--z-base);
+  margin: var(--space-4) auto 0;
+  text-align: center;
+}
+.testimonial-google-button {
+  background: var(--bg-surface);
+  border-color: var(--border-soft);
+  box-shadow: var(--shadow-card);
+}
+
 
 /* ============================================================
    LOCATIONS
@@ -1653,6 +1828,8 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
     grid-template-rows: 480px 220px;
     grid-template-areas: "photo main" "call contact";
   }
+  .testimonials-hero-grid { gap: var(--space-5); }
+  .testimonial-review-gallery { columns: 2; }
 }
 
 @media (max-width: 768px) {
@@ -1721,6 +1898,17 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   /* stacked: the absolute track no longer inherits the video height */
   .sp-carousel { height: 380px; }
   .sp-track { left: 42px; right: 42px; }
+  .testimonials-hero { padding: var(--space-6) 0; }
+  .testimonials-hero-grid { grid-template-columns: 1fr; }
+  .testimonials-hero-copy { max-width: 620px; }
+  .testimonials-featured-caption { grid-template-columns: 1fr; gap: 4px; }
+  .patient-story-grid { grid-template-columns: 1fr; }
+  .patient-story-card,
+  .patient-story-card.story-card-wide,
+  .patient-story-card.story-card-tall { grid-column: auto; }
+  .testimonial-review-field { padding-top: var(--space-7); }
+  .testimonial-review-gallery { columns: 1; }
+  .testimonial-review-cta { margin-top: var(--space-3); }
   .form-section { grid-template-columns: 1fr; }
   .form-image { min-height: 220px; height: 220px; order: -1; margin: 16px 16px 0 16px; border-radius: 16px 16px 200px 200px; }
   .form-content { padding: var(--space-6) var(--space-3); max-width: 100%; }

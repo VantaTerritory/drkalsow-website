@@ -20,6 +20,8 @@ export const siteConfig = {
   // ---- Trust ----
   rating: "5.0",
   ratingSource: "RealSelf + Google reviews",
+  googleReviewUrl:
+    "https://search.google.com/local/writereview?placeid=ChIJCbyVUEBZwokRXTclziR0Y4I",
 
   // ---- Consultation fee ----
   consultation: {
