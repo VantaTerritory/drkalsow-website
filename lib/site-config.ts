@@ -60,6 +60,10 @@ export const siteConfig = {
       address: "635 Madison Avenue, 17th Floor",
       cityState: "New York, NY 10022",
       hours: "Open 6 days a week · Clinic hours Wed & Sat",
+      schedule: [
+        { day: "Wednesday", hours: "10:00 AM – 4:00 PM" },
+        { day: "Saturday", hours: "10:00 AM – 3:30 PM" },
+      ],
       phoneDisplay: "(212) 653-8726",
       phoneTel: "+12126538726",
       directions:

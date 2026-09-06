@@ -5,51 +5,21 @@ import { Reveal } from "@/components/motion/reveal";
 
 /**
  * Bio copy from the live About page (verbatim, sentence case), with the
- * doctor's facial-surgery quote as a pull-quote and a bento of practice
- * photos (reuses the LP bento classes).
+ * doctor's facial-surgery quote as a pull-quote and a formal portrait.
  */
 export function AboutStory() {
   return (
     <section className="bg-white section-py-lg">
       <div className="container">
         <div className="about-grid">
-          <Reveal className="bento" delay={80}>
-            <div className="bento-item bento-1">
-              <Image
-                src="/img/team/dr-kalsow-or.jpg"
-                alt="Dr. Kalsow in the operating room"
-                fill
-                sizes="(max-width: 900px) 50vw, 20vw"
-                loading="lazy"
-              />
-            </div>
-            <div className="bento-item bento-2">
-              <Image
-                src="/img/office/office-skyline.jpg"
-                alt="Treatment lounge with Midtown skyline views"
-                fill
-                sizes="(max-width: 900px) 50vw, 20vw"
-                loading="lazy"
-              />
-            </div>
-            <div className="bento-item bento-3">
-              <Image
-                src="/img/team/dr-kalsow-lounge.jpg"
-                alt="Dr. Kalsow at the Madison Avenue practice"
-                fill
-                sizes="(max-width: 900px) 50vw, 20vw"
-                loading="lazy"
-              />
-            </div>
-            <div className="bento-item bento-4">
-              <Image
-                src="/img/team/kalsow-team.jpg"
-                alt="Dr. Kalsow with his surgical team"
-                fill
-                sizes="(max-width: 900px) 100vw, 40vw"
-                loading="lazy"
-              />
-            </div>
+          <Reveal className="about-story-portrait" delay={80}>
+            <Image
+              src="/img/portrait/dr-kalsow-suit.webp"
+              alt="Dr. Sergei Kalsow wearing a blue suit"
+              fill
+              sizes="(max-width: 768px) 100vw, 42vw"
+              loading="lazy"
+            />
           </Reveal>
 
           <Reveal className="about-body">

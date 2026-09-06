@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { siteConfig } from "@/lib/site-config";
 import { getPage } from "@/lib/seo/pages";
-import { Eyebrow, Divider } from "@/components/ui/eyebrow";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 
 /* Stats from the live site's About ("Meet Dr. Kalsow" block). */
@@ -27,8 +27,6 @@ export function AboutHero() {
             <h1 className="h-display" style={{ marginBottom: "var(--space-3)" }}>
               {getPage("/about-1").h1}
             </h1>
-
-            <Divider />
 
             <p className="abt-lead" style={{ marginTop: "var(--space-3)" }}>
               Dr. Kalsow founded his plastic surgery private practice in Manhattan. He enjoys
