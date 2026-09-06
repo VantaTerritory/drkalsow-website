@@ -18,7 +18,7 @@ export default function ProceduresPage() {
       <JsonLd nodes={buildProceduresHubJsonLd(ALL_PROCEDURES)} />
       <div className="container">
         <div className="section-header">
-          <Eyebrow ornament="compass">Face · Breast · Body · Hair</Eyebrow>
+          <Eyebrow ornament="none">Face · Breast · Body · Hair</Eyebrow>
           <h1 className="h-display">
             Plastic Surgery Procedures in <em>NYC</em>
           </h1>

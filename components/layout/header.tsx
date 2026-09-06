@@ -6,11 +6,10 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/site-config";
 import { NAV_PAGES, PROCEDURE_CATEGORIES, proceduresByCategory } from "@/lib/seo/pages";
-import { CallLink } from "@/components/ui/call-link";
 
 /**
- * Full-site header: topbar (address + phone + IG) and sticky nav with the
- * Procedures dropdown (desktop) / slide-in panel (mobile).
+ * Full-site header: sticky nav with the Procedures dropdown (desktop) /
+ * slide-in panel (mobile).
  * Same visual language as the LP header; nav added for the full site.
  */
 export function Header() {
@@ -48,22 +47,6 @@ export function Header() {
 
   return (
     <>
-      <div className="topbar">
-        <div className="topbar-inner">
-          <div className="topbar-left">
-            <span>635 Madison Ave, NYC</span>
-            <span className="topbar-divider">·</span>
-            <span>{siteConfig.phone.display}</span>
-          </div>
-          <div className="topbar-right">
-            <span style={{ opacity: 0.7 }}>FOLLOW</span>
-            <a href={siteConfig.social.instagram} target="_blank" rel="noopener noreferrer">
-              INSTAGRAM
-            </a>
-          </div>
-        </div>
-      </div>
-
       <header className="header">
         <div className="header-inner">
           <Link href="/" className="logo-group" aria-label={siteConfig.surgeon}>
@@ -126,9 +109,6 @@ export function Header() {
           </nav>
 
           <div className="header-actions">
-            <CallLink className="header-phone" aria-label={`Call ${siteConfig.phone.display}`}>
-              <span className="phone-text">{siteConfig.phone.display}</span>
-            </CallLink>
             <Link href="/call-our-office" className="btn-primary header-cta">
               <span className="header-cta-full">{siteConfig.cta.primary}</span>
               <span className="header-cta-short">{siteConfig.cta.primaryShort}</span>

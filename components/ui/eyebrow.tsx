@@ -82,16 +82,17 @@ function Ornament({ kind, dark }: { kind: OrnamentKind; dark?: boolean }) {
 
 export function Eyebrow({
   children,
-  ornament = "circle",
+  // site-wide decision (Sep 2026): eyebrows carry no ornament icon
+  ornament = "none",
   dark = false,
 }: {
   children: React.ReactNode;
-  ornament?: OrnamentKind;
+  ornament?: OrnamentKind | "none";
   dark?: boolean;
 }) {
   return (
     <div className="eyebrow-group">
-      <Ornament kind={ornament} dark={dark} />
+      {ornament !== "none" && <Ornament kind={ornament} dark={dark} />}
       <p className={`eyebrow-text${dark ? " eyebrow-on-dark" : ""}`}>{children}</p>
     </div>
   );

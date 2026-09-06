@@ -3,12 +3,11 @@ import { siteConfig } from "@/lib/site-config";
 import { NAV_PAGES, NAV_PROCEDURES } from "@/lib/seo/pages";
 import { CallLink } from "@/components/ui/call-link";
 
-/** Site footer: brand + explore/procedures/contact columns. */
+/** Site footer: brand (+ social icon row) + explore/procedures/contact columns. */
 export function Footer() {
   const nyc = siteConfig.locations[0];
   return (
-    <>
-      <footer className="footer-main-bg">
+    <footer className="footer-main-bg">
         <div className="container">
           <div className="footer-main" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr" }}>
             <div className="footer-brand-block">
@@ -18,6 +17,12 @@ export function Footer() {
                 Board-Certified Plastic &amp; Reconstructive Surgery. Refined results, naturally.
               </p>
               <div className="footer-socials">
+                <a href={siteConfig.social.email} className="footer-social" aria-label="Email">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <rect x="3" y="5.5" width="18" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                    <path d="M3.5 7 L12 13 L20.5 7" stroke="currentColor" strokeWidth="1.2" />
+                  </svg>
+                </a>
                 <a
                   href={siteConfig.social.instagram}
                   className="footer-social"
@@ -25,7 +30,36 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  IG
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" stroke="currentColor" strokeWidth="1.2" />
+                    <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.2" />
+                    <circle cx="17" cy="7" r="1.1" fill="currentColor" />
+                  </svg>
+                </a>
+                <a
+                  href={siteConfig.social.youtube}
+                  className="footer-social"
+                  aria-label="YouTube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.2" />
+                    <path d="M10 9 L15.5 12 L10 15 Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                <a
+                  href={siteConfig.social.linkHub}
+                  className="footer-social"
+                  aria-label="All links"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M10 14 L14 10" stroke="currentColor" strokeWidth="1.2" />
+                    <path d="M12.5 7.5 L14.5 5.5 A 3.53 3.53 0 0 1 19.5 10.5 L17.5 12.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M11.5 16.5 L9.5 18.5 A 3.53 3.53 0 0 1 4.5 13.5 L6.5 11.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -74,18 +108,6 @@ export function Footer() {
             </nav>
           </div>
         </div>
-      </footer>
-
-      <div className="footer-legal-bg">
-        <div className="container">
-          <div className="footer-legal">
-            <span>
-              © {new Date().getFullYear()} {siteConfig.surgeonShort}. All rights reserved.
-            </span>
-            {/* TODO: Privacy/Terms/Accessibility links once those pages exist. */}
-          </div>
-        </div>
-      </div>
-    </>
+    </footer>
   );
 }

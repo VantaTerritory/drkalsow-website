@@ -42,9 +42,12 @@ export const siteConfig = {
     { label: "NY Regional Society of Plastic Surgeons", short: "NY Regional", logo: "/img/logo/board-ny-regional.png" },
   ],
 
-  // ---- Social (the doctor's own IG; no FB/YT accounts exist) ----
+  // ---- Social (mirrors the live site's icon row: mail, IG, YouTube, bio link) ----
   social: {
+    email: "mailto:sergeikalsow@gmail.com",
     instagram: "https://www.instagram.com/doctor.serge/",
+    youtube: "https://www.youtube.com/channel/UCPMf_MeIsEUtwUHbhELdrAA",
+    linkHub: "https://bio.site/drkalsow",
   },
 
   // ---- Location (NYC only — Miami was ruled out; the client only has the NY office) ----
@@ -69,7 +72,8 @@ export const siteConfig = {
   hero: {
     lead:
       "With over 5,000 surgeries performed, Dr. Sergei Kalsow specializes in facial procedures, breast enhancement, and body contouring, delivering natural-looking results with safety and care at every step.",
-    portrait: "/img/portrait/dr-kalsow-home.jpg",
+    // transparent bust cutout composited over the aubergine disc (hero)
+    portrait: "/img/portrait/dr-kalsow-bust.png",
   },
 
   // ---- Testimonials (condensed from real 5★ reviews on the live sites) ----
