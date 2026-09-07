@@ -6,10 +6,10 @@ import { Reveal } from "@/components/motion/reveal";
 
 /* Stats from the live site's About ("Meet Dr. Kalsow" block). */
 const STATS = [
-  { value: "5,000+", label: "Awake Lipo 360 Procedures Personally Performed", numeric: true },
+  { value: "5,000+", label: "Surgeries Performed", numeric: true },
   { value: "Board-Certified", label: "Plastic Surgeon", numeric: false },
-  { value: "International", label: "Patients & Surgical Observers", numeric: false },
-  { value: "Specialized Team", label: "Built Around Awake Cosmetic Surgery", numeric: false },
+  { value: "Madison Avenue", label: "New York City Practice", numeric: false },
+  { value: "Personalized", label: "Surgical Planning", numeric: false },
 ];
 
 /**

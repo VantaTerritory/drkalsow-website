@@ -37,10 +37,11 @@ export function AboutStory() {
               for his patients.
             </p>
             <p>
-              His extensive experience is demonstrated by over 5,000 procedures performed,
-              specializing in awake Brazilian Butt Lift (BBL) and awake facelift procedures. He
-              also offers a range of other procedures, including mommy makeovers, rhinoplasty,
-              and various types of breast surgery.
+              Across more than 5,000 surgeries, experience becomes pattern recognition:
+              understanding how anatomy, tissue distribution, skin quality, asymmetry and prior
+              procedures should shape each surgical plan. Rather than applying the same formula
+              to every patient, Dr. Kalsow develops an individualized approach around the person
+              in front of him.
             </p>
 
             <blockquote className="abt-quote">

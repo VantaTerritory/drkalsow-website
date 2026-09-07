@@ -2,6 +2,7 @@ import { getPage } from "@/lib/seo/pages";
 import { procedureContent, SHARED_FAQ } from "@/lib/procedures/content";
 import { ProcedureHero } from "@/components/marketing/procedure/procedure-hero";
 import { ProcedureIntro } from "@/components/marketing/procedure/procedure-intro";
+import { ProcedurePhilosophy } from "@/components/marketing/procedure/procedure-philosophy";
 import { ProcedureCases } from "@/components/marketing/procedure/procedure-cases";
 import { ProcedureFaqSection } from "@/components/marketing/procedure/procedure-faq";
 import { FinalCta } from "@/components/marketing/home/final-cta";
@@ -27,6 +28,7 @@ export function ProcedureTemplate({ path }: { path: string }) {
     <>
       <ProcedureHero page={page} content={content} />
       <ProcedureIntro content={content} />
+      {content.philosophy && <ProcedurePhilosophy content={content.philosophy} />}
       <ProcedureCases content={content} label={page.label} />
       <ProcedureFaqSection items={faq} />
       <FinalCta />

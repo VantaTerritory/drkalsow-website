@@ -11,12 +11,16 @@ export function TestimonialCarousel() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const update = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    const card = el.querySelector<HTMLElement>(".testimonial-card");
+    const slideWidth = card ? card.offsetWidth + 14 : el.clientWidth;
+    setActiveIndex(Math.min(Math.round(el.scrollLeft / slideWidth), siteConfig.testimonials.length - 1));
   }, []);
 
   useEffect(() => {
@@ -39,6 +43,14 @@ export function TestimonialCarousel() {
     const dx = card ? card.offsetWidth + 14 : el.clientWidth * 0.8;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     el.scrollBy({ left: dir * dx, behavior: reduced ? "auto" : "smooth" });
+  };
+
+  const goTo = (index: number) => {
+    const el = trackRef.current;
+    const card = el?.children[index] as HTMLElement | undefined;
+    if (!el || !card) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ left: card.offsetLeft, behavior: reduced ? "auto" : "smooth" });
   };
 
   return (
@@ -91,6 +103,19 @@ export function TestimonialCarousel() {
           <path d="M8 1 L13 6 L8 11 M13 6 H1" stroke="currentColor" strokeWidth="1.2" />
         </svg>
       </button>
+
+      <div className="sp-carousel-dots" aria-label="Choose testimonial">
+        {siteConfig.testimonials.map((testimonial, index) => (
+          <button
+            type="button"
+            className="sp-carousel-dot"
+            aria-label={`Show testimonial from ${testimonial.name}`}
+            aria-current={activeIndex === index ? "true" : undefined}
+            onClick={() => goTo(index)}
+            key={testimonial.name}
+          />
+        ))}
+      </div>
     </div>
   );
 }

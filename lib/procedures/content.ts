@@ -10,6 +10,12 @@
 
 export type ProcedureFaq = { q: string; a: string };
 export type ProcedureCase = { image: string; alt: string };
+export type ProcedurePhilosophy = {
+  heading: string;
+  body: string[];
+  principles: string[];
+  closing: string;
+};
 
 /* The practice publishes its procedure videos two ways, so the template
    handles both:
@@ -33,6 +39,8 @@ export type ProcedureContent = {
   video?: ProcedureVideo;
   /** Up to 3 before/after cases */
   cases: ProcedureCase[];
+  /** Optional point-of-view section for procedures with a defined planning philosophy */
+  philosophy?: ProcedurePhilosophy;
   /** Questions specific to this procedure, appended before the shared set */
   faq?: ProcedureFaq[];
 };
@@ -56,7 +64,7 @@ export const SHARED_FAQ: ProcedureFaq[] = [
   },
   {
     q: "Can I travel to New York for surgery?",
-    a: "Yes. Patients come from across the United States, Europe, the Middle East, Africa and beyond, some referred by previous patients and some after surgery performed elsewhere. The team coordinates scheduling, medical preparation and travel logistics around your trip.",
+    a: "Yes. The practice offers virtual consultations and can help you understand scheduling and medical preparation for care in New York. The appropriate length of stay and follow-up plan depend on your procedure and individual care needs.",
   },
 ];
 
@@ -68,7 +76,7 @@ const BODY_FAQ: ProcedureFaq[] = [
   },
   {
     q: "Can Dr. Kalsow revise liposuction performed somewhere else?",
-    a: "Yes. He has extensive experience evaluating revision patients who previously had liposuction in other states and countries. Revision work is not simply another round of the same operation: it means understanding what has already been changed, what can realistically be improved, and what tissue should not be treated further.",
+    a: "Dr. Kalsow evaluates patients who previously had liposuction elsewhere. Revision work is not simply another round of the same operation: it requires understanding what has already changed, what can realistically be improved, and what tissue should not be treated further.",
   },
 ];
 
@@ -152,6 +160,19 @@ export const PROCEDURE_CONTENT: Record<string, ProcedureContent> = {
         "Patients report higher self esteem and an increase in body confidence following the surgery.",
       ],
     },
+    philosophy: {
+      heading: "The shape you are trying to create may already be there.",
+      body: [
+        "Underneath excess fat is your natural frame: your rib cage, waist, musculature, pelvis and individual proportions.",
+        "Dr. Kalsow's approach is not to impose the same manufactured shape on every patient. The surgical plan looks for the most balanced version of the anatomy that is already there.",
+      ],
+      principles: [
+        "Remove with intention",
+        "Preserve what creates balance",
+        "Reveal the natural waist-to-hip relationship",
+      ],
+      closing: "The objective is not simply to make you smaller. It is to reveal your shape.",
+    },
     faq: BODY_FAQ,
     video: {
       kind: "file",
@@ -174,6 +195,15 @@ export const PROCEDURE_CONTENT: Record<string, ProcedureContent> = {
         "Most patients who want this procedure are slender, physically active and fit, with hip dips, flat buttocks, or no natural curvature between the waistline and the buttocks. A Skinny BBL fills out hip dips, shapes and rounds the buttocks, and creates a natural transition between waist and buttocks.",
         "The procedure involves extracting fat from other areas such as the abdomen, thighs or waist through liposuction, then injecting it into the hips and buttocks to enhance volume, curvature and overall shape.",
       ],
+    },
+    philosophy: {
+      heading: "An hourglass does not have to begin with added volume.",
+      body: [
+        "A meaningful change in the waist-to-hip relationship can begin with strategic contouring of the abdomen, waist, flanks and back.",
+        "Fat transfer may be appropriate for selected patients, but the plan begins with the proportions of your own frame and the amount of donor fat safely available.",
+      ],
+      principles: ["Find the waist", "Respect the natural frame", "Add volume only when it serves the proportion"],
+      closing: "Your anatomy determines what can appropriately be achieved.",
     },
     faq: BODY_FAQ,
     video: {

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ProcedureContent } from "@/lib/procedures/content";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { SwipeCarousel } from "@/components/ui/swipe-carousel";
 import { Reveal } from "@/components/motion/reveal";
 
 /**
@@ -26,19 +27,27 @@ export function ProcedureCases({ content, label }: { content: ProcedureContent; 
           </p>
         </div>
 
-        <Reveal className="proc-cases" data-count={content.cases.length}>
-          {content.cases.map((c, i) => (
-            <figure className="proc-case" key={c.image}>
-              <Image
-                src={c.image}
-                alt={c.alt}
-                fill
-                sizes="(max-width: 768px) 90vw, 30vw"
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-              <figcaption>Case {String(i + 1).padStart(2, "0")}</figcaption>
-            </figure>
-          ))}
+        <Reveal>
+          <SwipeCarousel
+            className="proc-cases"
+            data-count={content.cases.length}
+            count={content.cases.length}
+            label={`${label} before and after cases`}
+            itemNoun="case"
+          >
+            {content.cases.map((c, i) => (
+              <figure className="proc-case" key={c.image}>
+                <Image
+                  src={c.image}
+                  alt={c.alt}
+                  fill
+                  sizes="(max-width: 768px) 90vw, 30vw"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+                <figcaption>Case {String(i + 1).padStart(2, "0")}</figcaption>
+              </figure>
+            ))}
+          </SwipeCarousel>
         </Reveal>
 
         <p className="proc-cases-cta">
