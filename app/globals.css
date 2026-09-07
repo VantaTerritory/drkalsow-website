@@ -2153,9 +2153,13 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   z-index: var(--z-modal);
   padding: var(--space-4) var(--space-4) var(--space-5);
   border-radius: var(--radius-xl);
-  background: linear-gradient(165deg, var(--color-primary-800), var(--color-primary-900));
+  /* cream card dropping onto the cream header, a shade lighter so the border
+     and shadow do the separating. The aubergine fill read as a second,
+     competing brand surface at the top of every phone screen. */
+  background: var(--color-neutral-50);
+  border: 0.5px solid var(--border-soft);
   box-shadow: var(--shadow-modal);
-  color: var(--text-on-dark);
+  color: var(--text-primary);
   opacity: 0;
   transform: translateY(-10px);
   pointer-events: none;
@@ -2166,7 +2170,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
    stacking context: lift the whole header over the backdrop while it is open */
 .header:has(.mobile-nav.is-open) { z-index: var(--z-modal); }
 .mobile-nav-list { list-style: none; margin: 0; padding: 0; }
-.mobile-nav-list > li + li { border-top: 0.5px solid rgba(245, 241, 234, 0.14); }
+.mobile-nav-list > li + li { border-top: 0.5px solid var(--border-soft); }
 .mobile-nav-link {
   display: flex;
   align-items: center;
@@ -2181,16 +2185,23 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   font-family: var(--font-display);
   font-size: 25px;
   line-height: 1.2;
-  color: var(--text-on-dark);
+  color: var(--text-primary);
   transition: color var(--transition-base);
 }
+.mobile-nav-link:hover,
 .mobile-nav-link[aria-current="page"],
-.mobile-nav-link[data-current="true"] { color: var(--color-primary-200); }
+.mobile-nav-link[data-current="true"] { color: var(--text-accent); }
 .mobile-nav-chevron { flex: 0 0 auto; transition: transform var(--transition-base); }
 .mobile-nav-link[aria-expanded="true"] .mobile-nav-chevron { transform: rotate(180deg); }
-/* expanded procedures, grouped by area */
+/* expanded procedures, grouped by area. White inset on the cream panel, the
+   same two surfaces the mega menu pairs, so the open accordion reads as a
+   nested surface instead of more of the same panel. */
 .mobile-nav-drawer {
-  padding: 2px 0 var(--space-4);
+  margin: 4px 0 var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-md);
   animation: mobile-nav-reveal var(--transition-base) ease-out;
 }
 @keyframes mobile-nav-reveal {
@@ -2202,25 +2213,29 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-primary-400);
+  color: var(--text-tertiary);
   font-weight: 500;
   margin: 0 0 8px;
 }
-.mobile-nav-group[data-active="true"] .mobile-nav-group-title { color: var(--color-primary-200); }
+.mobile-nav-group[data-active="true"] .mobile-nav-group-title { color: var(--text-accent); }
 .mobile-nav-sublist { list-style: none; margin: 0; padding: 0; }
 .mobile-nav-sublink {
   display: block;
   padding: 9px 0;
   font-size: 15px;
-  color: var(--color-primary-100);
+  color: var(--text-secondary);
   font-family: var(--font-sans);
+  transition: color var(--transition-fast);
 }
-.mobile-nav-sublink[aria-current="page"] { color: var(--text-on-dark); font-weight: var(--fw-medium); }
+.mobile-nav-sublink:hover { color: var(--text-accent); }
+.mobile-nav-sublink[aria-current="page"] { color: var(--color-primary-800); font-weight: var(--fw-medium); }
 .mobile-nav-cta { width: 100%; margin-top: var(--space-4); }
 .mobile-nav-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(37, 26, 46, 0.4);
+  /* neutral scrim: the aubergine one tinted the whole screen lavender once
+     the panel itself stopped being dark */
+  background: rgba(26, 26, 26, 0.32);
   backdrop-filter: blur(2px);
   z-index: var(--z-overlay);
   border: none;

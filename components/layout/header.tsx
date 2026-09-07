@@ -282,7 +282,7 @@ export function Header() {
 
             <Link
               href="/call-our-office"
-              className="btn-light mobile-nav-cta"
+              className="btn-primary mobile-nav-cta"
               tabIndex={mobileOpen ? undefined : -1}
               onClick={closeMobile}
             >
