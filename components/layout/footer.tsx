@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer className="footer-main-bg">
         <div className="container">
-          <div className="footer-main" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr" }}>
+          <div className="footer-main">
             <div className="footer-brand-block">
               <p className="footer-brand-mark">SK</p>
               <p className="footer-brand-name">DR. SERGEI KALSOW</p>

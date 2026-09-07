@@ -582,14 +582,16 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .award-timeline.is-visible .award-node > span { transform: scale(1); }
-.award-group-list { list-style: none; margin: 0; padding: 0 0 var(--space-6) var(--space-4); }
+.award-group-list { list-style: none; margin: 0; padding: 0 0 var(--space-4) var(--space-4); }
 .award-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   padding: 14px 0;
   border-bottom: 0.5px solid rgba(245, 241, 234, 0.14);
 }
-.award-item:first-child { border-top: 0.5px solid rgba(245, 241, 234, 0.14); }
+/* only the very top of the timeline gets a top rule: on every later group it
+   doubled up with the previous group's bottom rule and read as an empty row */
+.award-year-group:first-child .award-item:first-child { border-top: 0.5px solid rgba(245, 241, 234, 0.14); }
 .award-title {
   font-family: var(--font-sans);
   font-size: 15px;
@@ -661,7 +663,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 .meet-bento-main .h-sec em { color: var(--color-primary-200); }
 .meet-bento-main > p {
   max-width: 62ch;
-  margin: 0;
+  margin: var(--space-3) 0 0; /* the heading sat 2px off the paragraph */
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.7;
@@ -796,7 +798,10 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 /* ============================================================
    ABOUT BENTO
    ============================================================ */
-.about-grid { display: grid; grid-template-columns: 42% 58%; gap: var(--space-7); align-items: stretch; }
+/* fr tracks, not %: percentages plus the gap added up to 100% + 64px, which
+   overflowed .container by exactly the gap (horizontal scroll and clipped
+   copy from 769px up). fr subtracts the gap before splitting 42/58. */
+.about-grid { display: grid; grid-template-columns: minmax(0, 42fr) minmax(0, 58fr); gap: var(--space-7); align-items: stretch; }
 .about-body { display: flex; flex-direction: column; min-width: 0; }
 /* ambient video panel: message-bubble shape (small radius at bottom-right).
    Hairline border + deep soft shadow lift it off the light page bg. */
@@ -1748,7 +1753,10 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
    FOOTER
    ============================================================ */
 .footer-main-bg { background: var(--color-neutral-900); color: var(--text-on-dark); }
-.footer-main { padding: var(--space-7) 0; display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); }
+/* brand + explore + procedures + contact. This lived as an inline style on
+   the element, which outranked every media query below, so the responsive
+   footer never applied. */
+.footer-main { padding: var(--space-7) 0; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: var(--space-6); }
 .footer-brand-mark { font-family: var(--font-display); font-size: 34px; color: var(--text-on-dark); margin: 0 0 6px; font-weight: 500; letter-spacing: 0.02em; }
 .footer-brand-name { font-size: 11px; letter-spacing: 0.18em; color: var(--color-primary-400); margin: 0 0 var(--space-4); font-weight: 500; }
 .footer-tagline { font-size: 13px; color: var(--color-primary-200); line-height: 1.7; margin: 0 0 var(--space-5); font-family: var(--font-sans); max-width: 300px; }
@@ -2127,4 +2135,206 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   font-family: var(--font-sans);
   font-weight: 500;
   color: var(--text-accent);
+}
+
+/* ============================================================
+   RESPONSIVE — HOME (page-scoped overrides)
+   ============================================================ */
+/* HOME-RESPONSIVE-START */
+
+/* ---------- ABOUT block (home) ---------- */
+/* The letter CTA carried a double margin on mobile: the inline
+   marginTop: var(--space-5) on its wrapper in about.tsx plus the shared
+   `.about-body .btn-secondary { margin-top: var(--space-5) }`, leaving ~64px
+   of dead air between the signature and the button. */
+@media (max-width: 768px) {
+  #about .about-body .btn-secondary { margin-top: 0; }
+}
+
+/* ---------- HERO (tablet portrait) ---------- */
+/* The shared <=768 rule stretches .hero-content across the whole grid column.
+   At 600-768px that put the 48px display H1 on a single 46-character line
+   ending 24px from the viewport edge, and turned the CTA group into two
+   736px-wide stacked bars. Cap the measure and put the buttons back on one
+   row; below 600px the stacked full-width treatment still applies. */
+@media (min-width: 600px) and (max-width: 768px) {
+  .hero-content { max-width: 620px; }
+  .hero-cta-group { flex-direction: row; align-items: center; }
+  .hero-cta-group .btn-primary,
+  .hero-cta-group .btn-secondary { width: auto; }
+}
+
+/* ---------- TESTIMONIALS carousel ---------- */
+/* .sp-track is absolutely pinned to the 16:9 video height. Between 769 and
+   1023px that height (187-238px) is smaller than the card's fixed chrome, so
+   the quote collapsed to 2-53px and was clipped away almost entirely. Below
+   769px the opposite: the hard `.sp-carousel { height: 380px }` left up to
+   150px of dead air under a two-line quote. Stacking the row and letting the
+   track flow makes every card content-sized. >=1024px keeps the pinned
+   desktop layout. */
+@media (max-width: 1023px) {
+  #reviews .sp-row { grid-template-columns: 1fr; }
+  #reviews .sp-carousel { height: auto; }
+  #reviews .sp-track {
+    position: static;
+    left: auto;
+    right: auto;
+    margin-inline: 42px; /* arrow lanes: .sp-arrow is 38px wide */
+    align-items: stretch;
+  }
+  #reviews .sp-track .testimonial-card { height: auto; }
+  #reviews .sp-track .testimonial-body {
+    flex: 0 1 auto;
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+  #reviews .sp-track .testimonial-author { margin-top: auto; }
+  /* .sp-arrow is a 38px circle, under the 40px touch minimum. Grow the hit
+     area with a pseudo-element instead of the box so the visual circle and
+     the 42px arrow lane stay exactly as they are. */
+  #reviews .sp-arrow::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: var(--radius-full);
+  }
+}
+
+/* 1024-1199px the card is still pinned to the video (255-290px tall) and the
+   quote landed ~1px short of its last line. Trim the card chrome so it fits.
+   >=1200px (1440 included) is deliberately untouched. */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  #reviews .sp-track .testimonial-card { padding: 22px 24px; }
+  #reviews .sp-track .testimonial-stars { margin-bottom: var(--space-3); }
+}
+/* ---------- HERO (blob vs cutout, tablet band) ---------- */
+/* The cutout is height-limited by `object-fit: contain`, so it paints a fixed
+   325px wide at every desktop width, while the disc behind it is a percentage
+   of the panel: 277px at 769px and 324px at 900px. The figure was wider than
+   its own disc, covering it down to a crescent behind the head. A floor of
+   345px keeps the disc wider than the figure and crosses back over 72% at
+   ~958px on its own, so there is no jump at any breakpoint boundary and
+   nothing changes from ~960px up. */
+@media (min-width: 769px) {
+  .hero-image-panel::before { width: clamp(345px, 72%, 490px); }
+}
+/* HOME-RESPONSIVE-END */
+
+/* ============================================================
+   RESPONSIVE — ABOUT (page-scoped overrides)
+   ============================================================ */
+/* ABOUT-RESPONSIVE-START */
+
+@media (max-width: 768px) {
+  /* ---------- STORY: portrait ---------- */
+  /* min-height:420px on a full-width column turned the 1456x1312 portrait
+     into a 736x420 landscape band cropped at the hairline on tablets.
+     An aspect ratio plus a width cap keeps it a portrait plate at every
+     width instead of scaling only in one axis. `width` must stay explicit:
+     the only child is a `fill` <img> (absolute), so with `margin-inline:auto`
+     the box has no intrinsic width to feed the ratio and collapses to 0. */
+  .about-story-portrait {
+    min-height: 0;
+    width: 100%;
+    aspect-ratio: 4 / 4.6;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  /* ---------- HERO: stats row ---------- */
+  /* 2x2 reflow: cells had no inner gutter (labels touched the container
+     edge at 375) and `1fr` min-content sizing made the columns uneven
+     under ~340px. */
+  .abt-stats .stat { min-width: 0; padding-inline: var(--space-2); }
+  /* "Board-Certified" and "Specialized Team" broke onto a second line at
+     375-414, which pushed their labels below the neighbouring cell's. */
+  .abt-stats .stat-word { font-size: clamp(19px, 7.4vw - 7.5px, 27px); }
+  /* One shared value-block height + a common bottom edge, so the labels of
+     the two cells in a row start at the same y (they were 42px apart at
+     375: 36px number vs 78px two-line word). */
+  .abt-stats .stat-number,
+  .abt-stats .stat-word {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 42px;
+  }
+  /* row 1 kept a vertical rule, row 2 lost it -> asymmetric 2x2 */
+  .abt-stats .stat:nth-child(3) { border-right: 0.5px solid var(--border-soft); }
+
+  /* ---------- MEET DR. KALSOW ---------- */
+  /* Stacked, the 210px min-height plus space-between left a dead ~60px void
+     between the card label and its CTA; let the cards size to content. */
+  .meet-action-card { min-height: 0; gap: var(--space-4); }
+}
+/* ABOUT-RESPONSIVE-END */
+
+/* ============================================================
+   RESPONSIVE — TESTIMONIALS (page-scoped overrides)
+   ============================================================ */
+/* TESTIMONIALS-RESPONSIVE-START */
+/* Tablet: the 12-col bento squeezed the 3-up story cards below ~300px, which
+   breaks the native video control bar (mute/fullscreen overlap and the
+   timeline drops to a second row). Two equal columns keep every player wide
+   enough; above 1000px the span-4 cards clear 300px on their own. */
+@media (min-width: 769px) and (max-width: 1000px) {
+  .patient-story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .patient-story-card,
+  .patient-story-card.story-card-wide,
+  .patient-story-card.story-card-tall { grid-column: auto; }
+}
+
+/* Tablet portrait: a single review column stretched the cards to ~100
+   characters per line. Two columns keep the measure readable. */
+@media (min-width: 620px) and (max-width: 768px) {
+  .testimonial-review-gallery { columns: 2; }
+}
+
+/* The review field is the only section not on section-py-lg, so it kept 128px
+   of top padding on tablet while the stories above it stepped down to 96px. */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .testimonial-review-field { padding-top: var(--space-8); }
+}
+
+@media (max-width: 768px) {
+  /* the panel's 48px bottom radius consumed the whole 48px bottom padding, so
+     the featured video card's corners sat right on the panel curve */
+  .testimonials-hero { padding-bottom: var(--space-7); }
+  /* caption wraps to two lines on narrow phones: keep it off the card edge */
+  .testimonials-featured-caption { padding-bottom: 12px; }
+  /* match the section's own 64px top padding instead of the base 96px */
+  .testimonial-review-field { padding-bottom: var(--space-7); }
+}
+/* TESTIMONIALS-RESPONSIVE-END */
+
+/* ============================================================
+   RESPONSIVE — SHARED CHROME (header, footer, shared links)
+   Touch-target and overflow fixes that belong to elements every page
+   renders, so they live here instead of in a page block.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* .link-arrow renders 23px tall, under the 24px minimum tap target, on
+     every page that uses it. An overlay grows the hit area to ~41px without
+     moving the border-bottom that the underline depends on. */
+  .link-arrow { position: relative; }
+  .link-arrow::after {
+    content: "";
+    position: absolute;
+    inset: -9px 0;
+  }
+  /* the primary conversion button measured 37px tall on phones */
+  .header-cta { min-height: 40px; }
+  /* four 36px circles plus their gaps overflowed the footer column below
+     ~360px, squeezing each icon down to 21px wide (and pushing 14px of
+     horizontal document scroll under 340px). Let them wrap instead. */
+  .footer-socials { flex-wrap: wrap; gap: 10px; }
+  .footer-social { flex: 0 0 auto; }
+}
+
+/* The two-column footer nav needs about 340px to fit: at 320 the procedures
+   column pushed 14px of horizontal scroll onto every page. */
+@media (max-width: 339px) {
+  .footer-main { grid-template-columns: 1fr; }
+  .footer-brand-block { grid-column: auto; }
 }
