@@ -3168,3 +3168,208 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
   .footer-col-title { margin-bottom: 12px; }
   .footer-col-list { line-height: 1.9; }
 }
+
+/* ============================================================
+   CONTACT PAGE (/call-our-office)
+   ============================================================ */
+.contact-hero {
+  background: var(--color-primary-100);
+  border-radius: 0 0 var(--radius-section) var(--radius-section);
+}
+main:has(.contact-hero) { background: var(--bg-surface); }
+.contact-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: var(--space-7);
+  align-items: center;
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+.contact-hero-copy .h-display { max-width: 14ch; }
+.contact-hero-lead {
+  margin: var(--space-4) 0 var(--space-5);
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+.contact-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* address + hours as a pair of labelled facts under the buttons */
+.contact-hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-5);
+  border-top: 0.5px solid var(--border-medium);
+}
+.contact-hero-facts dt {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: var(--fw-medium);
+  margin-bottom: 6px;
+}
+.contact-hero-facts dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+.contact-hero-facts dd span { display: block; }
+
+.contact-hero-aside { display: grid; gap: var(--space-4); }
+.contact-hero-photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+  overflow: hidden;
+  border: 0.5px solid var(--border-soft);
+}
+.contact-hero-photo img { object-fit: cover; }
+/* the doctor's own note from the live page, set as a signed aside */
+.contact-note {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.contact-note p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--color-primary-800);
+}
+.contact-note footer {
+  margin-top: 10px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: var(--fw-medium);
+}
+
+/* --- three consultation routes --- */
+.consult-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.consult-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-5);
+  background: var(--bg-page);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+}
+.consult-option-index {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--text-accent);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-sans);
+}
+.consult-option-index span {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--text-tertiary);
+}
+.consult-option h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+.consult-option-body {
+  margin: 0 0 var(--space-4);
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+
+/* --- request form --- */
+.contact-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+.contact-form-intro { position: sticky; top: 120px; }
+.contact-form-intro .h-sec { margin-bottom: var(--space-3); }
+.contact-form {
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.contact-form .form-submit { width: 100%; }
+
+/* --- visit / map --- */
+.visit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+.visit-map {
+  min-height: 380px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 0.5px solid var(--border-soft);
+}
+.visit-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--bg-page);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+}
+.visit-info .location-detail-value { margin: 0; }
+.visit-hour { display: flex; justify-content: space-between; gap: var(--space-4); max-width: 280px; }
+.visit-hour span { color: var(--text-primary); }
+.visit-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1024px) {
+  .contact-hero-inner { grid-template-columns: 1fr; gap: var(--space-6); }
+  .contact-hero-copy .h-display { max-width: 18ch; }
+  .contact-form-layout { grid-template-columns: 1fr; gap: var(--space-5); }
+  .contact-form-intro { position: static; }
+  .consult-options { grid-template-columns: 1fr; }
+  .visit-grid { grid-template-columns: 1fr; }
+  .visit-map { min-height: 300px; }
+}
+
+@media (max-width: 768px) {
+  .contact-hero-inner { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+  .contact-hero-actions .btn-primary,
+  .contact-hero-actions .btn-secondary { flex: 1 1 auto; justify-content: center; }
+  .contact-hero-facts { gap: var(--space-5); }
+  .contact-form { padding: var(--space-4); }
+  /* two inputs side by side leave ~150px each on a phone */
+  .contact-form .form-row { grid-template-columns: 1fr; }
+  .visit-hour { max-width: none; }
+}

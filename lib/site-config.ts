@@ -23,11 +23,19 @@ export const siteConfig = {
   googleReviewUrl:
     "https://search.google.com/local/writereview?placeid=ChIJCbyVUEBZwokRXTclziR0Y4I",
 
-  // ---- Consultation fee ----
+  // ---- Consultation fees ----
+  // Prices as published on the live /call-our-office page (Option 1 / Option 3).
+  // NOTE: the LP carried $500 for the virtual consult; the live site says $300.
+  // Using the live figure until the client confirms which one is current.
   consultation: {
     inPerson: "$250 in-person",
-    virtual: "$500 virtual",
+    virtual: "$300 virtual",
     note: "applied toward your surgery",
+    inPersonFee: "$250",
+    virtualFee: "$300",
+    // Photo review handled off-site on a Google Form the practice already runs.
+    eConsultUrl:
+      "https://docs.google.com/forms/d/e/1FAIpQLSfMoMT_qtp_3VpFgcz1xEqiP4zjPfqH-ZArMH2qY_sTegImNg/viewform",
   },
 
   // ---- Contact ----
