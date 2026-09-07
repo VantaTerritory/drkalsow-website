@@ -26,7 +26,8 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
 - Redirects 301 en `next.config.ts` (solapa 02): `/home → /`,
   `/hair-transplantation → /facelift`, `/procedure-breast-augmentation →
   /breast-augmentation`. `/new-page` devuelve 410 (`app/new-page/route.ts`).
-  `/cart` no se migra (404). `/procedures` dejó de ser 302: es hub 200 real.
+  `/cart` y `/procedures` no se migran (404). Los procedimientos se navegan
+  directamente desde el mega menú, sin página hub intermedia.
 - Sitemap (`app/sitemap.ts`): solo URLs 200 indexables finales.
   `/dreamsplasticsurgery` y `/testimonials-1` quedan fuera de sitemap y nav
   (páginas vivas huérfanas que el SEO team no mapeó — pregunta abierta).

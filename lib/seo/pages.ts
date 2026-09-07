@@ -62,16 +62,6 @@ export const SITE_PAGES: readonly SitePage[] = [
     schema: "AboutPage + Person + Physician + BreadcrumbList",
   },
   {
-    path: "/procedures",
-    label: "Procedures",
-    title: "Plastic Surgery Procedures NYC | Dr. Sergei Kalsow",
-    description:
-      "Explore plastic surgery procedures offered by Dr. Sergei Kalsow in NYC, including face, breast and body surgery, hair restoration and personalized consultations.",
-    h1: "Plastic Surgery Procedures in NYC",
-    group: "core",
-    schema: "CollectionPage + ItemList + BreadcrumbList",
-  },
-  {
     path: "/testimonials",
     label: "Testimonials",
     title: "Patient Testimonials | Dr. Sergei Kalsow NYC",
@@ -288,7 +278,7 @@ export const NAV_PAGES = SITE_PAGES.filter((p) => p.inNav && p.group === "core")
 export const NAV_PROCEDURES = SITE_PAGES.filter((p) => p.inNav && p.group === "procedure");
 export const ALL_PROCEDURES = SITE_PAGES.filter((p) => p.group === "procedure");
 
-/** Grouped procedures for the nav dropdown + /procedures hub (audit: nav by Face / Breast / Body / Hair). */
+/** Procedures grouped for direct navigation by Face / Breast / Body / Hair. */
 export const PROCEDURE_CATEGORIES: readonly { key: ProcedureCategory; label: string }[] = [
   { key: "face", label: "Face" },
   { key: "breast", label: "Breast" },

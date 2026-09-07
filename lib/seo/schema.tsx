@@ -103,37 +103,6 @@ export function buildPageJsonLd(page: SitePage) {
   return nodes;
 }
 
-/** JSON-LD for the /procedures hub: CollectionPage + ItemList of final landings. */
-export function buildProceduresHubJsonLd(procedures: readonly SitePage[]) {
-  const hubUrl = `${siteConfig.meta.url}/procedures`;
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.meta.url },
-        { "@type": "ListItem", position: 2, name: "Plastic Surgery Procedures in NYC", item: hubUrl },
-      ],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name: "Plastic Surgery Procedures in NYC",
-      url: hubUrl,
-      about: { "@id": PHYSICIAN_ID },
-      mainEntity: {
-        "@type": "ItemList",
-        itemListElement: procedures.map((p, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name: p.label,
-          url: pageUrl(p),
-        })),
-      },
-    },
-  ];
-}
-
 /** Render helper: serialized <script> nodes for a page's JSON-LD. */
 export function JsonLd({ nodes }: { nodes: object[] }) {
   return (

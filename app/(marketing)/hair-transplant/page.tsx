@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { getPage, pageMetadata } from "@/lib/seo/pages";
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { pageMetadata } from "@/lib/seo/pages";
+import { ProcedureTemplate } from "@/components/marketing/procedure/procedure-template";
 
 export const metadata: Metadata = pageMetadata("/hair-transplant");
 
 export default function Page() {
-  return <PagePlaceholder page={getPage("/hair-transplant")} />;
+  return <ProcedureTemplate path="/hair-transplant" />;
 }

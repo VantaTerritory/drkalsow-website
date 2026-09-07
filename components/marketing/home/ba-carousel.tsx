@@ -8,18 +8,18 @@ const CATEGORY_LABEL = Object.fromEntries(PROCEDURE_CATEGORIES.map((c) => [c.key
    procedure pages + the facelift one from dreamsplasticsurgery.com/procedures).
    Breast/body picks are the most clinical of each set (side/back views). */
 const BA_IMAGES: Record<string, string> = {
-  "/facelift": "/img/ba/facelift.jpg",
-  "/rhinoplasty": "/img/ba/rhinoplasty.jpg",
-  "/blepharoplasty": "/img/ba/blepharoplasty.jpg",
-  "/chin-lipo": "/img/ba/chin-lipo.jpg",
-  "/lip-augmentation": "/img/ba/lip-augmentation.jpg",
-  "/hair-transplant": "/img/ba/hair-transplant.jpg",
-  "/arm-lipo-1": "/img/ba/arm-lipo-1.jpg",
-  "/breast-augmentation": "/img/ba/breast-augmentation.jpg",
-  "/breast-lift-and-reduction-1": "/img/ba/breast-lift-and-reduction-1.jpg",
-  "/awake-fat-transfer-to-breast": "/img/ba/awake-fat-transfer-to-breast.jpg",
-  "/lipo-360-bbl": "/img/ba/lipo-360-bbl.jpg",
-  "/skinny-bbl": "/img/ba/skinny-bbl.jpg",
+  "/facelift": "/img/ba/facelift-1.jpg",
+  "/rhinoplasty": "/img/ba/rhinoplasty-1.jpg",
+  "/blepharoplasty": "/img/ba/blepharoplasty-1.jpg",
+  "/chin-lipo": "/img/ba/chin-lipo-1.jpg",
+  "/lip-augmentation": "/img/ba/lip-augmentation-1.jpg",
+  "/hair-transplant": "/img/ba/hair-transplant-1.jpg",
+  "/arm-lipo-1": "/img/ba/arm-lipo-1-1.jpg",
+  "/breast-augmentation": "/img/ba/breast-augmentation-1.jpg",
+  "/breast-lift-and-reduction-1": "/img/ba/breast-lift-and-reduction-1-1.jpg",
+  "/awake-fat-transfer-to-breast": "/img/ba/awake-fat-transfer-to-breast-1.jpg",
+  "/lipo-360-bbl": "/img/ba/lipo-360-bbl-1.jpg",
+  "/skinny-bbl": "/img/ba/skinny-bbl-1.jpg",
 };
 
 /* One full set of cards. The marquee renders it twice (second copy is

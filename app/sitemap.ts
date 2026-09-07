@@ -4,8 +4,8 @@ import { SITE_PAGES, pageUrl } from "@/lib/seo/pages";
 /**
  * Sitemap per the SEO technical checklist: only final 200, indexable,
  * self-canonical URLs. No redirects, no 404/410, no noindex.
- * (The old Squarespace sitemap wrongly included /procedures (302),
- * /cart (noindex) and /procedure-breast-augmentation (404).)
+ * The procedures hub is intentionally excluded because navigation goes
+ * directly to each procedure landing page.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   return SITE_PAGES.filter((p) => p.inSitemap !== false).map((p) => ({

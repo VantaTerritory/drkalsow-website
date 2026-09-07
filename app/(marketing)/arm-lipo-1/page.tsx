@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { getPage, pageMetadata } from "@/lib/seo/pages";
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { pageMetadata } from "@/lib/seo/pages";
+import { ProcedureTemplate } from "@/components/marketing/procedure/procedure-template";
 
 export const metadata: Metadata = pageMetadata("/arm-lipo-1");
 
 export default function Page() {
-  return <PagePlaceholder page={getPage("/arm-lipo-1")} />;
+  return <ProcedureTemplate path="/arm-lipo-1" />;
 }
