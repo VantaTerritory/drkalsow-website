@@ -93,8 +93,8 @@ export function Header() {
             <Image
               src="/img/logo/sk-logo.png"
               alt={siteConfig.surgeon}
-              width={1412}
-              height={942}
+              width={1213}
+              height={554}
               className="logo-img"
               priority
             />

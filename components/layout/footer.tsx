@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/lib/site-config";
 import { NAV_PAGES, NAV_PROCEDURES } from "@/lib/seo/pages";
 import { CallLink } from "@/components/ui/call-link";
@@ -11,8 +12,15 @@ export function Footer() {
         <div className="container">
           <div className="footer-main">
             <div className="footer-brand-block">
-              <p className="footer-brand-mark">SK</p>
-              <p className="footer-brand-name">DR. SERGEI KALSOW</p>
+              {/* the signature carries the name and credential, so the old
+                  "SK" mark and the DR. SERGEI KALSOW line under it are gone */}
+              <Image
+                src="/img/logo/sk-logo.png"
+                alt={siteConfig.surgeon}
+                width={1213}
+                height={554}
+                className="footer-brand-logo"
+              />
               <p className="footer-tagline">
                 Board-Certified Plastic &amp; Reconstructive Surgery. Refined results, naturally.
               </p>
