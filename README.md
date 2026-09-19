@@ -1,7 +1,8 @@
 # Dr. Kalsow — Website
 
 Next.js site for Dr. Sergei Kalsow, MD (www.drkalsow.com), migrated from Squarespace.
-Built by Terra Agency. Page registry, SEO metadata and redirects live in
+Built by Terra Agency. Repository: github.com/VantaTerritory/drkalsow-website.
+Page registry, SEO metadata and redirects live in
 `lib/seo/pages.ts` and `next.config.mjs`; see `AGENTS.md` for the project rules.
 
 ## Commands
