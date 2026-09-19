@@ -4,6 +4,7 @@ import "./globals.css";
 import { siteConfig } from "@/lib/site-config";
 import { buildJsonLd } from "@/lib/seo/schema";
 import { getPage } from "@/lib/seo/pages";
+import { Analytics, AnalyticsNoScript } from "@/components/tracking/analytics";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -50,7 +51,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           />
         ))}
       </head>
-      <body>{children}</body>
+      <body>
+        <AnalyticsNoScript />
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

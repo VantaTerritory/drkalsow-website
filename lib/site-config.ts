@@ -148,6 +148,14 @@ export const siteConfig = {
     ogImage: "/img/portrait/dr-kalsow-home.jpg",
     url: "https://www.drkalsow.com",
   },
+
+  // ---- Third-party tags (public IDs, ported from the Squarespace site) ----
+  // Loaded by components/tracking/analytics.tsx on every page, production only.
+  tracking: {
+    gtmId: "GTM-PFS393F8",
+    ga4Id: "G-BHMK3DX4N1",
+    metaPixelId: "1634976034378886",
+  },
 } as const;
 
 export type SiteConfig = typeof siteConfig;
