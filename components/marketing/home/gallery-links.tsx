@@ -5,9 +5,8 @@ import { BaCarousel } from "@/components/marketing/home/ba-carousel";
 
 /**
  * "Before And After Gallery" block from the live home: one card per procedure
- * in a scroll-snap carousel, plus the gallery CTA. Card media are gradient
- * placeholders until the imagery review (some live assets are explicit and
- * must be re-curated with Nico before landing in public/).
+ * in a native horizontal scroller (swipe, wheel, drag), lipo cards first, plus
+ * the gallery CTA.
  */
 export function GalleryLinks() {
   return (
@@ -42,7 +41,8 @@ export function GalleryLinks() {
         </div>
       </div>
 
-      {/* full-bleed: the marquee runs edge to edge, outside the container */}
+      {/* full-bleed: the track runs edge to edge, outside the container, with its
+          first card aligned to the container's content edge */}
       <Reveal>
         <BaCarousel />
       </Reveal>

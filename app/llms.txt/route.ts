@@ -10,6 +10,7 @@ import { siteConfig } from "@/lib/site-config";
 export const dynamic = "force-static";
 
 export function GET() {
+  const landings = SITE_PAGES.filter((p) => p.group === "landing");
   const core = SITE_PAGES.filter((p) => p.group === "core" && p.path !== "/");
   const procedures = SITE_PAGES.filter((p) => p.group === "procedure");
   const line = (p: (typeof SITE_PAGES)[number]) => `- [${p.label}](${pageUrl(p)}): ${p.description}`;
@@ -19,6 +20,9 @@ export function GET() {
 > Official website of Dr. Sergei Kalsow, MD, a board-certified plastic surgeon practicing in New York City. The site emphasizes Awake Lipo 360, body contouring, revision liposuction, patient education, results, and consultation information.
 
 Use this file as a curated guide to the site's most authoritative pages. Medical information is educational and does not replace an individual consultation. Surgical candidacy, risks, recovery, and treatment plans vary by patient.
+
+## Primary Authority
+${landings.map(line).join("\n")}
 
 ## Core Pages
 - [Home](${siteConfig.meta.url}/): Dr. Kalsow's practice, focused on Awake Lipo 360 and body contouring in New York City.

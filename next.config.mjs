@@ -26,6 +26,9 @@ const nextConfig = {
       // Sep 2026 SEO roadmap (Dr Kalsow - Septiembre.xlsx, row "Clean + rename
       // About page"): the live slug moves to a clean URL.
       { source: "/about-1", destination: "/about-dr-sergei-kalsow", statusCode: 301 },
+      // The doctor's Awake Lipo 360 page on Squarespace lived at /new-page-1;
+      // the roadmap makes /awake-lipo-360-nyc its permanent home.
+      { source: "/new-page-1", destination: "/awake-lipo-360-nyc", statusCode: 301 },
     ];
   },
 };

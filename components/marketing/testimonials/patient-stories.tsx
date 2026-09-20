@@ -1,19 +1,21 @@
 import { Reveal } from "@/components/motion/reveal";
 import { Eyebrow } from "@/components/ui/eyebrow";
 
+/* Order (Sep 2026, the doctor's emphasis): liposuction stories first, the
+   patient coordinator last. */
 const stories = [
   {
-    name: "Natasha Lubrano",
-    detail: "Patient Coordinator",
-    src: "/video/testimonials/natasha.mp4",
-    poster: "/video/testimonials/natasha-poster.webp",
+    name: "Lucille",
+    detail: "Lipo 360, BBL + blepharoplasty",
+    src: "/video/testimonials/lucille.mp4",
+    poster: "/video/testimonials/lucille-poster.webp",
     className: "story-card-wide",
   },
   {
-    name: "Michelle",
-    detail: "Submental liposuction + chin augmentation",
-    src: "/video/testimonials/michelle.mp4",
-    poster: "/video/testimonials/michelle-poster.webp",
+    name: "Patient stories",
+    detail: "Several patients on their care and results",
+    src: "/video/testimonials.mp4",
+    poster: "/video/testimonials-poster.jpg",
     className: "story-card-tall",
   },
   {
@@ -24,17 +26,17 @@ const stories = [
     className: "",
   },
   {
-    name: "Alex",
-    detail: "Lipo 360 + BBL",
-    src: "/video/testimonials/alex.mp4",
-    poster: "/video/testimonials/alex-poster.webp",
+    name: "Michelle",
+    detail: "Submental liposuction + chin augmentation",
+    src: "/video/testimonials/michelle.mp4",
+    poster: "/video/testimonials/michelle-poster.webp",
     className: "",
   },
   {
-    name: "Lucille",
-    detail: "Lipo 360, BBL + blepharoplasty",
-    src: "/video/testimonials/lucille.mp4",
-    poster: "/video/testimonials/lucille-poster.webp",
+    name: "Natasha Lubrano",
+    detail: "Patient Coordinator",
+    src: "/video/testimonials/natasha.mp4",
+    poster: "/video/testimonials/natasha-poster.webp",
     className: "",
   },
 ] as const;
@@ -49,8 +51,8 @@ export function PatientStories() {
             The experience, <em>as patients lived it.</em>
           </h2>
           <p>
-            Candid conversations about consultation, treatment, and recovery. Select
-            any story to listen.
+            Candid conversations about consultation, treatment, and recovery, most of them
+            after liposuction and body contouring. Select any story to listen.
           </p>
         </Reveal>
 

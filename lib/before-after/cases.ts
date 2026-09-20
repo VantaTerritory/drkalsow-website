@@ -23,8 +23,90 @@ function buildCases(id: string, label: string): readonly BeforeAfterCase[] {
  * Curated from the practice's live gallery on September 7, 2026.
  * Four distinct patient cases per procedure keep this page useful without
  * reproducing the full legacy gallery.
+ * Order (Sep 2026, the doctor's emphasis): liposuction and body contouring
+ * first, then breast, face and hair. The gallery index follows this order.
  */
 export const BEFORE_AFTER_PROCEDURES: readonly BeforeAfterProcedure[] = [
+  {
+    // From the photo drop the doctor shared on 17 Sep 2026 (Drive "Web"):
+    // back and side views of two patients, cropped above the branded footer
+    // and composed before | after. Only underwear-level images were used.
+    id: "awake-lipo-360",
+    label: "Awake Lipo 360",
+    category: "Body",
+    path: "/awake-lipo-360-nyc",
+    introduction:
+      "Circumferential contouring of the abdomen, waist, flanks and back, planned as one shape. Compare the back and side views of the same patients.",
+    cases: [
+      { src: "/img/before-after/awake-lipo-360/case-01.jpg", alt: "Awake Lipo 360 before and after, back view, patient case 01" },
+      { src: "/img/before-after/awake-lipo-360/case-02.jpg", alt: "Awake Lipo 360 before and after, back view, patient case 02" },
+      { src: "/img/before-after/awake-lipo-360/case-03.jpg", alt: "Awake Lipo 360 before and after, side view, patient case 01" },
+      { src: "/img/before-after/awake-lipo-360/case-04.jpg", alt: "Awake Lipo 360 before and after, side view, patient case 02" },
+    ],
+  },
+  {
+    id: "lipo-360-bbl",
+    label: "Lipo 360 + BBL",
+    category: "Body",
+    path: "/lipo-360-bbl",
+    introduction:
+      "See body contouring results across patients with different proportions, tissue distribution, and goals.",
+    cases: buildCases("lipo-360-bbl", "Lipo 360 and BBL"),
+  },
+  {
+    id: "skinny-bbl",
+    label: "Skinny BBL",
+    category: "Body",
+    path: "/skinny-bbl",
+    introduction:
+      "Explore proportion changes in patients whose treatment plans began with a lower available fat volume.",
+    cases: buildCases("skinny-bbl", "Skinny BBL"),
+  },
+  {
+    id: "arm-lipo",
+    label: "Arm Lipo",
+    category: "Body",
+    path: "/arm-lipo-1",
+    introduction:
+      "Review contour changes through the upper arms across different angles and starting tissue distributions.",
+    cases: buildCases("arm-lipo", "Arm Lipo"),
+  },
+  {
+    id: "chin-lipo",
+    label: "Chin Lipo",
+    category: "Face",
+    path: "/chin-lipo",
+    introduction:
+      "Observe changes in the contour beneath the chin and in the transition between the jawline and neck.",
+    cases: buildCases("chin-lipo", "Chin Lipo"),
+  },
+  {
+    id: "awake-fat-transfer-to-breast",
+    label: "Awake Fat Transfer to Breast",
+    category: "Breast",
+    path: "/awake-fat-transfer-to-breast",
+    introduction:
+      "View changes in breast volume and contour following fat transfer planned around each patient's anatomy.",
+    cases: buildCases("awake-fat-transfer-to-breast", "Awake Fat Transfer to Breast"),
+  },
+  {
+    id: "breast-augmentation",
+    label: "Breast Augmentation",
+    category: "Breast",
+    path: "/breast-augmentation",
+    introduction:
+      "Compare changes in breast volume, proportion, and profile across patients with different starting points.",
+    cases: buildCases("breast-augmentation", "Breast Augmentation"),
+  },
+  {
+    id: "breast-lift-and-reduction",
+    label: "Breast Lift & Reduction",
+    category: "Breast",
+    path: "/breast-lift-and-reduction-1",
+    introduction:
+      "Explore patient outcomes focused on breast position, proportion, and the removal of excess tissue.",
+    cases: buildCases("breast-lift-and-reduction", "Breast Lift and Reduction"),
+  },
   {
     id: "facelift",
     label: "Facelift",
@@ -53,15 +135,6 @@ export const BEFORE_AFTER_PROCEDURES: readonly BeforeAfterProcedure[] = [
     cases: buildCases("blepharoplasty", "Blepharoplasty"),
   },
   {
-    id: "chin-lipo",
-    label: "Chin Lipo",
-    category: "Face",
-    path: "/chin-lipo",
-    introduction:
-      "Observe changes in the contour beneath the chin and in the transition between the jawline and neck.",
-    cases: buildCases("chin-lipo", "Chin Lipo"),
-  },
-  {
     id: "lip-augmentation",
     label: "Lip Augmentation",
     category: "Face",
@@ -69,60 +142,6 @@ export const BEFORE_AFTER_PROCEDURES: readonly BeforeAfterProcedure[] = [
     introduction:
       "Compare changes in lip volume, shape, and balance across patients with different starting anatomy and treatment goals.",
     cases: buildCases("lip-augmentation", "Lip Augmentation"),
-  },
-  {
-    id: "breast-augmentation",
-    label: "Breast Augmentation",
-    category: "Breast",
-    path: "/breast-augmentation",
-    introduction:
-      "Compare changes in breast volume, proportion, and profile across patients with different starting points.",
-    cases: buildCases("breast-augmentation", "Breast Augmentation"),
-  },
-  {
-    id: "breast-lift-and-reduction",
-    label: "Breast Lift & Reduction",
-    category: "Breast",
-    path: "/breast-lift-and-reduction-1",
-    introduction:
-      "Explore patient outcomes focused on breast position, proportion, and the removal of excess tissue.",
-    cases: buildCases("breast-lift-and-reduction", "Breast Lift and Reduction"),
-  },
-  {
-    id: "awake-fat-transfer-to-breast",
-    label: "Awake Fat Transfer to Breast",
-    category: "Breast",
-    path: "/awake-fat-transfer-to-breast",
-    introduction:
-      "View changes in breast volume and contour following fat transfer planned around each patient's anatomy.",
-    cases: buildCases("awake-fat-transfer-to-breast", "Awake Fat Transfer to Breast"),
-  },
-  {
-    id: "lipo-360-bbl",
-    label: "Lipo 360 + BBL",
-    category: "Body",
-    path: "/lipo-360-bbl",
-    introduction:
-      "See body contouring results across patients with different proportions, tissue distribution, and goals.",
-    cases: buildCases("lipo-360-bbl", "Lipo 360 and BBL"),
-  },
-  {
-    id: "skinny-bbl",
-    label: "Skinny BBL",
-    category: "Body",
-    path: "/skinny-bbl",
-    introduction:
-      "Explore proportion changes in patients whose treatment plans began with a lower available fat volume.",
-    cases: buildCases("skinny-bbl", "Skinny BBL"),
-  },
-  {
-    id: "arm-lipo",
-    label: "Arm Lipo",
-    category: "Body",
-    path: "/arm-lipo-1",
-    introduction:
-      "Review contour changes through the upper arms across different angles and starting tissue distributions.",
-    cases: buildCases("arm-lipo", "Arm Lipo"),
   },
   {
     id: "hair-transplant",

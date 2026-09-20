@@ -16,8 +16,9 @@ export function BeforeAfterHero() {
             Plastic Surgery <em>Before &amp; After</em> Gallery
           </h1>
           <p>
-            Explore a curated selection of Dr. Kalsow&apos;s patient outcomes across facial, breast,
-            and body procedures. Each result reflects an individual treatment plan.
+            Explore a curated selection of Dr. Kalsow&apos;s patient outcomes, starting with
+            liposuction and body contouring, then breast and facial procedures. Each result
+            reflects an individual treatment plan.
           </p>
         </div>
 

@@ -108,12 +108,12 @@ export const siteConfig = {
         "Dr. Kalsow truly transformed my confidence. The results feel completely natural and his entire team made me feel safe at every step of the journey.",
     },
     {
-      initials: "JL",
-      name: "Jessica L.",
-      meta: "Rhinoplasty · 2024",
+      initials: "MD",
+      name: "Maria D.",
+      meta: "Mommy Makeover · 2023",
       stars: 5,
       body:
-        "From the first consultation I felt heard. He took the time to understand exactly what I wanted and the outcome exceeded every expectation I had.",
+        "After two kids I never thought I'd feel like myself again. Dr. Kalsow gave me back my confidence. The results look like me, only better.",
     },
     {
       initials: "AR",
@@ -124,12 +124,20 @@ export const siteConfig = {
         "A true artist. The level of detail and care that goes into every consultation is unmatched in NYC. I'd recommend him to anyone considering surgery.",
     },
     {
-      initials: "MD",
-      name: "Maria D.",
-      meta: "Mommy Makeover · 2023",
+      initials: "LC",
+      name: "Lauren C.",
+      meta: "Facelift · 2024",
       stars: 5,
       body:
-        "After two kids I never thought I'd feel like myself again. Dr. Kalsow gave me back my confidence. The results look like me, only better.",
+        "Natural, refreshed, never 'done'. People keep asking if I've been on vacation. That's exactly the result I wanted and Dr. Kalsow delivered.",
+    },
+    {
+      initials: "JL",
+      name: "Jessica L.",
+      meta: "Rhinoplasty · 2024",
+      stars: 5,
+      body:
+        "From the first consultation I felt heard. He took the time to understand exactly what I wanted and the outcome exceeded every expectation I had.",
     },
     {
       initials: "TK",
@@ -138,14 +146,6 @@ export const siteConfig = {
       stars: 5,
       body:
         "Professional, discreet, and genuinely caring. The whole experience was smooth and the result is exactly what I hoped for. Highly recommend.",
-    },
-    {
-      initials: "LC",
-      name: "Lauren C.",
-      meta: "Facelift · 2024",
-      stars: 5,
-      body:
-        "Natural, refreshed, never 'done'. People keep asking if I've been on vacation. That's exactly the result I wanted and Dr. Kalsow delivered.",
     },
   ],
 

@@ -17,7 +17,18 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  * type, which the live page could not capture because options 1 and 3 shared
  * one form. Submissions go to /api/consultation.
  */
-export function ConsultationForm() {
+export function ConsultationForm({
+  id: sectionId = "request",
+  source,
+  intro,
+}: {
+  /** Section id (anchor target). The landing pages use "consultation". */
+  id?: string;
+  /** Page the lead came from; travels with the submission into the email. */
+  source?: string;
+  /** Replaces the default left column (eyebrow, heading, helper copy). */
+  intro?: React.ReactNode;
+} = {}) {
   const id = useId();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
@@ -64,7 +75,7 @@ export function ConsultationForm() {
 
   if (status === "sent") {
     return (
-      <section className="bg-cream section-py-lg" id="request">
+      <section className="bg-cream section-py-lg" id={sectionId}>
         <div className="container-tight">
           <div className="form-success">
             <span className="success-check" aria-hidden>
@@ -85,8 +96,9 @@ export function ConsultationForm() {
   }
 
   return (
-    <section className="bg-cream section-py-lg" id="request">
+    <section className="bg-cream section-py-lg" id={sectionId}>
       <div className="container contact-form-layout">
+        {intro ?? (
         <div className="contact-form-intro">
           <Eyebrow>Request a consultation</Eyebrow>
           <h2 className="h-sec">
@@ -109,9 +121,11 @@ export function ConsultationForm() {
             <CallLink className="text-link">{siteConfig.phone.display}</CallLink>
           </p>
         </div>
+        )}
 
         <form className="contact-form" onSubmit={onSubmit} noValidate>
           <div className="form-fields">
+            {source && <input type="hidden" name="source" value={source} />}
             <div className="form-row">
               <div className="form-field">
                 <label className="form-field-label" htmlFor={`${id}-first`}>

@@ -29,9 +29,10 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   sin pasar por esos Excel.
 - Redirects 301 en `next.config.mjs` (solapa 02): `/home → /`,
   `/hair-transplantation → /facelift`, `/procedure-breast-augmentation →
-  /breast-augmentation`, y `/about-1 → /about-dr-sergei-kalsow` (rename
-  pedido en el roadmap de septiembre). `/new-page` devuelve 410
-  (`app/new-page/route.ts`).
+  /breast-augmentation`, `/about-1 → /about-dr-sergei-kalsow` (rename
+  pedido en el roadmap de septiembre) y `/new-page-1 → /awake-lipo-360-nyc`
+  (la página de Awake Lipo del doctor en Squarespace). `/new-page` devuelve
+  410 (`app/new-page/route.ts`).
   `/cart` y `/procedures` no se migran (404). Los procedimientos se navegan
   directamente desde el mega menú, sin página hub intermedia.
 - Sitemap (`app/sitemap.ts`): solo URLs 200 indexables finales.
@@ -43,7 +44,7 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   `/brazilian-butt-lift`, `/plastic-surgery-for-men` (Phase 2, algunas solo
   si el servicio se ofrece realmente). La página madre de Awake Lipo 360 va
   en `/awake-lipo-360-nyc` con 301 desde `/new-page-1` (roadmap de
-  septiembre); no se crea hasta que Nico lo pida y llegue el copy del doctor.
+  septiembre). Ya existe: es la landing de Awake Lipo 360.
 - `lib/site-config.ts` — facts de la práctica (teléfono, dirección, boards,
   testimonios, IDs de tracking, URL de Dreams). Single source of truth del
   copy compartido.
@@ -57,6 +58,25 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   mezclar variantes.
 - `components/layout/page-placeholder.tsx` — stub que renderiza toda página
   aún no construida (el metadata sí es real).
+- **Landings SEO + paid** (`/awake-lipo-360-nyc`, `/breast-reduction-nyc`):
+  un solo template en `components/marketing/landing/`, copy tipado en
+  `lib/landings/content.ts`. La fuente son los HTML del SEO team
+  (`~/Downloads/Dr_Kalsow_*_SEO_Paid_v*.html`): se toma el copy, se limpian
+  las notas de producción que dejan inline y se rediseña sobre Aubergine.
+  Las landings pagas van PG: solo before/after con ropa interior (los dos
+  pares de espalda del Drive de septiembre), el resto vive en la galería.
+  Llevan el header y footer completos del sitio (decisión 20 sep 2026: son
+  también las páginas pilar de SEO, y la nav completa suma confianza y
+  calidad de landing en Ads). El form de estas páginas manda `source` con
+  el path para saber de dónde vino el lead.
+- **Prioridad lipo:** carousel del home, `/beforeafter` y `/testimonials`
+  arrancan siempre por liposucción (Awake Lipo 360, Lipo 360 + BBL, Skinny
+  BBL, Arm Lipo, Chin Lipo). No reordenar hacia cara o mama.
+- **Fotos before/after nuevas:** vienen del Drive "Web" del cliente (ver
+  vault). Son 1080x1350 con footer de marca: recortar a 1080x1010 y
+  componer before | after cuadrado (1000 galería, 1100 carousel). Solo se
+  publican vistas con ropa interior; nada con pezones, glúteos desnudos ni
+  barras negras, y nunca las capturas de Instagram ni el retrato IA.
 
 ## Reglas
 

@@ -57,6 +57,9 @@ export async function POST(request: Request) {
   const message = clean(payload.message, MAX.message);
   const referralInput = clean(payload.referral, 60);
   const consultInput = clean(payload.consultType, 60);
+  // Page the form was on (landing pages set it); only site paths are accepted.
+  const sourceInput = clean(payload.source, 160);
+  const source = /^\/[a-z0-9\-\/]*$/i.test(sourceInput) ? sourceInput : "/call-our-office";
 
   const referral = (REFERRAL_SOURCES as readonly string[]).includes(referralInput)
     ? referralInput
@@ -95,6 +98,7 @@ export async function POST(request: Request) {
     ["Phone", phone],
     ["Consult", consultType],
     ["Heard about us", referral],
+    ["Page", source],
   ];
 
   const html = [
@@ -106,7 +110,7 @@ export async function POST(request: Request) {
     ),
     "</table>",
     message ? `<p style="font-family:Arial,sans-serif;font-size:14px;white-space:pre-wrap">${escapeHtml(message)}</p>` : "",
-    `<p style="color:#888;font-size:12px">Sent from ${siteConfig.meta.url}/call-our-office</p>`,
+    `<p style="color:#888;font-size:12px">Sent from ${siteConfig.meta.url}${source}</p>`,
   ].join("");
 
   try {

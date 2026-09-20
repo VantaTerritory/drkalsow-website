@@ -23,6 +23,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileProcsOpen, setMobileProcsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeProcedure = NAV_PROCEDURES.find((procedure) => procedure.path === pathname);
   const activeCategory = activeProcedure?.category;
@@ -43,6 +44,21 @@ export function Header() {
     clearCloseTimer();
     closeTimerRef.current = setTimeout(() => setProcsOpen(false), 180);
   };
+
+  // Publish the header's real height as --header-h, so sticky bars below it
+  // (the before/after gallery index) sit flush at every viewport width
+  // instead of relying on a hardcoded top offset.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () => {
+      document.documentElement.style.setProperty("--header-h", `${el.getBoundingClientRect().height}px`);
+    };
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Close the procedures dropdown on outside click / Escape.
   useEffect(() => {
@@ -87,7 +103,7 @@ export function Header() {
 
   return (
     <>
-      <header className="header">
+      <header className="header" ref={headerRef}>
         <div className="header-inner">
           <Link href="/" className="logo-group" aria-label={siteConfig.surgeon} aria-current={current("/")}>
             <Image

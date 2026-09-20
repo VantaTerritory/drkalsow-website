@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMetadata("/");
 
 /**
  * Home, repositioned Sep 2026 around Awake Lipo 360 (SEO team roadmap):
- * hero → credentials strip → why patients choose Dr. Kalsow → about →
+ * hero → credentials strip → about → why patients choose Dr. Kalsow →
  * before/after gallery → NYC office + visit bento → testimonials → CTA.
  * (Live IG feed section intentionally left out for now — needs an embed decision.)
  */
@@ -24,8 +24,8 @@ export default function HomePage() {
       <JsonLd nodes={buildPageJsonLd(getPage("/"))} />
       <Hero />
       <MembershipStrip />
-      <WhyChoose />
       <About />
+      <WhyChoose />
       <GalleryLinks />
       <OfficeShowcase />
       <SocialProof />

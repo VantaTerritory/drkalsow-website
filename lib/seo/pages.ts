@@ -17,7 +17,7 @@ import { siteConfig } from "@/lib/site-config";
    descriptions are ours (the sheet has no description column).
    ============================================================ */
 
-export type PageGroup = "core" | "procedure" | "practice";
+export type PageGroup = "core" | "procedure" | "practice" | "landing";
 export type ProcedureCategory = "face" | "breast" | "body" | "hair";
 
 export interface SitePage {
@@ -251,6 +251,33 @@ export const SITE_PAGES: readonly SitePage[] = [
     category: "hair",
     inNav: true,
     schema: "MedicalProcedure + BreadcrumbList",
+  },
+
+  // ---- Landings (SEO + paid) ----
+  // Standalone pages built from the SEO team's HTML drafts. Not part of the
+  // Procedures menu or the footer: they live on their own, indexable and in
+  // the sitemap. Title/description/H1 = theirs.
+  // Awake Lipo 360: Dr_Kalsow_Awake_Lipo_360_SEO_Paid_v14.html (main Ads landing).
+  {
+    path: "/awake-lipo-360-nyc",
+    label: "Awake Lipo 360",
+    title: "Awake Lipo 360 NYC | Dr. Sergei Kalsow",
+    description:
+      "Explore Awake Lipo 360 in New York City with Dr. Sergei Kalsow. Learn treatment areas, candidacy, recovery, results, and what to expect. Request a consultation.",
+    h1: "Awake Lipo 360 in NYC",
+    group: "landing",
+    schema: "WebPage + MedicalProcedure + FAQPage + BreadcrumbList",
+  },
+  // Breast Reduction landing (Dr_Kalsow_Breast_Reduction_NYC_SEO_Paid_v2.html).
+  {
+    path: "/breast-reduction-nyc",
+    label: "Breast Reduction",
+    title: "Breast Reduction NYC | Dr. Sergei Kalsow",
+    description:
+      "Breast reduction in New York City with Dr. Sergei Kalsow. Learn how reduction mammoplasty can reduce breast size, reshape and lift the breasts, improve comfort, and whether out-of-network insurance benefits may apply.",
+    h1: "Breast Reduction in NYC",
+    group: "landing",
+    schema: "WebPage + MedicalProcedure + FAQPage + BreadcrumbList",
   },
 
   // ---- Practice / secondary ----
