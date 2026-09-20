@@ -23,6 +23,9 @@ const nextConfig = {
       { source: "/hair-transplantation", destination: "/facelift", statusCode: 301 },
       // 404 that still appears in the exported Squarespace sitemap.
       { source: "/procedure-breast-augmentation", destination: "/breast-augmentation", statusCode: 301 },
+      // Sep 2026 SEO roadmap (Dr Kalsow - Septiembre.xlsx, row "Clean + rename
+      // About page"): the live slug moves to a clean URL.
+      { source: "/about-1", destination: "/about-dr-sergei-kalsow", statusCode: 301 },
     ];
   },
 };

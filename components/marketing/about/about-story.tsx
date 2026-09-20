@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 
@@ -55,6 +56,22 @@ export function AboutStory() {
               As a board-certified plastic surgeon, Dr. Kalsow has met the rigorous standards and
               qualifications set by the relevant medical board, underscoring his expertise and
               unwavering commitment to patient safety and care.
+            </p>
+            {/* Two-entity architecture (SEO roadmap, Sep 2026): this site is the
+                surgeon, Dreams is the clinic he founded. One editorial link, not a
+                sitewide one. */}
+            <p>
+              He is also the founder of{" "}
+              <a
+                href={siteConfig.dreams.url}
+                className="text-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {siteConfig.dreams.name}
+              </a>
+              , a New York City practice where he is one of the surgeons. His personal practice,
+              and this website, focus on Awake Lipo 360 and body contouring.
             </p>
             <p>
               If you have any questions,{" "}

@@ -22,7 +22,7 @@ export function Footer() {
                 className="footer-brand-logo"
               />
               <p className="footer-tagline">
-                Board-Certified Plastic &amp; Reconstructive Surgery. Refined results, naturally.
+                Awake Lipo 360 &amp; Body Contouring in New York City. Board-Certified Plastic Surgeon.
               </p>
               <div className="footer-socials">
                 <a href={siteConfig.social.email} className="footer-social" aria-label="Email">

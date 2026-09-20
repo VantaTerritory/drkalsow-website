@@ -1,4 +1,5 @@
 import { getPage } from "@/lib/seo/pages";
+import { JsonLd, buildPageJsonLd } from "@/lib/seo/schema";
 import { procedureContent, SHARED_FAQ } from "@/lib/procedures/content";
 import { ProcedureHero } from "@/components/marketing/procedure/procedure-hero";
 import { ProcedureIntro } from "@/components/marketing/procedure/procedure-intro";
@@ -26,6 +27,7 @@ export function ProcedureTemplate({ path }: { path: string }) {
 
   return (
     <>
+      <JsonLd nodes={buildPageJsonLd(page)} />
       <ProcedureHero page={page} content={content} />
       <ProcedureIntro content={content} />
       {content.philosophy && <ProcedurePhilosophy content={content.philosophy} />}

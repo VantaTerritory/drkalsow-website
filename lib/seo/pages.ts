@@ -7,9 +7,14 @@ import { siteConfig } from "@/lib/site-config";
    Titles / metas / H1s = "propuesto" columns of "00 Migration Map".
    Slugs preserved EXACTLY as the live site ("-1" suffixes included)
    per the audit: do NOT clean slugs during the migration.
-   Redirects live in next.config.ts (sheet "02 Redirect Map").
+   Redirects live in next.config.mjs (sheet "02 Redirect Map").
    Phase-2 pages (upper-east-side, mommy-makeover, tummy-tuck, etc.)
    are intentionally NOT created at launch — see AGENTS.md.
+   UPDATE Sep 2026: "Dr Kalsow - Septiembre.xlsx" (SEO team, sheet
+   01_Matriz_URLs) repositions the site around Awake Lipo 360. Home and
+   About below follow its Title/H1 drafts; About also moves to the clean
+   URL it requests (301 from /about-1 in next.config.mjs). Its meta
+   descriptions are ours (the sheet has no description column).
    ============================================================ */
 
 export type PageGroup = "core" | "procedure" | "practice";
@@ -42,24 +47,25 @@ export const SITE_PAGES: readonly SitePage[] = [
   {
     path: "/",
     label: "Home",
-    title: "Board-Certified Plastic Surgeon NYC | Dr. Sergei Kalsow",
+    title: "Dr. Sergei Kalsow | Awake Lipo 360 Surgeon in NYC",
     description:
-      "Meet Dr. Sergei Kalsow, a board-certified plastic surgeon in New York City offering facial, breast and body procedures with patient-focused care.",
-    h1: "Board-Certified Plastic Surgeon in New York City",
+      "Dr. Sergei Kalsow, MD, board-certified plastic surgeon in New York City, focuses on Awake Lipo 360 and body contouring, and also offers breast and facial procedures.",
+    // Sheet draft uses an em dash; the client bans them in copy, so a colon.
+    h1: "Dr. Sergei Kalsow, MD: Awake Lipo 360 & Body Contouring in NYC",
     group: "core",
     inNav: true,
     schema: "Physician + Person + WebSite",
   },
   {
-    path: "/about-1",
+    path: "/about-dr-sergei-kalsow",
     label: "About",
-    title: "Dr. Sergei Kalsow | Board-Certified Plastic Surgeon NYC",
+    title: "About Dr. Sergei Kalsow | Plastic Surgeon & Dreams Founder",
     description:
-      "Learn about Dr. Sergei Kalsow, a board-certified plastic surgeon in NYC, including his training, surgical experience, awards and patient-focused approach.",
+      "Learn about Dr. Sergei Kalsow, a board-certified plastic surgeon in New York City and founder of Dreams Plastic Surgery: training, surgical experience, awards and approach.",
     h1: "About Dr. Sergei Kalsow, MD",
     group: "core",
     inNav: true,
-    schema: "AboutPage + Person + Physician + BreadcrumbList",
+    schema: "ProfilePage + Person + BreadcrumbList",
   },
   {
     path: "/testimonials",

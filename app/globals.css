@@ -392,36 +392,6 @@ h1, h2, h3, h4, h5 { margin: 0 0 var(--space-3); font-weight: var(--fw-medium); 
   margin: 0;
   min-height: 0; /* stretches to the hero row height */
 }
-/* aubergine blob behind the portrait: organic shape, slow bubble morph.
-   The figure overlaps and breaks out of it. Vertically aligned with the
-   hero text block (desktop). */
-.hero-image-panel::before {
-  content: '';
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(72%, 490px);
-  aspect-ratio: 1;
-  border-radius: 56% 44% 46% 54% / 53% 53% 47% 47%;
-  background: linear-gradient(160deg, var(--color-primary-600) 0%, var(--color-primary-800) 55%, var(--color-primary-900) 100%);
-  z-index: 1;
-  animation: hero-blob-drift 11s ease-in-out infinite;
-}
-/* Wide radius range plus a slow rotation, so the silhouette keeps changing.
-   The two radii that meet on each edge are kept within a few points of each
-   other: when they differ a lot the arcs join with a broken tangent and the
-   apex renders a visible flat step. */
-@keyframes hero-blob-drift {
-  0%, 100% { border-radius: 56% 44% 46% 54% / 53% 53% 47% 47%; transform: translateX(-50%) scale(1) rotate(0deg); }
-  25%      { border-radius: 43% 57% 59% 41% / 59% 59% 41% 41%; transform: translateX(-50%) scale(1.05) rotate(2.5deg); }
-  50%      { border-radius: 60% 40% 43% 57% / 42% 42% 58% 58%; transform: translateX(-50%) scale(0.95) rotate(-2deg); }
-  75%      { border-radius: 46% 54% 58% 42% / 56% 56% 44% 44%; transform: translateX(-50%) scale(1.03) rotate(1.5deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-image-panel::before { animation: none; }
-}
 /* wrapper taller than the panel: the overflow crops the torso at the section edge */
 .hero-figure {
   position: absolute;
@@ -1900,7 +1870,6 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
     -webkit-mask-image: linear-gradient(to bottom, #000 64%, rgba(0, 0, 0, 0.55) 76%, transparent 87%);
     mask-image: linear-gradient(to bottom, #000 64%, rgba(0, 0, 0, 0.55) 76%, transparent 87%);
   }
-  .hero-image-panel::before { top: 6%; }
   .hero-figure { inset: 6% 0 0 0; }
   .hero-content { padding: 0 var(--space-3) var(--space-6); margin-top: -72px; max-width: 100%; justify-self: stretch; }
   .hero-cta-group { flex-direction: column; align-items: stretch; }
@@ -3034,17 +3003,6 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
   #reviews .sp-track .testimonial-card { padding: 22px 24px; }
   #reviews .sp-track .testimonial-stars { margin-bottom: var(--space-3); }
 }
-/* ---------- HERO (blob vs cutout, tablet band) ---------- */
-/* The cutout is height-limited by `object-fit: contain`, so it paints a fixed
-   325px wide at every desktop width, while the disc behind it is a percentage
-   of the panel: 277px at 769px and 324px at 900px. The figure was wider than
-   its own disc, covering it down to a crescent behind the head. A floor of
-   345px keeps the disc wider than the figure and crosses back over 72% at
-   ~958px on its own, so there is no jump at any breakpoint boundary and
-   nothing changes from ~960px up. */
-@media (min-width: 769px) {
-  .hero-image-panel::before { width: clamp(345px, 72%, 490px); }
-}
 /* HOME-RESPONSIVE-END */
 
 /* ============================================================
@@ -3372,4 +3330,34 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   /* two inputs side by side leave ~150px each on a phone */
   .contact-form .form-row { grid-template-columns: 1fr; }
   .visit-hour { max-width: none; }
+}
+
+/* ============================================================
+   SEP 2026 REPOSITION (Awake Lipo 360): hero name line + "Why Dr. Kalsow"
+   ============================================================ */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+/* the doctor's name as the first line of the H1, sized off the display line */
+.h-hero-name {
+  display: block;
+  font-size: 0.4em;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+  margin-bottom: 0.3em;
+}
+.why-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4); }
+.why-card { gap: var(--space-3); }
+.why-index { font-family: var(--font-display); font-style: italic; font-size: 30px; line-height: 1; color: var(--text-accent); }
+.value-card .why-kicker { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 500; color: var(--text-tertiary); }
+.why-footer { margin-top: var(--space-6); display: flex; flex-direction: column; align-items: center; gap: var(--space-4); text-align: center; }
+.why-founder { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 640px; margin: 0; }
+.why-cta { justify-content: center; }
+@media (max-width: 1179px) { .why-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 899px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 599px) {
+  .why-grid { grid-template-columns: 1fr; gap: var(--space-3); }
+  .why-card { flex-direction: row; align-items: flex-start; gap: 14px; padding: var(--space-4); }
+  .why-index { font-size: 24px; padding-top: 4px; }
+  .why-cta { flex-direction: column; align-items: stretch; width: 100%; }
+  .why-cta .btn-primary, .why-cta .btn-secondary { width: 100%; }
 }

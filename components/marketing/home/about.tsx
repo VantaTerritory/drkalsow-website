@@ -65,7 +65,7 @@ export function About() {
             <p className="about-signature">Dr. Sergei Kalsow</p>
 
             <div style={{ marginTop: "var(--space-5)" }}>
-              <Link href="/about-1" className="btn-secondary">
+              <Link href="/about-dr-sergei-kalsow" className="btn-secondary">
                 More About Dr. Kalsow <span aria-hidden>→</span>
               </Link>
             </div>

@@ -25,7 +25,7 @@ export function AboutHero() {
           <div className="abt-hero-copy">
             <Eyebrow>About</Eyebrow>
             <h1 className="h-display" style={{ marginBottom: "var(--space-3)" }}>
-              {getPage("/about-1").h1}
+              {getPage("/about-dr-sergei-kalsow").h1}
             </h1>
 
             <p className="abt-lead" style={{ marginTop: "var(--space-3)" }}>

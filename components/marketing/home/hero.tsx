@@ -5,20 +5,23 @@ import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { CallLink } from "@/components/ui/call-link";
 
 /**
- * Home hero: eyebrow = doctor's name, H1 = descriptive heading required by
- * the SEO migration map (must match getPage("/").h1 in lib/seo/pages.ts),
- * with the bust cutout breaking out of the aubergine disc, cropped by the
- * hero's bottom edge (overflow on .hero-image-panel does the cut).
+ * Home hero. H1 follows the SEO team's Sep 2026 draft (getPage("/").h1 in
+ * lib/seo/pages.ts): the doctor's name as the first line, the Awake Lipo 360
+ * proposition as the display line. The credential moves to the eyebrow as
+ * trust proof. The bust cutout is cropped by the hero's bottom edge
+ * (overflow on .hero-image-panel does the cut).
  */
 export function Hero() {
   return (
     <section className="hero" id="top">
       <div className="hero-content">
-        <Eyebrow ornament="none">Dr. Sergei Kalsow, MD</Eyebrow>
+        <Eyebrow ornament="none">Board-Certified Plastic Surgeon</Eyebrow>
         <h1 className="h-hero">
-          {/* non-breaking spaces force the wrap: "Surgeon in" stays together
-              and "New York City" lands alone on the last line */}
-          Board-Certified Plastic Surgeon&nbsp;in <em>New&nbsp;York&nbsp;City</em>
+          <span className="h-hero-name">
+            Dr. Sergei Kalsow, MD<span className="sr-only">: </span>
+          </span>
+          {/* non-breaking spaces keep "Lipo 360" and "in NYC" from splitting */}
+          Awake Lipo&nbsp;360 &amp; Body Contouring <em>in&nbsp;NYC</em>
         </h1>
 
         <Divider />

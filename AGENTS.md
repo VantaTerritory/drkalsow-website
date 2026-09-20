@@ -18,14 +18,20 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
 
 - `app/(marketing)/` — todo el sitio público. Slugs 1:1 con el sitio vivo
   (incluidos los sufijos `-1`): el mapa de migración del SEO team prohíbe
-  limpiar slugs durante el launch.
+  limpiar slugs durante el launch. Única excepción hasta ahora: About, que
+  el roadmap de septiembre movió a `/about-dr-sergei-kalsow` con 301.
 - `lib/seo/pages.ts` — **registro único de páginas**: rutas, labels de nav,
   categorías Face/Breast/Body/Hair, titles, descriptions y H1s. Fuente:
   `~/Downloads/DrKalsow_SEO_Migration_Audit_2026-08-25.xlsx` (columnas
-  "propuesto" de la solapa 00). NO cambiar titles/H1s sin pasar por el Excel.
-- Redirects 301 en `next.config.ts` (solapa 02): `/home → /`,
+  "propuesto" de la solapa 00), actualizada por
+  `~/Downloads/Dr Kalsow - Septiembre.xlsx` (roadmap Awake Lipo 360, solapa
+  01_Matriz_URLs: home y About siguen sus Title/H1). NO cambiar titles/H1s
+  sin pasar por esos Excel.
+- Redirects 301 en `next.config.mjs` (solapa 02): `/home → /`,
   `/hair-transplantation → /facelift`, `/procedure-breast-augmentation →
-  /breast-augmentation`. `/new-page` devuelve 410 (`app/new-page/route.ts`).
+  /breast-augmentation`, y `/about-1 → /about-dr-sergei-kalsow` (rename
+  pedido en el roadmap de septiembre). `/new-page` devuelve 410
+  (`app/new-page/route.ts`).
   `/cart` y `/procedures` no se migran (404). Los procedimientos se navegan
   directamente desde el mega menú, sin página hub intermedia.
 - Sitemap (`app/sitemap.ts`): solo URLs 200 indexables finales.
@@ -34,10 +40,18 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
 - **Páginas Phase 2 (NO crear en launch, escalonadas por el SEO team):**
   `/plastic-surgeon-upper-east-side` (2-4 sem post-launch),
   `/mommy-makeover` y `/tummy-tuck` (4-8 sem), `/breast-reduction`,
-  `/brazilian-butt-lift`, `/awake-lipo-360` y `/plastic-surgery-for-men`
-  (Phase 2, algunas solo si el servicio se ofrece realmente).
+  `/brazilian-butt-lift`, `/plastic-surgery-for-men` (Phase 2, algunas solo
+  si el servicio se ofrece realmente). La página madre de Awake Lipo 360 va
+  en `/awake-lipo-360-nyc` con 301 desde `/new-page-1` (roadmap de
+  septiembre); no se crea hasta que Nico lo pida y llegue el copy del doctor.
 - `lib/site-config.ts` — facts de la práctica (teléfono, dirección, boards,
-  testimonios). Single source of truth del copy compartido.
+  testimonios, IDs de tracking, URL de Dreams). Single source of truth del
+  copy compartido.
+- `lib/seo/schema.tsx` — grafo JSON-LD: Person (el cirujano) y Physician (la
+  práctica) son nodos separados con `@id` estables, más Dreams como
+  MedicalClinic fundada por él. Nunca Review/AggregateRating.
+- `app/llms.txt/route.ts` — guía para LLMs generada desde el registro de
+  páginas (solo URLs vivas).
 - `app/globals.css` — design system **Aubergine** completo (tokens `@theme` +
   clases de componentes), portado de la LP. Una sola dirección visual, no
   mezclar variantes.

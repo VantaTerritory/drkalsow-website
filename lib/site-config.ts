@@ -74,6 +74,11 @@ export const siteConfig = {
         { day: "Wednesday", hours: "10:00 AM – 4:00 PM" },
         { day: "Saturday", hours: "10:00 AM – 3:30 PM" },
       ],
+      // same hours, machine-readable for OpeningHoursSpecification
+      openingHours: [
+        { dayOfWeek: "Wednesday", opens: "10:00", closes: "16:00" },
+        { dayOfWeek: "Saturday", opens: "10:00", closes: "15:30" },
+      ],
       phoneDisplay: "(212) 653-8726",
       phoneTel: "+12126538726",
       directions:
@@ -84,8 +89,10 @@ export const siteConfig = {
 
   // ---- Hero (home) ----
   hero: {
+    // Sept 2026 reposition (SEO team roadmap): Awake Lipo 360 authority first,
+    // credential kept as trust proof, founder relationship stated plainly.
     lead:
-      "With over 5,000 surgeries performed, Dr. Sergei Kalsow specializes in facial procedures, breast enhancement, and body contouring, delivering natural-looking results with safety and care at every step.",
+      "Board-certified plastic surgeon and founder of Dreams Plastic Surgery, Dr. Sergei Kalsow has performed over 5,000 surgeries and focuses his New York City practice on Awake Lipo 360 and circumferential body contouring, with natural-looking results and personal follow-up at every step.",
     // transparent bust cutout composited over the aubergine disc (hero)
     portrait: "/img/portrait/dr-kalsow-bust.png",
   },
@@ -147,6 +154,13 @@ export const siteConfig = {
     // OG image: doctor portrait / neutral brand image — never a before/after.
     ogImage: "/img/portrait/dr-kalsow-home.jpg",
     url: "https://www.drkalsow.com",
+  },
+
+  // ---- Related practice (two-entity architecture: this site = the surgeon,
+  //      Dreams = the clinic he founded). Links here are editorial, not sitewide.
+  dreams: {
+    name: "Dreams Plastic Surgery",
+    url: "https://dreamsplasticsurgery.com/",
   },
 
   // ---- Third-party tags (public IDs, ported from the Squarespace site) ----
