@@ -17,7 +17,7 @@ import { siteConfig } from "@/lib/site-config";
    descriptions are ours (the sheet has no description column).
    ============================================================ */
 
-export type PageGroup = "core" | "procedure" | "practice" | "landing";
+export type PageGroup = "core" | "procedure" | "practice" | "landing" | "utility";
 export type ProcedureCategory = "face" | "breast" | "body" | "hair";
 
 export interface SitePage {
@@ -38,6 +38,8 @@ export interface SitePage {
   inNav?: boolean;
   /** Include in sitemap.xml (default true). Only 200 indexable finals. */
   inSitemap?: boolean;
+  /** Emit a noindex robots tag (utility pages). Set inSitemap: false too. */
+  noindex?: boolean;
   /** Schema recommended by the audit (sheet "08 Schema Map"). */
   schema?: string;
 }
@@ -305,6 +307,23 @@ export const SITE_PAGES: readonly SitePage[] = [
     group: "practice",
     inSitemap: false,
   },
+
+  // ---- Utility ----
+  // Confirmation page the consultation form redirects to after a successful
+  // send (all three forms; the origin travels as ?source=<path>). It exists
+  // so GTM / Ads / Meta can count the lead on a plain page view. Not an SEO
+  // page: noindex, out of sitemap, nav and llms.txt.
+  {
+    path: "/thank-you",
+    label: "Thank You",
+    title: "Thank You | Dr. Sergei Kalsow",
+    description:
+      "Your consultation request has been received. Dr. Kalsow’s New York City office will be in touch to confirm your appointment.",
+    h1: "Thank you, we have your request.",
+    group: "utility",
+    inSitemap: false,
+    noindex: true,
+  },
 ] as const;
 
 export const NAV_PAGES = SITE_PAGES.filter((p) => p.inNav && p.group === "core");
@@ -338,6 +357,15 @@ export function pageUrl(page: SitePage): string {
 export function pageMetadata(path: string): Metadata {
   const page = getPage(path);
   const url = pageUrl(page);
+  // Utility pages stay out of the index: robots directive only, no canonical
+  // and no social card (nobody shares a form confirmation).
+  if (page.noindex) {
+    return {
+      title: page.title,
+      description: page.description,
+      robots: { index: false, follow: true },
+    };
+  }
   return {
     title: page.title,
     description: page.description,

@@ -1689,21 +1689,6 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 .form-submit:hover:not(:disabled) { background: var(--color-primary-900); transform: translateY(-1px); }
 .form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-.form-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-3);
-  padding: var(--space-5) 0;
-}
-.success-check {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--color-success);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-}
 
 /* ============================================================
    FAQ (accordion)
@@ -3337,6 +3322,150 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   .contact-form .form-row { grid-template-columns: 1fr; }
   .visit-hour { max-width: none; }
 }
+
+/* ============================================================
+   THANK YOU PAGE (/thank-you)
+   Confirmation the consultation form lands on. Same family as the
+   contact hero (soft aubergine, rounded base) so the hand-off from the
+   form feels continuous. Layout only; reuses eyebrow, h-display,
+   buttons, link-arrow and section-header.
+   ============================================================ */
+.thanks-hero {
+  background: var(--color-primary-100);
+  border-radius: 0 0 var(--radius-section) var(--radius-section);
+}
+main:has(.thanks-hero) { background: var(--bg-surface); }
+.thanks-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: var(--space-7);
+  align-items: center;
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+.thanks-hero-copy .h-display { max-width: 15ch; }
+.thanks-lead {
+  margin: var(--space-4) 0 var(--space-5);
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+.thanks-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* address + hours as labelled facts, as on the contact hero */
+.thanks-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-5);
+  border-top: 0.5px solid var(--border-medium);
+}
+.thanks-facts dt {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: var(--fw-medium);
+  margin-bottom: 6px;
+}
+.thanks-facts dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+.thanks-facts dd span { display: block; }
+
+/* "what happens next": numbered steps on a white card */
+.thanks-next {
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.thanks-next-title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: var(--fw-medium);
+}
+.thanks-steps { list-style: none; margin: 0; padding: 0; }
+.thanks-step {
+  display: grid;
+  grid-template-columns: var(--space-6) 1fr;
+  gap: 0 var(--space-3);
+  padding-block: var(--space-4);
+  border-top: 0.5px solid var(--border-soft);
+}
+.thanks-step:first-child { border-top: 0; padding-top: 0; }
+.thanks-step:last-child { padding-bottom: 0; }
+.thanks-step-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text-accent);
+}
+.thanks-step h3 { font-family: var(--font-display); font-size: 21px; font-weight: 400; margin: 0 0 6px; color: var(--text-primary); }
+.thanks-step p { font-family: var(--font-sans); font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
+.thanks-next-note {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 0.5px solid var(--border-soft);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+/* "while you wait": three link cards, liposuction first */
+.thanks-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.thanks-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-5);
+  background: var(--bg-page);
+  border: 0.5px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  color: inherit;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.thanks-link:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--border-medium); }
+.thanks-link-index {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text-accent);
+}
+.thanks-link h3 { margin: 0 0 10px; font-family: var(--font-display); font-size: 25px; line-height: 1.2; font-weight: 400; color: var(--text-primary); }
+.thanks-link p { margin: 0 0 var(--space-4); font-family: var(--font-sans); font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+.thanks-link .link-arrow { margin-top: auto; }
+
+@media (max-width: 1024px) { .thanks-hero-copy .h-display { max-width: 18ch; } }
+@media (max-width: 900px) {
+  .thanks-hero-inner { grid-template-columns: 1fr; gap: var(--space-6); align-items: start; }
+  .thanks-links { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .thanks-hero-inner { padding-top: var(--space-7); padding-bottom: var(--space-7); }
+  .thanks-actions .btn-primary, .thanks-actions .btn-secondary { flex: 1 1 auto; justify-content: center; }
+  .thanks-facts { gap: var(--space-4); }
+}
+@media (prefers-reduced-motion: reduce) { .thanks-link:hover { transform: none; } }
 
 /* ============================================================
    SEP 2026 REPOSITION (Awake Lipo 360): hero name line + "Why Dr. Kalsow"

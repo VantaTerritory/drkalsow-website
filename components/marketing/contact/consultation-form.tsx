@@ -6,7 +6,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { CallLink } from "@/components/ui/call-link";
 import { CONSULT_TYPES, REFERRAL_SOURCES } from "@/lib/contact/form-options";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending" | "error";
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "phone" | "referral", string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -15,7 +15,8 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  * Consultation request form. Fields mirror the live Squarespace form (name,
  * email, phone, "how did you first hear about us", message) plus the consult
  * type, which the live page could not capture because options 1 and 3 shared
- * one form. Submissions go to /api/consultation.
+ * one form. Submissions go to /api/consultation; on success the browser is
+ * sent to /thank-you.
  */
 export function ConsultationForm({
   id: sectionId = "request",
@@ -65,34 +66,17 @@ export function ConsultationForm({
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error || "We could not send your request.");
       }
-      setStatus("sent");
-      form.reset();
+      // Hand off to the confirmation page with a full navigation, not
+      // router.replace(): GTM, GA4 and the Meta Pixel only register a page
+      // view on a real document load, and /thank-you is the URL the lead
+      // conversion hangs off. replace() keeps the filled-in form out of the
+      // back-button history. Status stays "sending" until the page unloads.
+      const from = source ?? window.location.pathname;
+      window.location.replace(`/thank-you?source=${encodeURIComponent(from)}`);
     } catch (error) {
       setStatus("error");
       setFailure(error instanceof Error ? error.message : "We could not send your request.");
     }
-  }
-
-  if (status === "sent") {
-    return (
-      <section className="bg-cream section-py-lg" id={sectionId}>
-        <div className="container-tight">
-          <div className="form-success">
-            <span className="success-check" aria-hidden>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12.5 L10 17.5 L19 7" stroke="currentColor" strokeWidth="1.8" />
-              </svg>
-            </span>
-            <h2 className="h-sec">Request received.</h2>
-            <p className="form-helper" style={{ margin: 0 }}>
-              The office will be in touch to confirm your appointment. If you need to reach us
-              sooner, call{" "}
-              <CallLink className="text-link">{siteConfig.phone.display}</CallLink>.
-            </p>
-          </div>
-        </div>
-      </section>
-    );
   }
 
   return (

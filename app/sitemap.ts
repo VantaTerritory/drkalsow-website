@@ -8,7 +8,7 @@ import { SITE_PAGES, pageUrl } from "@/lib/seo/pages";
  * directly to each procedure landing page.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  return SITE_PAGES.filter((p) => p.inSitemap !== false).map((p) => ({
+  return SITE_PAGES.filter((p) => p.inSitemap !== false && !p.noindex).map((p) => ({
     url: pageUrl(p),
     changeFrequency: "monthly",
     priority: p.path === "/" ? 1 : p.group === "core" ? 0.8 : 0.7,

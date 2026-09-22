@@ -69,6 +69,14 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   también las páginas pilar de SEO, y la nav completa suma confianza y
   calidad de landing en Ads). El form de estas páginas manda `source` con
   el path para saber de dónde vino el lead.
+- **Thank-you page (`/thank-you`):** los tres forms redirigen ahí tras un
+  envío exitoso con navegación completa (`window.location.replace`, no
+  `router.replace`) para que GTM, GA4 y Meta Pixel vean un pageview real:
+  la conversión de lead se dispara por URL desde GTM, sin eventos custom.
+  Llega `?source=<path>` con la página de origen. En el registro es
+  `group: "utility"` con `noindex` e `inSitemap: false`: fuera de sitemap,
+  nav y llms.txt. Sin JSON-LD. Componentes en
+  `components/marketing/thank-you/`.
 - **Prioridad lipo:** carousel del home, `/beforeafter` y `/testimonials`
   arrancan siempre por liposucción (Awake Lipo 360, Lipo 360 + BBL, Skinny
   BBL, Arm Lipo, Chin Lipo). No reordenar hacia cara o mama.
