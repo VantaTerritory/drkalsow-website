@@ -73,9 +73,12 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   envío exitoso con navegación completa (`window.location.replace`, no
   `router.replace`) para que GTM, GA4 y Meta Pixel vean un pageview real:
   la conversión de lead se dispara por URL desde GTM, sin eventos custom.
-  Llega `?source=<path>` con la página de origen y la X vuelve ahí. Vive en
-  `app/thank-you/`, FUERA de `(marketing)`: una sola pantalla sin header ni
-  footer del sitio (logo, X, titular, dos líneas y "Follow us"). En el
+  Llega `?source=<path>` con la página de origen y el botón primario
+  "Back to <página>" vuelve ahí. Vive en `app/thank-you/`, FUERA de
+  `(marketing)`: una sola pantalla sin header ni footer del sitio, con una
+  card blanca flotante centrada (logo, eyebrow, titular, una línea, botones
+  Back + Call y fila "Follow us"). Tiene que entrar sin scroll en laptops
+  (1280x720 incluido). En el
   registro es `group: "utility"` con `noindex` e `inSitemap: false`: fuera
   de sitemap, nav y llms.txt. Sin JSON-LD. Componentes en
   `components/marketing/thank-you/`.
