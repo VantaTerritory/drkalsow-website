@@ -318,8 +318,8 @@ export const SITE_PAGES: readonly SitePage[] = [
     label: "Thank You",
     title: "Thank You | Dr. Sergei Kalsow",
     description:
-      "Your consultation request has been received. Dr. Kalsow’s New York City office will be in touch to confirm your appointment.",
-    h1: "Thank you, we have your request.",
+      "Your consultation request was sent. Dr. Kalsow’s New York City office will be in touch to confirm your appointment.",
+    h1: "Thank you for reaching out.",
     group: "utility",
     inSitemap: false,
     noindex: true,
