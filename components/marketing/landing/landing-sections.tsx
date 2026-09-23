@@ -334,7 +334,7 @@ export function LandingGoals({ content }: Props) {
   return (
     <section className="bg-white section-py-lg" id="goals">
       <div className="container ld-goals-layout">
-        <div className="section-header ld-goals-intro">
+        <div className="section-header ld-goals-intro" style={{ marginBottom: 0 }}>
           <Eyebrow>{s.eyebrow}</Eyebrow>
           <h2 className="h-sec">{s.heading}</h2>
           <p className="locations-subtitle">{s.intro}</p>

@@ -120,6 +120,7 @@ export function ConsultationForm({
                   id={`${id}-first`}
                   name="firstName"
                   autoComplete="given-name"
+                  placeholder="e.g. Sophia"
                   aria-invalid={errors.firstName ? "true" : undefined}
                   aria-describedby={errors.firstName ? `${id}-first-err` : undefined}
                 />
@@ -139,6 +140,7 @@ export function ConsultationForm({
                   id={`${id}-last`}
                   name="lastName"
                   autoComplete="family-name"
+                  placeholder="e.g. Martinez"
                   aria-invalid={errors.lastName ? "true" : undefined}
                   aria-describedby={errors.lastName ? `${id}-last-err` : undefined}
                 />
@@ -162,6 +164,7 @@ export function ConsultationForm({
                   type="email"
                   inputMode="email"
                   autoComplete="email"
+                  placeholder="you@example.com"
                   aria-invalid={errors.email ? "true" : undefined}
                   aria-describedby={errors.email ? `${id}-email-err` : undefined}
                 />
@@ -183,6 +186,7 @@ export function ConsultationForm({
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
+                  placeholder="(212) 555-0123"
                   aria-invalid={errors.phone ? "true" : undefined}
                   aria-describedby={errors.phone ? `${id}-phone-err` : undefined}
                 />
@@ -235,7 +239,13 @@ export function ConsultationForm({
               <label className="form-field-label" htmlFor={`${id}-message`}>
                 Any questions you would like to ask, or how else can we help?
               </label>
-              <textarea className="form-textarea" id={`${id}-message`} name="message" rows={4} />
+              <textarea
+                className="form-textarea"
+                id={`${id}-message`}
+                name="message"
+                rows={4}
+                placeholder="Tell us what you would like to improve, or ask us anything."
+              />
             </div>
 
             {/* bots fill this; people never see it */}

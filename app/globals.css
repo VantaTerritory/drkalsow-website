@@ -3722,20 +3722,21 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 }
 
 /* Landing composition: shared patterns, scoped to the two paid pages. */
-.ld-goals-layout { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: var(--space-5) var(--space-7); align-items: start; }
-.ld-goals-intro { text-align: left; margin: 0; }
-.ld-goals-intro .eyebrow-group { justify-content: flex-start; }
-.ld-goals-intro .locations-subtitle { margin-left: 0; }
-.ld-benefits { display: grid; gap: var(--space-4); }
-.ld-benefit { display: grid; grid-template-columns: var(--space-6) 1fr; gap: var(--space-3); padding-bottom: var(--space-4); border-bottom: 1px solid var(--border-medium); }
-.ld-benefit-index { font-family: var(--font-display); font-size: 32px; font-style: italic; color: var(--text-accent); line-height: 1; }
+/* Goals: one centred flow (Nico, 23 Sep: the two-column version left the
+   right side empty under the three benefits). Header, the benefits in a
+   row, then the figure and the note. */
+.ld-goals-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); justify-items: center; }
+.ld-goals-intro { margin: 0; max-width: 760px; }
+.ld-goals-intro .h-sec { max-width: none; }
+.ld-benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); width: 100%; }
+.ld-benefit { padding-top: var(--space-4); border-top: 1px solid var(--border-medium); }
+.ld-benefit-index { display: block; font-family: var(--font-display); font-size: 32px; font-style: italic; color: var(--text-accent); line-height: 1; margin-bottom: var(--space-3); }
 .ld-benefit h3 { font-family: var(--font-display); font-size: 28px; line-height: 1.1; margin-bottom: var(--space-2); }
 .ld-benefit p { font-size: 14px; line-height: 1.75; color: var(--text-secondary); margin: 0; }
-.ld-goals-layout > .ld-grid-3, .ld-goals-layout > .ld-note { grid-column: 1 / -1; }
-.ld-goals-layout > .ld-figure-wide { grid-column: 1; grid-row: 2; max-width: 100%; margin: 0; }
-.ld-goals-layout:has(.ld-figure-wide) > .ld-benefits { grid-column: 2; grid-row: 1 / span 2; }
-.ld-goals-layout:has(.ld-figure-wide) > .ld-note { grid-row: 3; }
-.ld-goals-layout .ld-figure-card { max-width: 360px; padding: var(--space-2); box-shadow: none; }
+.ld-goals-layout > .ld-grid-3 { width: 100%; }
+.ld-goals-layout > .ld-figure-wide { order: 1; margin: 0; max-width: 560px; width: 100%; }
+.ld-goals-layout > .ld-note { order: 2; margin: 0; }
+.ld-goals-layout .ld-figure-card { max-width: none; padding: var(--space-3); box-shadow: none; }
 .ld-page #results { background: var(--color-primary-50); }
 .ld-results-panel { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-7); align-items: center; }
 .ld-results-panel .section-header { text-align: left; }
@@ -3770,8 +3771,9 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   .ld-hero .h-display { font-size: 56px; }
   .ld-hero .hero-cta-group { align-items: stretch; flex-direction: column; }
   .ld-media-caption { flex-direction: column; gap: var(--space-1); }
-  .ld-goals-layout, .ld-process-layout, .ld-results-panel { grid-template-columns: 1fr; gap: var(--space-5); }
-  .ld-goals-layout:has(.ld-figure-wide) > .ld-benefits, .ld-goals-layout > .ld-figure-wide, .ld-goals-layout:has(.ld-figure-wide) > .ld-note { grid-column: auto; grid-row: auto; }
+  .ld-process-layout, .ld-results-panel { grid-template-columns: 1fr; gap: var(--space-5); }
+  .ld-goals-layout { gap: var(--space-5); }
+  .ld-benefits { grid-template-columns: 1fr; gap: var(--space-4); }
   .ld-process-layout .ld-steps-head { position: static; }
   .ld-page .ld-portrait, .ld-hero-media .ld-hero-portrait { width: 100%; }
   .ld-page .ld-portrait { margin-inline: auto; }
@@ -3879,13 +3881,16 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 
 /* the form mid-page: a flat band, not the footer's rounded lead-in */
 .ld-page .ld-consult-mid #consultation { border-radius: 0; }
+/* the sticky intro clears header + quick nav here, not just the header */
+.ld-page .contact-form-intro { top: calc(var(--header-h, 95px) + var(--space-8)); }
 .ld-page #consultation .form-helper { color: var(--text-secondary); } /* tertiary fell under AA on lavender */
 .ld-address-card .location-eyebrow { color: var(--text-accent); }
 
 /* the details start here */
-.ld-details-intro { padding-top: var(--ld-section-space); }
-.ld-details-intro .h-sec { max-width: 22ch; margin-bottom: var(--space-3); }
-.ld-details-intro p { font-family: var(--font-sans); font-size: 15px; line-height: 1.75; color: var(--text-secondary); max-width: 62ch; margin: 0; }
+.ld-details-intro { padding-top: var(--ld-section-space); text-align: center; }
+.ld-details-intro .container { max-width: 760px; }
+.ld-details-intro .h-sec { margin-bottom: var(--space-3); }
+.ld-details-intro p { font-family: var(--font-sans); font-size: 15px; line-height: 1.75; color: var(--text-secondary); max-width: 62ch; margin: 0 auto; }
 .ld-details-intro + .section-py-lg { padding-top: var(--space-6); }
 
 /* closing band */
