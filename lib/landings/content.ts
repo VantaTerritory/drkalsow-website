@@ -10,7 +10,8 @@
    "pain-free", no comparative safety claims).
 
    Titles / descriptions / H1s come from lib/seo/pages.ts, as everywhere.
-   Both pages render components/marketing/landing/landing-template.tsx.
+   Both pages render components/marketing/landing/landing-template.tsx;
+   each one lists its own section order in `sections`.
    ============================================================ */
 
 export type LandingLink = { label: string; href: string; external?: boolean };
@@ -29,8 +30,78 @@ export type LandingHeroMedia =
   | { kind: "figure"; figure: LandingFigure }
   | { kind: "portrait"; src: string; alt: string };
 
+/**
+ * One patient photo card. Before | after composites are the default; a
+ * single close-up (a healed incision, for instance) sets `paired: false`
+ * so the card drops the Before / After tags. Cards are numbered on the
+ * page in array order; the doctor's own pair numbers stay in `source`.
+ */
+export type LandingCase = {
+  image: string;
+  alt: string;
+  /** Shown under the card, e.g. "Back view". */
+  view: string;
+  paired?: boolean;
+  /**
+   * "side": before | after halves (default). "stacked": before above after,
+   * used for torso bands, which are wide (front views cropped to the treated
+   * area so the paid landing stays at underwear level).
+   */
+  layout?: "side" | "stacked";
+  /** Source files in the doctor's Drive drop, for traceability. Never rendered. */
+  source?: string;
+};
+
+/**
+ * Self-hosted clip shown as a tile next to the photo cards. Plays on tap
+ * behind a poster, or loops muted with a pause control when `ambient`.
+ * `caseNumber` ties it to the card of the same patient (1-based, as
+ * printed on the page).
+ */
+export type LandingVideo = {
+  src: string;
+  poster: string;
+  title: string;
+  caption: string;
+  caseNumber?: number;
+  /** Short silent clip: loops muted on its own instead of waiting for a tap. */
+  ambient?: boolean;
+};
+
+/** A figure the surgeon stands behind: value, what it counts, one qualifier. */
+export type LandingStat = { value: string; label: string; detail?: string };
+
+/**
+ * Section order is data, one list per landing. Both pages started from the
+ * SEO team's procedure-first order; Awake Lipo 360 was restructured after
+ * the client review of 21 Sep 2026: the surgeon and his cases first, the
+ * form mid-page, the procedure detail for whoever wants to read on.
+ */
+export type LandingSectionKey =
+  | "quicknav"
+  | "pillars"
+  | "surgeon-spotlight"
+  | "results"
+  | "scars"
+  | "consultation"
+  | "details-intro"
+  | "what-is-it"
+  | "goals"
+  | "how-it-works"
+  | "insurance"
+  | "approach"
+  | "candidacy"
+  | "recovery"
+  | "safety"
+  | "secondary"
+  | "travel"
+  | "surgeon"
+  | "faq"
+  | "closing";
+
 export type LandingContent = {
   path: string;
+  sections: LandingSectionKey[];
   hero: {
     eyebrow: string;
     lead: string;
@@ -41,7 +112,8 @@ export type LandingContent = {
     media: LandingHeroMedia;
   };
   quickNav: LandingLink[];
-  pillars: LandingCard[];
+  /** Dark band of four short promises under the nav (procedure-first order only). */
+  pillars?: LandingCard[];
   whatIsIt: {
     eyebrow: string;
     heading: string;
@@ -63,9 +135,20 @@ export type LandingContent = {
     heading: string;
     intro: string;
     /** Empty on pages where inline before/after media is not appropriate for a paid landing. */
-    cases: { image: string; alt: string }[];
+    cases: LandingCase[];
+    videos?: LandingVideo[];
     gallery: LandingLink;
     disclaimer: string;
+  };
+  /** Scars and incisions: the fear patients name most often with liposuction. */
+  scars?: {
+    eyebrow: string;
+    heading: string;
+    intro: string;
+    facts: LandingCard[];
+    cases: LandingCase[];
+    videos?: LandingVideo[];
+    note?: string;
   };
   howItWorks: {
     id: string;
@@ -107,7 +190,8 @@ export type LandingContent = {
   safety?: {
     eyebrow: string;
     heading: string;
-    body: string[];
+    intro?: string;
+    cards: LandingCard[];
   };
   /** Secondary topic: fat transfer (lipo) or the awake option (breast). */
   secondary?: {
@@ -128,12 +212,22 @@ export type LandingContent = {
     heading: string;
     lead: string;
     body: string[];
-    pointsHeading: string;
+    /** Spotlight variant: the surgeon's own figures, shown before the copy. */
+    stats?: LandingStat[];
+    /** Spotlight variant: portrait for this page; SURGEON_PORTRAIT otherwise. */
+    photo?: { src: string; alt: string };
+    pointsHeading?: string;
     points: LandingCard[];
     closing?: string;
   };
+  /** Marks where the conversion path ends and the reference material begins. */
+  detailsIntro?: { eyebrow: string; heading: string; body?: string };
   faq: LandingFaq[];
+  faqTone?: "white" | "cream";
+  /** Left column of the consultation form. */
   finalCta: { eyebrow: string; heading: string; body: string };
+  /** Dark band before the footer when the form sits mid-page. */
+  closing?: { heading: string; body: string };
   schema: { name: string; bodyLocation: string; description: string };
 };
 
@@ -142,14 +236,39 @@ const ABOUT = "/about-dr-sergei-kalsow";
 
 /* ------------------------------------------------------------
    AWAKE LIPO 360 — the pillar page and main Google Ads landing.
+   Restructured 22 Sep 2026 after the client's review (meeting notes of
+   21 Sep): the doctor wants patients to meet him first and associate him
+   with the cases, so the page runs surgeon → numbered cases → scars →
+   form, with the SEO team's procedure copy underneath. His figures
+   (5,000 awake liposuction procedures, 8,000 awake procedures, 10,000+
+   surgeries) come from that meeting, relayed by Andrés.
    ------------------------------------------------------------ */
 export const AWAKE_LIPO_360: LandingContent = {
   path: "/awake-lipo-360-nyc",
+  sections: [
+    "quicknav",
+    "surgeon-spotlight",
+    "results",
+    "scars",
+    "consultation",
+    "details-intro",
+    "what-is-it",
+    "goals",
+    "how-it-works",
+    "approach",
+    "candidacy",
+    "recovery",
+    "safety",
+    "secondary",
+    "travel",
+    "faq",
+    "closing",
+  ],
   hero: {
     eyebrow: "Awake body contouring · New York City",
     lead:
       "A 360° approach to contouring the abdomen, waist, flanks and back, using an awake, local-anesthesia approach when appropriate, with a treatment plan designed around your anatomy.",
-    trust: ["Dr. Sergei Kalsow, MD", "Madison Avenue, NYC", "5,000+ surgeries performed"],
+    trust: ["Dr. Sergei Kalsow, MD", "5,000+ awake liposuction procedures", "Madison Avenue, NYC"],
     primary: { label: "Request a Consultation", href: "#consultation" },
     secondary: { label: "See Patient Results", href: "#results" },
     media: {
@@ -163,22 +282,163 @@ export const AWAKE_LIPO_360: LandingContent = {
     },
   },
   quickNav: [
-    { label: "What it is", href: "#what-is-it" },
-    { label: "What it can achieve", href: "#goals" },
+    { label: "Dr. Kalsow", href: "#meet-kalsow" },
     { label: "Results", href: "#results" },
+    { label: "Scars", href: "#scars" },
+    { label: "Consultation", href: "#consultation" },
+    { label: "What it is", href: "#what-is-it" },
     { label: "How awake lipo works", href: "#awake" },
-    { label: "Why Dr. Kalsow", href: "#meet-kalsow" },
     { label: "Candidacy", href: "#candidate" },
     { label: "Recovery", href: "#recovery" },
     { label: "Traveling to NYC", href: "#travel" },
     { label: "FAQ", href: "#faq" },
   ],
-  pillars: [
-    { title: "Individualized planning", body: "Your anatomy, goals and medical history guide the treatment plan." },
-    { title: "Same surgeon throughout", body: "Consultation, procedure planning and follow-up with Dr. Kalsow." },
-    { title: "Private NYC practice", body: "635 Madison Avenue, 17th Floor, New York, NY." },
-    { title: "Destination-patient coordination", body: "Planning support for patients traveling to New York." },
-  ],
+  surgeon: {
+    eyebrow: "The surgeon behind the procedure",
+    heading: "Meet Dr. Sergei Kalsow, MD",
+    lead:
+      "A New York plastic surgeon who has made awake liposuction, Lipo 360 and body contouring the center of his practice.",
+    // The first figure leads the bento; the facts below it stay readable text.
+    stats: [
+      {
+        value: "5,000+",
+        label: "Awake liposuction procedures",
+        detail: "Awake Lipo 360 and related liposuction under local anesthesia, planned around each patient's anatomy.",
+      },
+      {
+        value: "8,000+",
+        label: "Awake procedures in total",
+        detail: "Every procedure performed with the awake, local-anesthesia approach.",
+      },
+      {
+        value: "10,000+",
+        label: "Surgeries performed",
+        detail: "Across all the procedures in his practice.",
+      },
+    ],
+    body: [],
+    photo: {
+      src: "/img/team/dr-kalsow-whitecoat.jpg",
+      alt: "Dr. Sergei Kalsow, MD, in a white coat at his New York City practice",
+    },
+    points: [
+      {
+        title: "Founder of Dreams Plastic Surgery",
+        body: "The New York City practice he founded, where he is one of the surgeons.",
+      },
+      {
+        title: "635 Madison Avenue",
+        body: "A private practice in New York City that also sees patients traveling in from across the U.S. and abroad.",
+      },
+      {
+        title: "One surgeon, start to finish",
+        body: "Consultation, standing markings, the procedure and every follow-up visit with Dr. Kalsow.",
+      },
+      {
+        title: "Revision experience",
+        body: "Patients also come to him after liposuction elsewhere. Revision work follows its own strategy.",
+      },
+    ],
+    closing: "Liposuction is not a side service here. It is one of the procedures the practice is built around.",
+  },
+  results: {
+    eyebrow: "Real patients",
+    heading: "Awake Lipo 360 Results",
+    intro:
+      "Each case shows the same patient before and after Awake Lipo 360, photographed from the same angle. More views of these and other patients are in the full gallery.",
+    // From the doctor's Sep 2026 photo drop, underwear level only so the paid
+    // landing stays PG: back views in full, front views cropped to the treated
+    // torso (no chest, no buttocks). The full set is in the gallery.
+    cases: [
+      {
+        image: "/img/ba/awake-lipo-360-1.jpg",
+        alt: "Awake Lipo 360 before and after, back view. Before: fullness across the lower back and flanks. After: a smoother back and a more defined waist.",
+        view: "Back view",
+        source: "back_before5 / back_after5",
+      },
+      {
+        image: "/img/ba/awake-lipo-360-2.jpg",
+        alt: "Awake Lipo 360 before and after, back view. Before: rolls across the mid and lower back. After: a flatter back and a narrower waistline.",
+        view: "Back view",
+        source: "set6_back_before / set6_back_after",
+      },
+      {
+        image: "/img/ba/awake-lipo-360-3.jpg",
+        alt: "Awake Lipo 360 before and after, upper back. Before: rolls below the shoulder blades and at the bra line. After: a smooth upper back.",
+        view: "Upper back",
+        source: "set1_before / set1_after",
+      },
+      {
+        image: "/img/ba/awake-lipo-360-4.jpg",
+        alt: "Awake Lipo 360 before and after, front view of the abdomen and waist. Before: a rounded lower abdomen with surgical markings. After: a flatter abdomen and a defined waist.",
+        view: "Front view, abdomen and waist",
+        layout: "stacked",
+        source: "front_before5 / front_after5, torso band",
+      },
+      {
+        image: "/img/ba/awake-lipo-360-5.jpg",
+        alt: "Awake Lipo 360 before and after, front view of the abdomen and waist. Before: fullness around the navel and flanks. After: a flatter abdomen with a narrower waistline.",
+        view: "Front view, abdomen and waist",
+        layout: "stacked",
+        source: "set6_front_before / set6_front_after, torso band",
+      },
+      {
+        image: "/img/ba/awake-lipo-360-6.jpg",
+        alt: "Awake Lipo 360 before and after, front view of the abdomen and waist. Before: a full midsection with the treatment plan drawn on. After: a flatter abdomen and a more even contour.",
+        view: "Front view, abdomen and waist",
+        layout: "stacked",
+        source: "front_before4 / front_after4, torso band",
+      },
+    ],
+    gallery: { label: "View the Full Gallery", href: "/beforeafter" },
+    disclaimer: "Before-and-after photographs show individual outcomes and do not guarantee a particular result.",
+  },
+  scars: {
+    eyebrow: "Scars and incisions",
+    heading: "What about scars?",
+    intro:
+      "Liposuction does not require long incisions. Fat is removed through small access points, and where they go is part of the plan.",
+    facts: [
+      {
+        title: "A few millimeters each",
+        body: "Awake Lipo 360 is performed through small access incisions, typically a few millimeters long, rather than a continuous cut.",
+      },
+      {
+        title: "Placed with clothing in mind",
+        body: "Where anatomy allows, access points are planned in natural creases or in areas usually covered by underwear.",
+      },
+      {
+        title: "They fade over time",
+        body: "Incision marks are most visible in the first months and keep softening as they mature. Healing and final appearance vary by patient and skin type.",
+      },
+    ],
+    // Scar photographs are on their way from the doctor (asked 21 Sep 2026).
+    cases: [],
+    // IMG_2164.MOV from the doctor's Drive: a 6-second macro of one healed
+    // access incision, cropped square and muted. Loops on its own.
+    videos: [
+      {
+        src: "/video/landing/awake-lipo-360-incision.mp4",
+        poster: "/video/landing/awake-lipo-360-incision-poster.jpg",
+        title: "A healed access incision",
+        caption: "A few millimeters wide, on a patient's flank, filmed at the practice.",
+        ambient: true,
+      },
+    ],
+    note: "More photographs of healed incisions can be reviewed during your consultation.",
+  },
+  finalCta: {
+    eyebrow: "Request a consultation",
+    heading: "Tell Dr. Kalsow about your goals.",
+    body:
+      "Consultations are held in person at 635 Madison Avenue or by FaceTime. Share a few details and the office will be in touch to schedule.",
+  },
+  detailsIntro: {
+    eyebrow: "In detail",
+    heading: "The procedure, in detail.",
+    body:
+      "How Awake Lipo 360 works, who it is for, what recovery looks like and what to expect if you are traveling to New York.",
+  },
   whatIsIt: {
     eyebrow: "Start with the procedure",
     heading: "What Is Awake Lipo 360?",
@@ -221,20 +481,6 @@ export const AWAKE_LIPO_360: LandingContent = {
     figureNote:
       "Additional contouring areas can be discussed during consultation when they are relevant to the patient's anatomy and goals.",
   },
-  results: {
-    eyebrow: "Real patients",
-    heading: "Awake Lipo 360 Results",
-    intro:
-      "Results are best understood from multiple views and across different body types. A consultation can help you understand how your anatomy, skin quality and fat distribution may affect the contour that is realistically achievable.",
-    // From the doctor's Sep 2026 photo drop: underwear-level views only, so the
-    // paid landing stays PG (the full set is in the gallery).
-    cases: [
-      { image: "/img/ba/awake-lipo-360-1.jpg", alt: "Awake Lipo 360 before and after, back view, patient 01" },
-      { image: "/img/ba/awake-lipo-360-2.jpg", alt: "Awake Lipo 360 before and after, back view, patient 02" },
-    ],
-    gallery: { label: "View the Full Gallery", href: "/beforeafter" },
-    disclaimer: "Before-and-after photographs show individual outcomes and do not guarantee a particular result.",
-  },
   howItWorks: {
     id: "awake",
     eyebrow: "The how",
@@ -270,14 +516,13 @@ export const AWAKE_LIPO_360: LandingContent = {
     eyebrow: "A liposuction-first practice",
     heading: "The Kalsow Approach to Awake Lipo 360",
     body: [
-      "Liposuction and body contouring are a central focus of Dr. Kalsow's practice, with 360° planning that treats the torso as one connected shape rather than a collection of isolated areas.",
-      "Patients are evaluated individually for anatomy, skin quality, fat distribution, goals and the anesthesia approach that may be appropriate for them. Dr. Kalsow remains directly involved in planning, surgery and postoperative care.",
+      "Liposuction and body contouring are the center of Dr. Kalsow's practice, with 360° planning that treats the torso as one connected shape rather than a collection of isolated areas.",
+      "Each patient is evaluated individually for anatomy, skin quality, fat distribution, goals and the anesthesia approach that may be appropriate. Dr. Kalsow stays directly involved in planning, surgery and postoperative care.",
     ],
     metrics: [
-      { value: "5,000+", label: "Surgeries performed" },
-      { value: "360°", label: "Planning around the torso as one three-dimensional contour" },
-      { value: "NYC", label: "Private practice at 635 Madison Avenue" },
-      { value: "Founder", label: "Founder of Dreams Plastic Surgery" },
+      { value: "360°", label: "The abdomen, waist, flanks and back planned as one continuous contour" },
+      { value: "Awake", label: "Local, tumescent anesthesia with an individualized comfort plan when appropriate" },
+      { value: "1 surgeon", label: "Planning, markings, procedure and follow-up with Dr. Kalsow himself" },
     ],
     links: [
       { label: "Meet Dr. Kalsow", href: "#meet-kalsow" },
@@ -315,10 +560,20 @@ export const AWAKE_LIPO_360: LandingContent = {
   safety: {
     eyebrow: "Trust through clarity",
     heading: "Safety, Limits and Informed Decision-Making",
-    body: [
-      "Every surgical procedure has risks. The safest plan depends on the patient, treatment areas, total procedure, medical history, facility and anesthesia approach.",
-      "No specific amount of fat removal, pain-free experience, guaranteed skin tightening or predetermined shape can be promised.",
-      "During consultation, Dr. Kalsow reviews the expected benefits, limitations, alternatives, recovery plan and procedure-specific risks so the decision is individualized.",
+    intro: "Every surgical procedure has risks, and the safest plan is the one built for the individual patient.",
+    cards: [
+      {
+        title: "Risks are reviewed openly",
+        body: "The right plan depends on the patient, the treatment areas, the total procedure, medical history, the facility and the anesthesia approach.",
+      },
+      {
+        title: "No promises on volume, comfort or shape",
+        body: "No specific amount of fat removal, pain-free experience, guaranteed skin tightening or predetermined shape can be promised.",
+      },
+      {
+        title: "Decided in consultation",
+        body: "Dr. Kalsow reviews the expected benefits, limitations, alternatives, recovery plan and procedure-specific risks so the decision is individualized.",
+      },
     ],
   },
   secondary: {
@@ -348,24 +603,6 @@ export const AWAKE_LIPO_360: LandingContent = {
       "Transportation planning for the day of the procedure.",
       "Postoperative visits before returning home.",
     ],
-  },
-  surgeon: {
-    eyebrow: "The surgeon behind the procedure",
-    heading: "Meet Dr. Sergei Kalsow, MD",
-    lead:
-      "A New York plastic surgeon who has made awake liposuction, Lipo 360 and advanced body contouring a central focus of his practice.",
-    body: [
-      "Dr. Kalsow has performed more than 5,000 surgeries and built his practice around the kind of repetition that matters in a highly anatomy-dependent procedure: evaluating different body types, planning circumferential contours and adapting the approach to each patient rather than applying one template to everyone.",
-      "He is the founder of Dreams Plastic Surgery and sees patients from his Madison Avenue practice in New York City. His role does not end after the consultation: treatment planning, the procedure itself and postoperative follow-up remain surgeon-led.",
-    ],
-    pointsHeading: "Why his liposuction practice stands out in New York",
-    points: [
-      { title: "Liposuction-focused", body: "Awake Lipo 360 and body contouring are core areas of the practice." },
-      { title: "5,000+ surgeries", body: "Experience built through a high volume of surgical cases." },
-      { title: "Founder of Dreams", body: "The surgeon behind Dreams Plastic Surgery and its body-contouring practice." },
-      { title: "Direct accountability", body: "Surgeon-led planning, procedure and postoperative follow-up." },
-    ],
-    closing: "Liposuction is not a side service here. It is one of the procedures the practice is built around.",
   },
   faq: [
     {
@@ -401,11 +638,11 @@ export const AWAKE_LIPO_360: LandingContent = {
       a: "In selected patients, harvested fat may be used for contour enhancement. Whether fat transfer is appropriate depends on anatomy, goals, available donor fat and safety considerations.",
     },
   ],
-  finalCta: {
-    eyebrow: "Next step",
-    heading: "Find Out Whether Awake Lipo 360 Fits Your Goals",
+  faqTone: "cream",
+  closing: {
+    heading: "Start with a conversation.",
     body:
-      "Request a consultation with Dr. Sergei Kalsow in New York City. The first step is understanding your anatomy, goals, medical history and the treatment plan that may be appropriate for you.",
+      "Request a consultation with Dr. Sergei Kalsow in New York City, in person or by FaceTime. Your anatomy, goals and medical history come first; the plan follows.",
   },
   schema: {
     name: "Awake Lipo 360",
@@ -422,6 +659,24 @@ export const AWAKE_LIPO_360: LandingContent = {
    ------------------------------------------------------------ */
 export const BREAST_REDUCTION: LandingContent = {
   path: "/breast-reduction-nyc",
+  // The SEO team's original order, unchanged until the client reviews this page.
+  sections: [
+    "quicknav",
+    "pillars",
+    "what-is-it",
+    "goals",
+    "results",
+    "how-it-works",
+    "insurance",
+    "approach",
+    "candidacy",
+    "recovery",
+    "secondary",
+    "travel",
+    "surgeon",
+    "faq",
+    "consultation",
+  ],
   hero: {
     eyebrow: "Reduction Mammoplasty · New York City",
     lead:
@@ -573,7 +828,6 @@ export const BREAST_REDUCTION: LandingContent = {
     metrics: [
       { value: "5,000+", label: "Surgeries performed" },
       { value: "Shape", label: "Reduction and reshaping are planned together" },
-      { value: "NYC", label: "Private practice at 635 Madison Avenue" },
       { value: "1 plan", label: "Functional concerns and aesthetic goals are evaluated together" },
     ],
     links: [{ label: "Meet Dr. Kalsow", href: "#meet-kalsow" }],

@@ -5,7 +5,10 @@ import { Reveal } from "@/components/motion/reveal";
 /**
  * "How to begin your journey": the three routes the live page offers, with
  * the same prices and the same split (two go through the form below, the
- * photo review goes to the practice's existing Google Form).
+ * photo review goes to the practice's existing Google Form). Laid out as
+ * the site's figures bento: the fee is the number patients decide on, so
+ * it leads each tile, and the in-person consult (the one the doctor
+ * recommends for New York) takes the dark lead tile across the top.
  */
 const OPTIONS = [
   {
@@ -45,31 +48,29 @@ export function ConsultationOptions() {
           </p>
         </div>
 
-        <Reveal className="consult-options">
-          {OPTIONS.map((option, index) => (
-            <article className="consult-option" key={option.key}>
-              <p className="consult-option-index">
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                {option.fee}
-              </p>
-              <h3>{option.title}</h3>
-              <p className="consult-option-body">{option.body}</p>
-              {option.action.external ? (
-                <a
-                  className="link-arrow"
-                  href={option.action.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {option.action.label} <span aria-hidden>↗</span>
-                </a>
-              ) : (
-                <a className="link-arrow" href={option.action.href}>
-                  {option.action.label} <span aria-hidden>↓</span>
-                </a>
-              )}
-            </article>
-          ))}
+        <Reveal as="ul" className="stat-bento consult-bento">
+          {OPTIONS.map((option, index) => {
+            const lead = index === 0;
+            const linkClass = lead ? "ld-link-on-dark" : "link-arrow";
+            return (
+              <li className={lead ? "stat-tile stat-tile--lead" : "stat-tile"} key={option.key}>
+                <strong className="stat-tile-value">{option.fee}</strong>
+                <div className="stat-tile-copy">
+                  <h3>{option.title}</h3>
+                  <span className="stat-tile-detail">{option.body}</span>
+                  {option.action.external ? (
+                    <a className={linkClass} href={option.action.href} target="_blank" rel="noopener noreferrer">
+                      {option.action.label} <span aria-hidden>↗</span>
+                    </a>
+                  ) : (
+                    <a className={linkClass} href={option.action.href}>
+                      {option.action.label} <span aria-hidden>↓</span>
+                    </a>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </Reveal>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { StatBento } from "@/components/ui/stat-bento";
 
 /* ============================================================
    "Why patients choose Dr. Kalsow for Awake Lipo 360" (home).
@@ -13,7 +14,17 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 
    Text-first layout: five fully visible reasons with a short heading and
    a comfortable reading measure. No media or disclosure interaction.
+   Between the intro and the reasons, three figures as a bento (Nico,
+   22 Sep 2026: colour and point data to break the text). All three are
+   already published: the approved surgery count, the anesthesia approach
+   and the virtual consult for destination patients.
    ============================================================ */
+const FIGURES = [
+  { value: "5,000+", label: "Surgeries performed", detail: "Broad operative experience across cosmetic procedures." },
+  { value: "Awake", label: "Local, tumescent anesthesia", detail: "With an individualized comfort plan when appropriate." },
+  { value: "Virtual", label: "Consultation before travel", detail: "For patients coming to New York from across the U.S. and abroad." },
+] as const;
+
 const REASONS = [
   {
     reason: "Experience",
@@ -44,7 +55,7 @@ const REASONS = [
 
 export function WhyChoose() {
   return (
-    <section className="why-section" id="why-dr-kalsow" aria-labelledby="why-heading">
+    <section className="why-section bg-white" id="why-dr-kalsow" aria-labelledby="why-heading">
       <div className="container-tight">
         <header className="why-heading">
           <Eyebrow>Why Dr. Kalsow</Eyebrow>
@@ -56,6 +67,8 @@ export function WhyChoose() {
             waist, flanks and back planned as a single shape.
           </p>
         </header>
+
+        <StatBento stats={FIGURES} className="why-figures" />
 
         <div className="why-reasons">
           {REASONS.map((r) => (

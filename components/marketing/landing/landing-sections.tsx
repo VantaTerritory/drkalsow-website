@@ -6,12 +6,16 @@ import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { CallLink } from "@/components/ui/call-link";
 import { SwipeCarousel } from "@/components/ui/swipe-carousel";
+import { StatBento } from "@/components/ui/stat-bento";
+import { LandingVideoTile } from "@/components/marketing/landing/video-tile";
 import {
   ABOUT_PATH,
   SURGEON_PORTRAIT,
+  type LandingCase,
   type LandingContent,
   type LandingFigure,
   type LandingLink,
+  type LandingVideo,
 } from "@/lib/landings/content";
 
 /* ============================================================
@@ -19,9 +23,12 @@ import {
    comes from lib/landings/content.ts; this file is layout only, on the
    Aubergine system: reuses proc-hero, value-card, section-header,
    faq and form classes, plus the ld-* additions in globals.css.
+   Which sections render, and in what order, is each page's `sections`.
    ============================================================ */
 
 type Props = { content: LandingContent };
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 /** Anchor for hashes and external URLs, Link for internal routes. */
 function Cta({ link, className }: { link: LandingLink; className: string }) {
@@ -73,6 +80,56 @@ function Check() {
         <path d="M5 12.5 L10 17.5 L19 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
       </svg>
     </span>
+  );
+}
+
+/** Numbered patient card: the composite, its case number and Before / After tags. */
+function CaseCard({ item, index }: { item: LandingCase; index: number }) {
+  const paired = item.paired ?? true;
+  const stacked = item.layout === "stacked";
+  return (
+    <figure className={stacked ? "ld-case ld-case--stacked" : "ld-case"}>
+      <div className="ld-case-media">
+        <Image src={item.image} alt={item.alt} fill sizes="(max-width: 768px) 86vw, 30vw" />
+        <span className="ld-tag ld-case-num">Case {pad(index + 1)}</span>
+        {paired && (
+          <span className="ld-case-tags" aria-hidden>
+            <span className="ld-tag">Before</span>
+            <span className="ld-tag">After</span>
+          </span>
+        )}
+      </div>
+      <figcaption>{item.view}</figcaption>
+    </figure>
+  );
+}
+
+/** Photo cards first, then the clips, one swipe track on phones. */
+function CaseGrid({
+  cases,
+  videos,
+  label,
+  className = "ld-cases",
+}: {
+  cases: LandingCase[];
+  videos: LandingVideo[];
+  label: string;
+  className?: string;
+}) {
+  const total = cases.length + videos.length;
+  return (
+    <SwipeCarousel className={className} data-count={total} count={total} label={label} itemNoun="case">
+      {cases.map((c, i) => (
+        <CaseCard item={c} index={i} key={c.image} />
+      ))}
+      {videos.map((v) => (
+        <LandingVideoTile
+          key={v.src}
+          video={v}
+          label={v.caseNumber ? `Case ${pad(v.caseNumber)} · Video` : "Video"}
+        />
+      ))}
+    </SwipeCarousel>
   );
 }
 
@@ -131,36 +188,96 @@ export function LandingHero({ page, content }: Props & { page: SitePage }) {
   );
 }
 
-/* ---------------- in-page nav + trust pillars ---------------- */
-export function LandingIntroBar({ content }: Props) {
+/* ---------------- in-page nav ---------------- */
+export function LandingQuickNav({ content }: Props) {
   return (
-    <>
-      <nav className="ld-quicknav" aria-label="On this page">
-        <div className="container">
-          <ul className="ld-quicknav-list">
-            {content.quickNav.map((l) => (
-              <li key={l.href}>
-                <a className="ld-pill" href={l.href}>
-                  {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-      <section className="ld-pillars-section">
-        <div className="container">
-          <Reveal className="ld-pillars">
-            {content.pillars.map((p) => (
-              <div className="ld-pillar" key={p.title}>
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
-              </div>
-            ))}
+    <nav className="ld-quicknav" aria-label="On this page">
+      <div className="container">
+        <ul className="ld-quicknav-list">
+          {content.quickNav.map((l) => (
+            <li key={l.href}>
+              <a className="ld-pill" href={l.href}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
+/* ---------------- trust pillars (dark band) ---------------- */
+export function LandingPillars({ content }: Props) {
+  if (!content.pillars) return null;
+  return (
+    <section className="ld-pillars-section">
+      <div className="container">
+        <Reveal className="ld-pillars">
+          {content.pillars.map((p) => (
+            <div className="ld-pillar" key={p.title}>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </div>
+          ))}
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- the surgeon, first (authority-first order) ---------------- */
+export function LandingSurgeonSpotlight({ content }: Props) {
+  const s = content.surgeon;
+  const photo = s.photo ?? SURGEON_PORTRAIT;
+  const loc = siteConfig.locations[0];
+  return (
+    <section className="bg-white section-py-lg" id="meet-kalsow">
+      <div className="container">
+        <div className="ld-spotlight">
+          <Reveal className="ld-spotlight-media">
+            <div className="ld-portrait">
+              <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 90vw, 40vw" />
+            </div>
+            <div className="ld-media-caption">
+              <span>{siteConfig.surgeon}</span>
+              <span>{loc.address.split(",")[0]}, New York City</span>
+            </div>
           </Reveal>
+
+          <div className="ld-split-copy ld-spotlight-copy">
+            <Eyebrow>{s.eyebrow}</Eyebrow>
+            <h2 className="h-sec">{s.heading}</h2>
+            <Divider />
+            <p className="ld-lead">{s.lead}</p>
+
+            {s.body.map((p) => (
+              <p key={p.slice(0, 40)}>{p}</p>
+            ))}
+
+            {/* only the figures go in tiles (the first one leads); the facts stay readable text */}
+            {s.stats && <StatBento stats={s.stats} className="ld-spotlight-figures" />}
+
+            <ul className="ld-points">
+              {s.points.map((p) => (
+                <li key={p.title}>
+                  <strong>{p.title}</strong>
+                  <span>{p.body}</span>
+                </li>
+              ))}
+            </ul>
+            {s.closing && <p className="ld-closing">{s.closing}</p>}
+
+            <div className="hero-cta-group">
+              <Cta link={{ label: "Request a Consultation", href: "#consultation" }} className="btn-primary" />
+              <Link href={ABOUT_PATH} className="btn-secondary">
+                More About Dr. Kalsow
+              </Link>
+            </div>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 
@@ -168,7 +285,7 @@ export function LandingIntroBar({ content }: Props) {
 export function LandingWhatIsIt({ content }: Props) {
   const s = content.whatIsIt;
   return (
-    <section className="bg-white section-py-lg" id="what-is-it">
+    <section className="bg-cream section-py-lg" id="what-is-it">
       <div className="container">
         <Reveal className="ld-split">
           <div className="ld-split-copy">
@@ -196,11 +313,26 @@ export function LandingWhatIsIt({ content }: Props) {
   );
 }
 
+/* ---------------- "the details start here" marker ---------------- */
+export function LandingDetailsIntro({ content }: Props) {
+  const s = content.detailsIntro;
+  if (!s) return null;
+  return (
+    <section className="bg-cream ld-details-intro" id="details">
+      <div className="container">
+        <Eyebrow>{s.eyebrow}</Eyebrow>
+        <h2 className="h-sec">{s.heading}</h2>
+        {s.body && <p>{s.body}</p>}
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- goals / benefits ---------------- */
 export function LandingGoals({ content }: Props) {
   const s = content.goals;
   return (
-    <section className="bg-cream section-py-lg" id="goals">
+    <section className="bg-white section-py-lg" id="goals">
       <div className="container ld-goals-layout">
         <div className="section-header ld-goals-intro">
           <Eyebrow>{s.eyebrow}</Eyebrow>
@@ -212,7 +344,7 @@ export function LandingGoals({ content }: Props) {
           {s.cards.map((c, i) => (
             <article className="ld-benefit" key={c.title}>
               <span className="ld-benefit-index" aria-hidden>
-                {String(i + 1).padStart(2, "0")}
+                {pad(i + 1)}
               </span>
               <div>
                 <h3>{c.title}</h3>
@@ -250,50 +382,98 @@ export function LandingGoals({ content }: Props) {
 /* ---------------- results ---------------- */
 export function LandingResults({ content }: Props) {
   const s = content.results;
+  const videos = s.videos ?? [];
+
+  // No inline media (Breast Reduction): the section is the invitation to the gallery.
+  if (s.cases.length === 0 && videos.length === 0) {
+    return (
+      <section className="bg-white section-py-lg" id="results">
+        <div className="container">
+          <div className="ld-results-panel">
+            <div className="section-header" style={{ marginBottom: "var(--space-5)" }}>
+              <Eyebrow>{s.eyebrow}</Eyebrow>
+              <h2 className="h-sec">{s.heading}</h2>
+              <p className="locations-subtitle">{s.intro}</p>
+            </div>
+            <div className="ld-results-actions">
+              <div className="ld-results-footer">
+                <Cta link={s.gallery} className="btn-secondary" />
+                <Cta link={{ label: "Discuss My Goals", href: "#consultation" }} className="btn-primary" />
+              </div>
+              <p className="ld-disclaimer">{s.disclaimer}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Numbered cases: the proof the client wants read right after meeting him.
   return (
     <section className="bg-white section-py-lg" id="results">
       <div className="container">
-        <div className="ld-results-panel">
-          <div className="section-header" style={{ marginBottom: "var(--space-5)" }}>
+        <div className="ld-cases-head">
+          <div className="section-header">
             <Eyebrow>{s.eyebrow}</Eyebrow>
             <h2 className="h-sec">{s.heading}</h2>
             <p className="locations-subtitle">{s.intro}</p>
           </div>
-
-          <div className="ld-results-actions">
-            <div className="ld-results-footer">
-              <Cta link={s.gallery} className="btn-secondary" />
-              <Cta link={{ label: "Discuss My Goals", href: "#consultation" }} className="btn-primary" />
-            </div>
-            <p className="ld-disclaimer">{s.disclaimer}</p>
+          <div className="ld-cases-actions">
+            <Cta link={s.gallery} className="btn-secondary" />
+            <Cta link={{ label: "Discuss My Goals", href: "#consultation" }} className="btn-primary" />
           </div>
         </div>
 
-        {/* PG preview of real cases; the page without them is a claim, not proof */}
-        {s.cases.length > 0 && (
-          <Reveal className="ld-results-cases">
-            <SwipeCarousel
-              className="proc-cases"
-              data-count={s.cases.length}
-              count={s.cases.length}
-              label="Before and after cases"
-              itemNoun="case"
-            >
-              {s.cases.map((c, i) => (
-                <figure className="proc-case" key={c.image}>
-                  <Image
-                    src={c.image}
-                    alt={c.alt}
-                    fill
-                    sizes="(max-width: 768px) 90vw, 30vw"
-                    loading={i === 0 ? "eager" : "lazy"}
-                  />
-                  <figcaption>Case {String(i + 1).padStart(2, "0")}</figcaption>
-                </figure>
-              ))}
-            </SwipeCarousel>
+        <Reveal>
+          <CaseGrid cases={s.cases} videos={videos} label={`${content.schema.name} before and after cases`} />
+        </Reveal>
+
+        <p className="ld-disclaimer">{s.disclaimer}</p>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- scars and incisions ---------------- */
+export function LandingScars({ content }: Props) {
+  const s = content.scars;
+  if (!s) return null;
+  const videos = s.videos ?? [];
+  const hasMedia = s.cases.length + videos.length > 0;
+
+  return (
+    <section className="bg-white section-py-lg" id="scars">
+      <div className="container">
+        <div className={hasMedia ? "ld-scars" : "ld-scars ld-scars--solo"}>
+          <div className="ld-split-copy ld-scars-copy">
+            <Eyebrow>{s.eyebrow}</Eyebrow>
+            <h2 className="h-sec">{s.heading}</h2>
+            <Divider />
+            <p className="ld-lead">{s.intro}</p>
+            {!hasMedia && s.note && <p className="ld-muted">{s.note}</p>}
+          </div>
+
+          <Reveal as="ul" className="ld-points ld-points--stack ld-scars-facts">
+            {s.facts.map((f) => (
+              <li key={f.title}>
+                <strong>{f.title}</strong>
+                <span>{f.body}</span>
+              </li>
+            ))}
           </Reveal>
-        )}
+
+          {hasMedia && (
+            <Reveal className="ld-scars-media" delay={100}>
+              <CaseGrid
+                cases={s.cases}
+                videos={videos}
+                label="Healed incisions after liposuction"
+                className="ld-cases ld-cases--compact"
+              />
+              {s.note && <p className="ld-disclaimer">{s.note}</p>}
+            </Reveal>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -315,7 +495,7 @@ export function LandingSteps({ content }: Props) {
           {s.steps.map((st, i) => (
             <li className="ld-step" key={st.title}>
               <span className="ld-step-num" aria-hidden>
-                {String(i + 1).padStart(2, "0")}
+                {pad(i + 1)}
               </span>
               <h3>{st.title}</h3>
               <p>{st.body}</p>
@@ -348,7 +528,7 @@ export function LandingInsurance({ content }: Props) {
           <Reveal as="ol" className="ld-timeline" delay={100}>
             {s.steps.map((st, i) => (
               <li key={st.title}>
-                <span className="ld-timeline-step">Step {String(i + 1).padStart(2, "0")}</span>
+                <span className="ld-timeline-step">Step {pad(i + 1)}</span>
                 <h3>{st.title}</h3>
                 <p>{st.body}</p>
               </li>
@@ -379,13 +559,8 @@ export function LandingApproach({ content }: Props) {
               ))}
             </div>
           </Reveal>
-          <Reveal className="ld-metrics" delay={120}>
-            {s.metrics.map((m) => (
-              <div className="ld-metric" key={m.value}>
-                <p className="ld-metric-value">{m.value}</p>
-                <p className="ld-metric-label">{m.label}</p>
-              </div>
-            ))}
+          <Reveal delay={120}>
+            <StatBento stats={s.metrics} lead="light" className="ld-approach-figures" />
           </Reveal>
         </div>
       </div>
@@ -433,7 +608,7 @@ export function LandingRecovery({ content }: Props) {
           <h2 className="h-sec">{s.heading}</h2>
           <p className="locations-subtitle">{s.intro}</p>
         </div>
-        <Reveal className="ld-grid-4">
+        <Reveal className="ld-grid-4 ld-ruled-grid">
           {s.cards.map((c) => (
             <article className="value-card" key={c.title}>
               <div className="value-card-body">
@@ -454,13 +629,20 @@ export function LandingSafety({ content }: Props) {
   if (!s) return null;
   return (
     <section className="bg-white section-py-lg" id="safety">
-      <div className="container-tight">
-        <Reveal className="ld-prose">
+      <div className="container">
+        <div className="section-header">
           <Eyebrow>{s.eyebrow}</Eyebrow>
           <h2 className="h-sec">{s.heading}</h2>
-          <Divider />
-          {s.body.map((p) => (
-            <p key={p.slice(0, 40)}>{p}</p>
+          {s.intro && <p className="locations-subtitle">{s.intro}</p>}
+        </div>
+        <Reveal className="ld-grid-3 ld-ruled-grid">
+          {s.cards.map((c) => (
+            <article className="value-card" key={c.title}>
+              <div className="value-card-body">
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+              </div>
+            </article>
           ))}
         </Reveal>
       </div>
@@ -546,7 +728,7 @@ export function LandingTravel({ content }: Props) {
   );
 }
 
-/* ---------------- meet the surgeon ---------------- */
+/* ---------------- meet the surgeon (procedure-first order, near the end) ---------------- */
 export function LandingSurgeon({ content }: Props) {
   const s = content.surgeon;
   return (
@@ -570,7 +752,7 @@ export function LandingSurgeon({ content }: Props) {
             {s.body.map((p) => (
               <p key={p.slice(0, 40)}>{p}</p>
             ))}
-            <h3 className="ld-sub">{s.pointsHeading}</h3>
+            {s.pointsHeading && <h3 className="ld-sub">{s.pointsHeading}</h3>}
             <ul className="ld-points">
               {s.points.map((p) => (
                 <li key={p.title}>
@@ -593,7 +775,7 @@ export function LandingSurgeon({ content }: Props) {
   );
 }
 
-/* ---------------- final CTA intro (left column of the form section) ---------------- */
+/* ---------------- consultation form intro (left column of the form section) ---------------- */
 export function LandingCtaIntro({ content }: Props) {
   const s = content.finalCta;
   const loc = siteConfig.locations[0];
@@ -610,6 +792,28 @@ export function LandingCtaIntro({ content }: Props) {
         {loc.address} · {loc.cityState}
       </p>
     </div>
+  );
+}
+
+/* ---------------- closing band (when the form sits mid-page) ---------------- */
+export function LandingClosingCta({ content }: Props) {
+  const s = content.closing;
+  if (!s) return null;
+  return (
+    <section className="final-cta section-py-lg ld-closing-band">
+      <div className="container-tight">
+        <h2 className="h-sec">{s.heading}</h2>
+        <p className="final-cta-sub">{s.body}</p>
+        <div className="final-cta-actions">
+          <a href="#consultation" className="btn-light">
+            Request a Consultation <span aria-hidden>→</span>
+          </a>
+          <CallLink className="btn-secondary" aria-label={`Call ${siteConfig.phone.display}`}>
+            {siteConfig.cta.call} · {siteConfig.phone.display}
+          </CallLink>
+        </div>
+      </div>
+    </section>
   );
 }
 

@@ -128,7 +128,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .bg-aubergine :focus-visible,
 .final-cta :focus-visible,
-.footer-main-bg :focus-visible,
+.footer-main-bg :focus-visible { outline-color: var(--color-primary-200); }
 
 h1, h2, h3, h4, h5 { margin: 0 0 var(--space-3); font-weight: var(--fw-medium); color: var(--text-primary); }
 
@@ -452,6 +452,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   margin: var(--space-4) 0 0;
 }
 .abt-stats { border-top: 0; }
+.abt-stats .stat-label { color: var(--text-secondary); } /* tertiary fell under AA on the lavender hero */
 .abt-lead {
   font-family: var(--font-sans);
   font-size: 16px;
@@ -469,16 +470,19 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   font-weight: 400;
   line-height: 1.45;
 }
+/* the doctor's words as a tinted tile (not a side stripe): About and the landings */
 .abt-quote {
   font-family: var(--font-display);
   font-style: italic;
   font-size: clamp(21px, 2.4vw, 27px);
   line-height: 1.4;
-  color: var(--text-accent);
-  margin: var(--space-4) 0;
-  padding-left: 22px;
-  border-left: 2px solid var(--color-primary-200);
+  color: var(--color-primary-800);
+  margin: var(--space-5) 0;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-primary-100);
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
 }
+@media (max-width: 600px) { .abt-quote { padding: var(--space-4); } }
 .awards-intro {
   max-width: 980px;
   margin: 0 auto var(--space-7);
@@ -663,7 +667,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   line-height: 1.4;
   text-transform: uppercase;
 }
-.meet-meta span { margin-bottom: 6px; color: var(--color-primary-400); }
+.meet-meta span { margin-bottom: 6px; color: var(--color-primary-200); }
 .meet-meta strong,
 .meet-meta small {
   display: block;
@@ -672,7 +676,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   line-height: 1.5;
 }
 .meet-meta strong { font-size: 12px; color: var(--color-primary-100); }
-.meet-meta small { margin-top: 4px; font-size: 10px; color: var(--color-primary-400); }
+.meet-meta small { margin-top: 4px; font-size: 11px; color: var(--color-primary-200); }
 .meet-action-card {
   padding: var(--space-4);
   border-radius: 26px;
@@ -2751,6 +2755,7 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
   max-width: 62ch;
 }
 .proc-intro-body > p:last-child { margin-bottom: 0; }
+.proc-intro-body > p + .proc-facts { margin-top: var(--space-5); }
 
 /* Procedure point of view: reserved for body-contouring pages with a
    distinct planning philosophy, placed between the clinical intro and cases. */
@@ -3035,8 +3040,13 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
     justify-content: center;
     min-height: 42px;
   }
-  /* row 1 kept a vertical rule, row 2 lost it -> asymmetric 2x2 */
-  .abt-stats .stat:nth-child(3) { border-right: 0.5px solid var(--border-soft); }
+  /* a real 2x2: no row gap so the vertical rule runs through, a hairline
+     under row 1, and no rule on the container's right edge */
+  .abt-stats { row-gap: 0; }
+  .abt-stats .stat { padding-block: var(--space-4); }
+  .abt-stats .stat:nth-child(odd) { border-right: 0.5px solid var(--border-soft); }
+  .abt-stats .stat:nth-child(even) { border-right: 0; }
+  .abt-stats .stat:nth-child(-n + 2) { border-bottom: 0.5px solid var(--border-soft); }
 
   /* ---------- MEET DR. KALSOW ---------- */
   /* Stacked, the 210px min-height plus space-between left a dead ~60px void
@@ -3204,51 +3214,21 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   font-weight: var(--fw-medium);
 }
 
-/* --- three consultation routes --- */
-.consult-options {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-.consult-option {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: var(--space-5);
-  background: var(--bg-page);
-  border: 0.5px solid var(--border-soft);
-  border-radius: var(--radius-lg);
-}
-.consult-option-index {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  color: var(--text-accent);
-  font-weight: var(--fw-medium);
-  font-family: var(--font-sans);
-}
-.consult-option-index span {
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  color: var(--text-tertiary);
-}
-.consult-option h3 {
-  margin: 0 0 10px;
-  font-family: var(--font-display);
-  font-size: 25px;
-  line-height: 1.2;
-  color: var(--text-primary);
-}
-.consult-option-body {
-  margin: 0 0 var(--space-4);
-  flex: 1;
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
+/* --- three consultation routes: the figures bento, fee first --- */
+.consult-bento { margin: 0; grid-template-columns: 1fr 1fr; }
+.consult-bento > .stat-tile { padding: var(--space-5); gap: var(--space-4); justify-content: space-between; }
+.consult-bento > .stat-tile--lead { grid-row: auto; grid-column: 1 / -1; min-height: 0; flex-direction: row; align-items: flex-end; gap: var(--space-6); }
+.consult-bento > .stat-tile--lead .stat-tile-copy { max-width: 56ch; }
+.consult-bento .stat-tile-copy { gap: var(--space-2); }
+.consult-bento h3 { font-family: var(--font-display); font-weight: var(--fw-regular); font-size: 25px; line-height: 1.2; margin: 0; color: var(--text-primary); }
+.consult-bento .stat-tile--lead h3 { color: var(--text-on-dark); font-size: 30px; }
+.consult-bento .stat-tile-detail { font-size: 14px; line-height: 1.7; }
+.consult-bento .stat-tile--lead .stat-tile-detail { color: var(--color-primary-100); }
+.consult-bento .stat-tile-copy a { margin-top: var(--space-3); align-self: flex-start; position: relative; }
+.consult-bento .stat-tile-copy a::after { content: ""; position: absolute; inset: -11px 0; } /* 23px link, 45px target */
+@media (max-width: 600px) {
+  .consult-bento { grid-template-columns: 1fr; }
+  .consult-bento > .stat-tile--lead { flex-direction: column; align-items: stretch; gap: var(--space-4); }
 }
 
 /* --- request form --- */
@@ -3307,7 +3287,6 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   .contact-hero-copy .h-display { max-width: 18ch; }
   .contact-form-layout { grid-template-columns: 1fr; gap: var(--space-5); }
   .contact-form-intro { position: static; }
-  .consult-options { grid-template-columns: 1fr; }
   .visit-grid { grid-template-columns: 1fr; }
   .visit-map { min-height: 300px; }
 }
@@ -3446,6 +3425,7 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 .why-heading { margin-bottom: var(--space-6); }
 .why-heading .h-sec { max-width: 27ch; margin: 0 0 var(--space-4); }
 .why-intro { font-size: 16px; line-height: 1.8; color: var(--text-secondary); max-width: 68ch; margin: 0; }
+.why-section .why-figures { margin: 0 0 var(--space-6); } /* scoped: the shared .stat-bento resets margin */
 .why-reasons { border-top: 1px solid var(--border-medium); }
 .why-reason { display: grid; grid-template-columns: 1fr 2.6fr; gap: var(--space-6); padding-block: var(--space-5); border-bottom: 1px solid var(--border-soft); }
 .why-reason h3 { font-family: var(--font-display); font-size: 28px; font-weight: var(--fw-medium); line-height: 1.2; color: var(--text-primary); margin: 0; }
@@ -3464,16 +3444,54 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 }
 
 /* ============================================================
+   STAT BENTO (shared): three figures, the first one leads
+   components/ui/stat-bento.tsx. Point data only (counts, fees, one-word
+   facts); the copy around it stays readable text. Dark lead tile on light
+   sections; `--light` inverts it on aubergine. No icons, no gradients.
+   Approved on the Awake Lipo 360 landing (client review, 22 Sep 2026).
+   ============================================================ */
+.stat-bento { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--space-3); }
+.stat-tile { min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-radius: var(--radius-lg); background: var(--color-primary-100); }
+.stat-tile--lead { grid-row: span 2; justify-content: space-between; gap: var(--space-6); min-height: 300px; padding: var(--space-5); background: var(--color-primary-800); border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); }
+.stat-tile-value { display: block; font-family: var(--font-display); font-weight: var(--fw-medium); font-size: clamp(40px, 3.6vw, 52px); line-height: 0.95; letter-spacing: -0.02em; color: var(--color-primary-800); font-variant-numeric: lining-nums; }
+.stat-tile--lead .stat-tile-value { font-size: clamp(60px, 5.6vw, 88px); color: var(--text-on-dark); }
+.stat-tile-copy { display: flex; flex-direction: column; gap: 4px; }
+.stat-tile-label { font-family: var(--font-sans); font-size: 15px; font-weight: var(--fw-medium); line-height: 1.4; color: var(--text-primary); }
+.stat-tile-detail { font-family: var(--font-sans); font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+.stat-tile--lead .stat-tile-label { font-size: 16px; color: var(--text-on-dark); }
+.stat-tile--lead .stat-tile-detail { color: var(--color-primary-200); }
+.stat-tile--lead :focus-visible { outline-color: var(--color-primary-200); }
+/* on aubergine: translucent tiles, the lead goes light */
+.stat-bento--light .stat-tile { background: rgba(255, 255, 255, 0.06); border: 0.5px solid rgba(255, 255, 255, 0.14); }
+.stat-bento--light .stat-tile-value { color: var(--text-on-dark); }
+.stat-bento--light .stat-tile-label { font-size: 13px; font-weight: var(--fw-regular); color: var(--color-primary-100); }
+/* the side tiles are narrow on aubergine sections: keep one-line values like "1 surgeon" on one line */
+.stat-bento--light .stat-tile:not(.stat-tile--lead) .stat-tile-value { font-size: clamp(32px, 3vw, 44px); }
+.stat-bento--light .stat-tile--lead { background: var(--color-primary-100); border: 0; }
+.stat-bento--light .stat-tile--lead .stat-tile-value { color: var(--color-primary-800); }
+.stat-bento--light .stat-tile--lead .stat-tile-label { font-size: 15px; font-weight: var(--fw-medium); color: var(--text-secondary); }
+@media (max-width: 600px) {
+  .stat-bento { grid-template-columns: 1fr; }
+  .stat-tile--lead { grid-row: auto; min-height: 0; gap: var(--space-4); }
+  .stat-tile--lead .stat-tile-value { font-size: 64px; }
+  .stat-tile-value { font-size: 44px; }
+}
+
+/* ============================================================
    LANDING PAGES (Awake Lipo 360, Breast Reduction): ld-* classes.
    Layout only; reuses proc-hero, value-card, section-header, faq, form.
    ============================================================ */
 .ld-hero .proc-hero-copy { max-width: 580px; }
 .ld-page { --ld-display-size: clamp(48px, 5.5vw, 80px); --ld-section-space: clamp(var(--space-7), 7vw, var(--space-8)); }
 .ld-page .section-py-lg { padding-block: var(--ld-section-space); }
-.ld-page section[id] { scroll-margin-top: var(--space-7); }
+/* html already carries scroll-padding-top for the header; this only clears the
+   sticky quick nav (~69px) with a little air, the two values add up */
+.ld-page section[id] { scroll-margin-top: calc(var(--space-7) + var(--space-2)); }
 .ld-page .ld-hero-section { background: var(--color-neutral-100); border-radius: 0; }
 .ld-hero { grid-template-columns: 1.1fr 1fr; gap: var(--space-7); padding-block: var(--space-7); }
-.ld-hero .h-display { font-size: var(--ld-display-size); line-height: 0.98; letter-spacing: -0.035em; margin-block: var(--space-4); max-width: 11ch; }
+/* wide enough for "Awake Lipo 360" / "Breast Reduction" on one line: only the
+   "in NYC" em drops to the second line */
+.ld-hero .h-display { font-size: var(--ld-display-size); line-height: 0.98; letter-spacing: -0.035em; margin-block: var(--space-4); max-width: 17ch; }
 .ld-hero .h-display em { display: block; color: var(--text-accent); font-weight: inherit; }
 .ld-hero .proc-hero-lead { max-width: 49ch; }
 .ld-hero .hero-cta-group { margin-top: var(--space-5); }
@@ -3605,10 +3623,6 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   padding-bottom: 2px;
 }
 .ld-link-on-dark:hover { color: var(--text-on-dark); }
-.ld-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
-.ld-metric { background: rgba(255, 255, 255, 0.06); border: 0.5px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius-lg); padding: var(--space-5); }
-.ld-metric-value { font-family: var(--font-display); font-size: 40px; line-height: 1; color: var(--text-on-dark); margin: 0 0 10px; }
-.ld-metric-label { font-family: var(--font-sans); font-size: 12px; line-height: 1.6; color: var(--color-primary-200); margin: 0; }
 
 /* checklists */
 .ld-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -3654,7 +3668,8 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 /* mobile sticky CTA (landing pages only) */
 .ld-sticky-cta { display: none; }
 @media (max-width: 768px) {
-  .ld-page { padding-bottom: 68px; }
+  /* room for the fixed bar goes after the footer, not between the page and it */
+  body:has(.ld-page) { padding-bottom: 68px; }
   .ld-sticky-cta {
     position: fixed;
     left: 0;
@@ -3692,7 +3707,8 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 @media (max-width: 900px) {
   .ld-split { grid-template-columns: 1fr; gap: var(--space-5); }
   .ld-grid-3 { grid-template-columns: 1fr; }
-  .ld-figure-card { max-width: 520px; margin: 0 auto; }
+  /* explicit width so the lazy image reserves its height before it loads */
+  .ld-figure-card { width: 100%; max-width: 520px; margin: 0 auto; }
   .ld-hero-portrait { max-width: 420px; }
   .ld-portrait { max-width: 480px; }
 }
@@ -3700,7 +3716,6 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   .ld-steps { grid-template-columns: 1fr; }
   .ld-pillars { grid-template-columns: 1fr; }
   .ld-grid-4 { grid-template-columns: 1fr; }
-  .ld-metrics { grid-template-columns: 1fr; }
   .ld-points { grid-template-columns: 1fr; }
   .ld-highlight-list { grid-template-columns: 1fr; }
   .ld-results-footer .btn-primary, .ld-results-footer .btn-secondary { width: 100%; text-align: center; }
@@ -3737,14 +3752,11 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 .ld-process-layout .ld-step-num { grid-row: span 2; margin: 0; font-size: 36px; }
 .ld-process-layout .ld-step h3 { font-size: 27px; }
 .ld-process-layout .ld-step p { font-size: 14px; }
-.ld-page #recovery .ld-grid-4 { gap: 0; border-top: 1px solid var(--border-medium); }
-.ld-page #recovery .value-card { background: none; border: 0; border-radius: 0; box-shadow: none; padding: var(--space-5); position: relative; }
-.ld-page #recovery .value-card::before { content: ""; position: absolute; top: calc(-1 * var(--space-1)); left: var(--space-5); width: var(--space-2); height: var(--space-2); background: var(--text-accent); border-radius: var(--radius-full); }
-.ld-page #recovery .value-card-body { padding: 0; }
-.ld-page #recovery .value-card h3 { font-size: 27px; }
-.ld-page #candidate .ld-checklist li { background: none; border: 0; border-bottom: 1px solid var(--border-medium); border-radius: 0; padding: var(--space-3) 0; }
-.ld-page .ld-metric { background: none; border: 0; border-top: 1px solid var(--color-primary-400); border-radius: 0; padding: var(--space-4) 0; }
-.ld-page .ld-metric-label { color: var(--color-primary-100); }
+.ld-page .ld-ruled-grid { gap: 0; border-top: 1px solid var(--border-medium); }
+.ld-page .ld-ruled-grid .value-card { background: none; border: 0; border-radius: 0; box-shadow: none; padding: var(--space-5); position: relative; }
+.ld-page .ld-ruled-grid .value-card::before { content: ""; position: absolute; top: calc(-1 * var(--space-1)); left: var(--space-5); width: var(--space-2); height: var(--space-2); background: var(--text-accent); border-radius: var(--radius-full); }
+.ld-page .ld-ruled-grid .value-card-body { padding: 0; }
+.ld-page .ld-ruled-grid .value-card h3 { font-size: 27px; line-height: 1.15; }
 .ld-visit { overflow: hidden; border-radius: var(--radius-xl); background: var(--color-primary-100); }
 .ld-office-image { position: relative; aspect-ratio: 16 / 9; }
 .ld-office-image img { object-fit: cover; }
@@ -3766,7 +3778,7 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 }
 @media (max-width: 600px) {
   .ld-hero { grid-template-columns: 1fr; padding-block: var(--space-5) var(--space-6); gap: var(--space-6); }
-  .ld-hero .h-display { font-size: var(--ld-display-size); max-width: 12ch; }
+  .ld-hero .h-display { font-size: var(--ld-display-size); max-width: 17ch; }
   .ld-hero .hero-cta-group { gap: var(--space-2); }
   .ld-hero .proc-hero-lead { font-size: 15px; }
   .ld-hero-media { width: 100%; max-width: 380px; margin-inline: auto; }
@@ -3778,11 +3790,142 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   .ld-pillar h3 { font-size: 21px; }
   .ld-pillar p { font-size: 12px; }
   .ld-process-layout .ld-step { gap: 0 var(--space-3); }
-  .ld-page #recovery .ld-grid-4 { border-top: 0; }
-  .ld-page #recovery .value-card { border-top: 1px solid var(--border-medium); padding: var(--space-4) 0; }
-  .ld-page #recovery .value-card::before { display: none; }
+  .ld-page .ld-ruled-grid { border-top: 0; }
+  .ld-page .ld-ruled-grid .value-card { border-top: 1px solid var(--border-medium); padding: var(--space-4) 0; }
+  .ld-page .ld-ruled-grid .value-card::before { display: none; }
   .ld-page #consultation { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
   .ld-sticky-cta { background: var(--color-neutral-50); backdrop-filter: none; }
   .ld-sticky-call, .ld-sticky-book { letter-spacing: 0.04em; }
 }
 .ld-results-cases { margin-top: var(--space-6); }
+
+/* ============================================================
+   LANDING — AUTHORITY-FIRST ORDER (Awake Lipo 360, 22 Sep 2026)
+   The client wants patients to meet the surgeon first and tie him to his
+   cases, so this order runs surgeon → numbered cases → scars → form, with
+   the procedure detail underneath. Same ld-* grammar: ruled lists,
+   display numerals, message-bubble media, one accent.
+   ============================================================ */
+
+/* the surgeon: arch portrait beside his figures */
+.ld-spotlight { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: var(--space-7) var(--space-8); align-items: start; }
+.ld-spotlight-media { max-width: 480px; }
+.ld-spotlight-media .ld-portrait img { object-position: center 18%; }
+.ld-spotlight-media .ld-media-caption { padding-top: var(--space-3); }
+.ld-spotlight-copy .ld-lead { max-width: 46ch; }
+/* The portrait rides along while the copy scrolls (desktop only). */
+@media (min-width: 901px) {
+  .ld-spotlight-media { position: sticky; top: calc(var(--header-h, 95px) + var(--space-8)); }
+}
+@media (min-width: 901px) and (max-height: 760px) {
+  .ld-spotlight-media { max-width: 380px; }
+}
+/* the figures bento (components/ui/stat-bento.tsx) sits between the lead and the facts */
+.ld-spotlight-copy .ld-spotlight-figures { margin: var(--space-5) 0 var(--space-4); }
+.ld-spotlight-copy .ld-points { margin-top: var(--space-5); }
+.ld-spotlight-copy .ld-closing { margin-top: var(--space-4); }
+
+/* numbered cases */
+.ld-cases-head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--space-4) var(--space-7); align-items: end; margin-bottom: var(--space-6); }
+.ld-cases-head .section-header { text-align: left; margin: 0; }
+.ld-cases-head .eyebrow-group { justify-content: flex-start; }
+.ld-cases-head .locations-subtitle { margin-left: 0; max-width: 58ch; }
+.ld-cases-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; padding-bottom: 6px; }
+.ld-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); }
+.ld-cases[data-count="1"] { max-width: 520px; margin-inline: auto; }
+.ld-cases[data-count="2"] { max-width: 900px; margin-inline: auto; }
+.ld-case { position: relative; margin: 0; min-width: 0; }
+.ld-case-media { position: relative; aspect-ratio: 1; border-radius: var(--radius-lg); overflow: hidden; border: 0.5px solid var(--border-soft); background: var(--bg-surface); }
+.ld-case-media img { object-fit: cover; }
+.ld-tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-neutral-100);
+  background: rgba(37, 26, 46, 0.55);
+  border-radius: var(--radius-full);
+  padding: 5px 12px;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+.ld-case-num { position: absolute; top: 12px; left: 12px; z-index: 2; background: rgba(37, 26, 46, 0.78); }
+.ld-case-tags { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; justify-content: space-between; pointer-events: none; }
+/* stacked band: before is the top strip, after the bottom one, tags on the right edge */
+.ld-case--stacked .ld-case-tags { top: 12px; flex-direction: column; align-items: flex-end; }
+.ld-case-media--ambient video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* pause control for the looping clip (WCAG 2.2.2); the hit area is wider than the pill */
+.ld-video-toggle { position: absolute; right: 12px; bottom: 12px; z-index: 2; border: 0; cursor: pointer; background: rgba(37, 26, 46, 0.78); }
+.ld-video-toggle::after { content: ""; position: absolute; inset: -10px; }
+.ld-video-toggle:hover { background: rgba(37, 26, 46, 0.92); }
+.ld-case figcaption { padding: 12px 2px 0; font-family: var(--font-sans); font-size: 12px; line-height: 1.5; color: var(--text-tertiary); display: flex; flex-direction: column; gap: 2px; }
+.ld-case figcaption strong { font-weight: var(--fw-medium); color: var(--text-primary); }
+/* video tile: the facade fills the square instead of its 16:9 default */
+.ld-case-media .ld-facade { position: absolute; inset: 0; aspect-ratio: auto; width: 100%; height: 100%; }
+.ld-case-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--color-primary-900); }
+.ld-page #results .ld-disclaimer { margin-top: var(--space-5); text-align: center; }
+
+/* scars: the fear named most often, answered next to the proof */
+.ld-scars { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5) var(--space-7); align-items: start; }
+.ld-scars-copy .ld-lead { max-width: 44ch; }
+.ld-scars-media { grid-column: 2; grid-row: 1 / span 2; }
+.ld-scars-media .ld-cases { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); }
+.ld-scars-media .ld-cases[data-count="1"], .ld-scars-media .ld-cases[data-count="2"] { max-width: none; }
+.ld-points--stack { grid-template-columns: 1fr; gap: 0; }
+.ld-points--stack li { padding-block: var(--space-3); }
+.ld-scars--solo { grid-template-columns: minmax(0, 1fr); }
+.ld-scars--solo .ld-points--stack { grid-template-columns: repeat(3, 1fr); gap: 0 var(--space-5); }
+.ld-scars--solo .ld-points--stack li { padding-block: var(--space-4) 0; }
+
+/* the form mid-page: a flat band, not the footer's rounded lead-in */
+.ld-page .ld-consult-mid #consultation { border-radius: 0; }
+.ld-page #consultation .form-helper { color: var(--text-secondary); } /* tertiary fell under AA on lavender */
+.ld-address-card .location-eyebrow { color: var(--text-accent); }
+
+/* the details start here */
+.ld-details-intro { padding-top: var(--ld-section-space); }
+.ld-details-intro .h-sec { max-width: 22ch; margin-bottom: var(--space-3); }
+.ld-details-intro p { font-family: var(--font-sans); font-size: 15px; line-height: 1.75; color: var(--text-secondary); max-width: 62ch; margin: 0; }
+.ld-details-intro + .section-py-lg { padding-top: var(--space-6); }
+
+/* closing band */
+.ld-closing-band .final-cta-sub { max-width: 58ch; margin-inline: auto; line-height: 1.7; }
+
+@media (max-width: 1100px) {
+  .ld-spotlight { grid-template-columns: 0.9fr 1.1fr; gap: var(--space-6); }
+}
+@media (max-width: 900px) {
+  .ld-spotlight { grid-template-columns: 1fr; gap: var(--space-5); }
+  .ld-spotlight-media { max-width: 440px; margin-inline: auto; width: 100%; }
+  .ld-cases-head { grid-template-columns: 1fr; align-items: start; gap: var(--space-4); }
+  .ld-cases-actions { justify-content: flex-start; padding-bottom: 0; }
+  .ld-scars { grid-template-columns: 1fr; }
+  .ld-scars-media { grid-column: auto; grid-row: auto; }
+  .ld-scars--solo .ld-points--stack { grid-template-columns: 1fr; gap: 0; }
+  .ld-scars--solo .ld-points--stack li { padding-block: var(--space-3); }
+  /* three-up ruled grid collapses to one column: rule each card instead */
+  .ld-page .ld-grid-3.ld-ruled-grid { border-top: 0; }
+  .ld-page .ld-grid-3.ld-ruled-grid .value-card { border-top: 1px solid var(--border-medium); padding: var(--space-4) 0; }
+  .ld-page .ld-grid-3.ld-ruled-grid .value-card::before { display: none; }
+}
+@media (max-width: 768px) {
+  /* one case per view with the next one peeking in, swiped, dots below */
+  .ld-cases, .ld-scars-media .ld-cases {
+    display: flex;
+    gap: var(--space-3);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    max-width: none;
+    padding-bottom: 2px;
+  }
+  .ld-cases::-webkit-scrollbar { display: none; }
+  .ld-case { flex: 0 0 86%; scroll-snap-align: start; }
+  .ld-cases[data-count="1"] .ld-case { flex-basis: 100%; }
+  .ld-cases + .swipe-dots { display: flex; }
+}
+@media (max-width: 600px) {
+  .ld-cases-actions .btn-primary, .ld-cases-actions .btn-secondary { width: 100%; text-align: center; }
+  .ld-details-intro .h-sec { max-width: none; }
+}

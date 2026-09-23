@@ -8,8 +8,11 @@
    so a template change applies everywhere at once.
    ============================================================ */
 
+import { siteConfig } from "@/lib/site-config";
+
 export type ProcedureFaq = { q: string; a: string };
 export type ProcedureCase = { image: string; alt: string };
+export type ProcedureFact = { value: string; label: string; detail?: string };
 export type ProcedurePhilosophy = {
   heading: string;
   body: string[];
@@ -43,7 +46,21 @@ export type ProcedureContent = {
   philosophy?: ProcedurePhilosophy;
   /** Questions specific to this procedure, appended before the shared set */
   faq?: ProcedureFaq[];
+  /**
+   * Figures shown under the intro copy (StatBento). Omitted: the shared
+   * PROCEDURE_FACTS. `false`: none (non-surgical pages).
+   */
+  facts?: readonly ProcedureFact[] | false;
 };
+
+/* Shared figures under "About the procedure", all from published copy: the
+   approved surgery count, the surgeon-led care the FAQ describes and the
+   consultation fee from siteConfig. */
+export const PROCEDURE_FACTS: readonly ProcedureFact[] = [
+  { value: "5,000+", label: "Surgeries performed", detail: "Broad operative experience across cosmetic procedures." },
+  { value: "1 surgeon", label: "Start to finish", detail: "Evaluation, surgical plan, surgery and follow-up with Dr. Kalsow." },
+  { value: siteConfig.consultation.inPersonFee, label: "In-person consultation", detail: "Applied toward your surgery." },
+];
 
 /* Answers below are quoted or condensed from copy the practice already
    publishes (procedure pages, the body-sculpting section, the About page).
@@ -60,7 +77,8 @@ export const SHARED_FAQ: ProcedureFaq[] = [
   },
   {
     q: "How does the consultation work?",
-    a: "Consultations are $250 in person and $500 virtual, and the fee is applied toward your surgery. You meet one on one with Dr. Kalsow to discuss your goals, understand your options and receive a surgical plan shaped around your anatomy. The office is at 635 Madison Avenue, 17th floor, with clinic hours Wednesday and Saturday.",
+    // Fees come from siteConfig so this answer and the final CTA never disagree.
+    a: `Consultations are ${siteConfig.consultation.inPersonFee} in person and ${siteConfig.consultation.virtualFee} virtual, and the fee is applied toward your surgery. You meet one on one with Dr. Kalsow to discuss your goals, understand your options and receive a surgical plan shaped around your anatomy. The office is at 635 Madison Avenue, 17th floor, with clinic hours Wednesday and Saturday.`,
   },
   {
     q: "Can I travel to New York for surgery?",
@@ -338,6 +356,8 @@ export const PROCEDURE_CONTENT: Record<string, ProcedureContent> = {
   },
 
   "/lip-augmentation": {
+    // Fillers, not surgery: the surgical figures do not belong here.
+    facts: false,
     intro: {
       heading: "Lip Augmentation",
       lead: "Lip fillers add volume, correct uneven lips and refine the shape of the mouth.",

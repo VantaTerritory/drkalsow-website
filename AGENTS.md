@@ -58,6 +58,15 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   mezclar variantes.
 - `components/layout/page-placeholder.tsx` — stub que renderiza toda página
   aún no construida (el metadata sí es real).
+- `components/ui/stat-bento.tsx` — **bento de tres cifras** (la primera lidera
+  en un tile oscuro a dos filas; `lead="light"` invierte la paleta sobre
+  aubergine). Regla de Nico (22 sep 2026): tiles solo para datos puntuales
+  (cantidades, tarifas, hechos de una palabra) intercalados con texto
+  legible; nunca convertir secciones enteras en cards. Lo usan el bloque
+  del doctor y el approach de las landings, "Why patients choose" del home,
+  la intro de los 12 procedimientos (`PROCEDURE_FACTS`, apagable con
+  `facts: false`) y las tres vías de consulta del contacto. Las tarifas
+  salen siempre de `siteConfig.consultation` (también en el FAQ compartido).
 - **Landings SEO + paid** (`/awake-lipo-360-nyc`, `/breast-reduction-nyc`):
   un solo template en `components/marketing/landing/`, copy tipado en
   `lib/landings/content.ts`. La fuente son los HTML del SEO team
@@ -69,6 +78,14 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   también las páginas pilar de SEO, y la nav completa suma confianza y
   calidad de landing en Ads). El form de estas páginas manda `source` con
   el path para saber de dónde vino el lead.
+  **El orden de secciones es data** (`sections` en cada landing). Awake
+  Lipo 360 va "authority-first" desde el 22 sep 2026 (revisión del cliente
+  del 21 sep): hero → doctor con sus cifras (5,000+ awake lipo, 8,000+
+  awake, 10,000+ cirugías, dichas por el doctor) → casos numerados
+  (Case 01, 02…, before | after, videos como tiles) → cicatrices → form
+  mid-page → detalle del procedimiento → FAQ → banda final. Breast
+  Reduction conserva el orden original del SEO team hasta que el cliente
+  la revise; los cambios se replican una landing a la vez.
 - **Thank-you page (`/thank-you`):** los tres forms redirigen ahí tras un
   envío exitoso con navegación completa (`window.location.replace`, no
   `router.replace`) para que GTM, GA4 y Meta Pixel vean un pageview real:

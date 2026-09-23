@@ -6,11 +6,18 @@ import type { ProcedureFaq } from "@/lib/procedures/content";
  * FAQ accordion built on native <details>, so it opens without JavaScript
  * and stays accessible and printable.
  */
-export function ProcedureFaqSection({ items }: { items: ProcedureFaq[] }) {
+export function ProcedureFaqSection({
+  items,
+  tone = "white",
+}: {
+  items: ProcedureFaq[];
+  /** Background, so a page can keep its sections alternating. */
+  tone?: "white" | "cream";
+}) {
   if (items.length === 0) return null;
 
   return (
-    <section className="bg-white section-py-lg" id="faq">
+    <section className={`bg-${tone} section-py-lg`} id="faq">
       <div className="container-tight">
         <div className="section-header" style={{ marginBottom: "var(--space-5)" }}>
           <Eyebrow>Questions</Eyebrow>

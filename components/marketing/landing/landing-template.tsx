@@ -1,15 +1,19 @@
 import { getPage, pageUrl, type SitePage } from "@/lib/seo/pages";
 import { siteConfig } from "@/lib/site-config";
-import { landingContent, type LandingContent } from "@/lib/landings/content";
+import { landingContent, type LandingContent, type LandingSectionKey } from "@/lib/landings/content";
 import { JsonLd, PHYSICIAN_ID } from "@/lib/seo/schema";
 import { ProcedureFaqSection } from "@/components/marketing/procedure/procedure-faq";
 import { ConsultationForm } from "@/components/marketing/contact/consultation-form";
 import {
   LandingHero,
-  LandingIntroBar,
+  LandingQuickNav,
+  LandingPillars,
+  LandingSurgeonSpotlight,
   LandingWhatIsIt,
+  LandingDetailsIntro,
   LandingGoals,
   LandingResults,
+  LandingScars,
   LandingSteps,
   LandingInsurance,
   LandingApproach,
@@ -20,15 +24,17 @@ import {
   LandingTravel,
   LandingSurgeon,
   LandingCtaIntro,
+  LandingClosingCta,
   LandingStickyCta,
 } from "@/components/marketing/landing/landing-sections";
 
 /**
  * Shared layout for the SEO + paid landing pages (Awake Lipo 360, Breast
- * Reduction). Section order follows the SEO team's drafts; optional sections
- * (insurance, safety, secondary topic) render only when the content has them.
- * Each page passes only its path; copy comes from lib/landings/content.ts and
- * page-level SEO from lib/seo/pages.ts.
+ * Reduction). The hero always comes first; everything after it follows the
+ * page's own `sections` list, so one landing can lead with the surgeon and
+ * his cases while the other keeps the SEO team's procedure-first order.
+ * Each page passes only its path; copy comes from lib/landings/content.ts
+ * and page-level SEO from lib/seo/pages.ts.
  */
 export function LandingTemplate({ path }: { path: string }) {
   const page = getPage(path);
@@ -38,24 +44,73 @@ export function LandingTemplate({ path }: { path: string }) {
     <div className="ld-page">
       <JsonLd nodes={buildLandingJsonLd(page, content)} />
       <LandingHero page={page} content={content} />
-      <LandingIntroBar content={content} />
-      <LandingWhatIsIt content={content} />
-      <LandingGoals content={content} />
-      <LandingResults content={content} />
-      <LandingSteps content={content} />
-      {content.insurance && <LandingInsurance content={content} />}
-      <LandingApproach content={content} />
-      <LandingCandidacy content={content} />
-      <LandingRecovery content={content} />
-      {content.safety && <LandingSafety content={content} />}
-      {content.secondary && <LandingSecondary content={content} />}
-      <LandingTravel content={content} />
-      <LandingSurgeon content={content} />
-      <ProcedureFaqSection items={content.faq} />
-      <ConsultationForm id="consultation" source={page.path} intro={<LandingCtaIntro content={content} />} />
+      {content.sections.map((key) => (
+        <LandingSection key={key} section={key} page={page} content={content} />
+      ))}
       <LandingStickyCta />
     </div>
   );
+}
+
+function LandingSection({
+  section,
+  page,
+  content,
+}: {
+  section: LandingSectionKey;
+  page: SitePage;
+  content: LandingContent;
+}) {
+  switch (section) {
+    case "quicknav":
+      return <LandingQuickNav content={content} />;
+    case "pillars":
+      return <LandingPillars content={content} />;
+    case "surgeon-spotlight":
+      return <LandingSurgeonSpotlight content={content} />;
+    case "results":
+      return <LandingResults content={content} />;
+    case "scars":
+      return <LandingScars content={content} />;
+    case "consultation": {
+      // Mid-page the form is a flat band; as the last section it keeps the
+      // rounded top edge the site uses before the footer.
+      const isLast = content.sections[content.sections.length - 1] === "consultation";
+      return (
+        <div className={isLast ? undefined : "ld-consult-mid"}>
+          <ConsultationForm id="consultation" source={page.path} intro={<LandingCtaIntro content={content} />} />
+        </div>
+      );
+    }
+    case "details-intro":
+      return <LandingDetailsIntro content={content} />;
+    case "what-is-it":
+      return <LandingWhatIsIt content={content} />;
+    case "goals":
+      return <LandingGoals content={content} />;
+    case "how-it-works":
+      return <LandingSteps content={content} />;
+    case "insurance":
+      return <LandingInsurance content={content} />;
+    case "approach":
+      return <LandingApproach content={content} />;
+    case "candidacy":
+      return <LandingCandidacy content={content} />;
+    case "recovery":
+      return <LandingRecovery content={content} />;
+    case "safety":
+      return <LandingSafety content={content} />;
+    case "secondary":
+      return <LandingSecondary content={content} />;
+    case "travel":
+      return <LandingTravel content={content} />;
+    case "surgeon":
+      return <LandingSurgeon content={content} />;
+    case "faq":
+      return <ProcedureFaqSection items={content.faq} tone={content.faqTone} />;
+    case "closing":
+      return <LandingClosingCta content={content} />;
+  }
 }
 
 /**
