@@ -836,6 +836,57 @@
    page (horizontal scroll). */
 .lv2-ba-tile { position: relative; }
 
+/* ==== LV2 · TESTIMONIAL SCREENSHOTS ==== */
+/* The patients' own messages (published with their consent), under the
+   videos. One row height, each screenshot at its own ratio and shown whole
+   (contain), on a plain card like a phone screen; wider than the row, it
+   scrolls sideways. Tapping one opens it full size, since review text is
+   small at card size (the alt text carries the message itself). */
+.lv2-tst { grid-template-areas: "head more" "track track" "shots shots"; }
+.lv2-tst-shots { grid-area: shots; min-width: 0; margin-top: var(--space-7); }
+.lv2-tst-shots-title { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: 28px; font-weight: 400; line-height: 1.2; color: var(--text-primary); }
+.lv2-tst-shots-row {
+  --lv2-shot-h: 420px;
+  display: flex;
+  gap: var(--space-3);
+  margin: -6px;
+  padding: 6px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.lv2-tst-shots-row::-webkit-scrollbar { display: none; }
+.lv2-tst-shot { position: relative; flex: none; height: var(--lv2-shot-h); scroll-snap-align: start; }
+.lv2-tst-shot-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-neutral-50);
+  box-shadow: var(--shadow-card);
+  cursor: zoom-in;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.lv2-tst-shot-link img { object-fit: contain; }
+.lv2-tst-shot-link:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.lv2-tst-shot-link:focus-visible { border-radius: var(--radius-lg); outline: 2px solid var(--text-accent); outline-offset: 3px; }
+/* wide screens: the four fit, so they sit centred instead of left-aligned */
+@media (min-width: 1200px) { .lv2-tst-shots-row { justify-content: center; } }
+@media (max-width: 767px) {
+  .lv2-tst { grid-template-areas: "head" "track" "shots" "more"; }
+  .lv2-tst-shots { margin-top: var(--space-6); }
+  .lv2-tst-shots-title { font-size: 24px; }
+  .lv2-tst-shots-row { --lv2-shot-h: 340px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lv2-tst-shot-link { transition: none; }
+  .lv2-tst-shot-link:hover { transform: none; }
+}
+
 /* ==== LV2 · SWIPE DOTS ==== */
 /* The shared dots are 7px buttons 8px apart: under WCAG 2.5.8's 24px
    targets, and B has one row per patient. Here each dot is a 24px button

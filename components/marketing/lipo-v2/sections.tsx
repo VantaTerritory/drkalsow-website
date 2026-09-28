@@ -323,6 +323,22 @@ export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
             ))}
           </SwipeCarousel>
         </Reveal>
+        {block.screenshots && block.screenshots.items.length > 0 && (
+          <div className="lv2-tst-shots">
+            <h3 className="lv2-tst-shots-title">{block.screenshots.heading}</h3>
+            {/* each at its own ratio on one row height; the full size opens in a new tab */}
+            <ul className="lv2-tst-shots-row">
+              {block.screenshots.items.map((s) => (
+                <li className="lv2-tst-shot" key={s.src} style={ratio(s)}>
+                  <a className="lv2-tst-shot-link" href={s.src} target="_blank" rel="noopener noreferrer">
+                    <Image src={s.src} alt={s.alt} fill sizes="(max-width: 767px) 70vw, 340px" />
+                    <span className="sr-only"> (opens full size in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );

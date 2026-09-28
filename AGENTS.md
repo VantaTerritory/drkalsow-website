@@ -106,7 +106,10 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   vault). Son 1080x1350 con footer de marca: recortar a 1080x1010 y
   componer before | after cuadrado (1000 galería, 1100 carousel). Solo se
   publican vistas con ropa interior; nada con pezones, glúteos desnudos ni
-  barras negras, y nunca las capturas de Instagram ni el retrato IA.
+  barras negras, y nunca el retrato IA. Capturas de testimonios: las 4 del
+  prototipo del doctor tienen consentimiento de los pacientes (28 sep 2026)
+  y están en la B; las historias de Instagram del Drive (bikini o lencería)
+  no van en páginas pagas.
 - **Variante B de Awake Lipo 360 (`/lipo-360-v2`, test A/B de Google Ads,
   sep 2026):** la A (`/awake-lipo-360-nyc`) es el control y no se toca, ni
   su HTML ni el CSS que descarga. La B es el diseño Aubergine con el

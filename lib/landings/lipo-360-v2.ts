@@ -11,7 +11,7 @@
 
    Copy rules: no em dashes (client), and nothing medical beyond what the
    doctor wrote. Where an answer is assembled from several sentences of
-   draft 2 it is marked "VALIDATE" below.
+   draft 2, a comment says so.
 
    Before/after photos: the doctor's own composites, uncropped, behind a
    veil. In the grid each view is only a blurred field of its colours,
@@ -122,6 +122,8 @@ export type Lv2TestimonialsBlock = {
   heading: string;
   intro: string;
   videos: Lv2Video[];
+  /** Patients' own messages and reviews (screenshots, published with their consent). */
+  screenshots?: { heading: string; items: Lv2Image[] };
   more: Lv2Link;
 };
 
@@ -133,7 +135,7 @@ export type Lv2DestinationBlock = {
   body: string[];
   approach: { title: string; items: string[] };
   portrait: Lv2Image;
-  /** Practice and city. Hotel photos go here when the client sends them. */
+  /** The hotel near the practice and the team. The mosaic is laid out for two. */
   images: Lv2Figure[];
   call: { heading: string; body: string; link: Lv2Link };
   reel: Lv2Video;
@@ -384,13 +386,13 @@ export const LIPO_360_V2: Lv2Page = {
       incisions: {
         id: "incisions",
         eyebrow: "Scars and incisions",
-        heading: "Small 4 mm access points.",
-        // 4 mm: said by the doctor on the 23 Sep call. Draft 2 says "usually
-        // about 3 mm": to confirm with Andrés.
+        // 3 mm, as the doctor's draft 2 has it ("usually about 3 mm long");
+        // settled by Nico on 28 Sep over the 4 mm said on the 23 Sep call.
+        heading: "Small 3 mm access points.",
         // the size is in the heading and the figure tile, not a third time here
         body:
           "Fat is removed through small access points. Dr. Kalsow places them where they allow him to reach and sculpt each planned area, choosing natural creases or existing scars when possible.",
-        figure: { value: "4 mm", label: "Approximate size of each access point" },
+        figure: { value: "3 mm", label: "Approximate size of each access point" },
         facts: [
           {
             title: "About 12 small incisions",
@@ -441,9 +443,9 @@ export const LIPO_360_V2: Lv2Page = {
       id: "testimonials",
       eyebrow: "In their own words",
       heading: "Patients, in their own words.",
-      intro: "Video testimonials from Dr. Kalsow’s liposuction patients.",
-      // The same real videos as /testimonials. The Instagram screenshots in
-      // the doctor's prototype wait for the patients' consent.
+      intro: "Video testimonials and messages from Dr. Kalsow’s patients.",
+      // The same real videos as /testimonials, then the screenshots of the
+      // doctor's prototype (consent confirmed by Nico on 28 Sep).
       videos: [
         {
           src: "/video/testimonials/alex.mp4",
@@ -470,6 +472,38 @@ export const LIPO_360_V2: Lv2Page = {
           caption: "Arm + upper back liposuction",
         },
       ],
+      // The doctor's two ChatGPT compositions of the screenshots (on his
+      // Squarespace prototype page), split into one card per patient. The alt
+      // text is the message itself, word for word.
+      screenshots: {
+        heading: "Messages from patients",
+        items: [
+          {
+            src: "/img/lipo-v2/testimonials/t1-corvette.jpg",
+            alt: "A patient's message: “I'm so happy with my results!!! My husband is so happy too, he said that its like having a new Corvette”, with a photo of her after surgery.",
+            width: 970,
+            height: 1365,
+          },
+          {
+            src: "/img/lipo-v2/testimonials/t2-review.jpg",
+            alt: "A patient's review with her photo: “Dr. kalsow is a great license experience Doctor. Dr Kalsow Did my 360 BBL on January 25,2020. I give Dr.Kalsow All 5 stars. He Grant me excellent results with my 360 BBL surgery. He definitely enhanced my figure and gave me a wonderful shape that I'm in love with. I'm glad I had my 360 BBL surgery with Dr.Kalsow. He's the best for 360 Bbl if you in need of a excellent Doctor Dr. is your man. I'm A K-Doll now. Thank you so much Dr. Kalsow.” The practice adds: “This patient wanted a tiny waist and to be curvy, she couldn't be happier with her results!”",
+            width: 580,
+            height: 950,
+          },
+          {
+            src: "/img/lipo-v2/testimonials/t3-seven-weeks.jpg",
+            alt: "Two patient messages. A mirror photo with “Thank you, I love my result”, and a direct message: “Hiii! I'm almost 7 weeks post op and I just wanted to say I LOVE my results, you're amazing, thank you so much”.",
+            width: 450,
+            height: 1000,
+          },
+          {
+            src: "/img/lipo-v2/testimonials/t4-one-year.jpg",
+            alt: "A patient's message: “Hello Dr K. In 4 days it'll be exactly a year since you changed my life. I'm still in stock with the changes and the motivation it's brought my life. Couldn't thank you enough!!”, with her photo. The practice adds: “The photo is distorted but the curves are visible!”",
+            width: 450,
+            height: 684,
+          },
+        ],
+      },
       more: { label: "More Patient Stories", href: "/testimonials" },
     },
     {
@@ -487,7 +521,7 @@ export const LIPO_360_V2: Lv2Page = {
           "Complete circumferential planning rather than isolated-area liposuction",
           "Strong emphasis on waist narrowing and back contour",
           "Strategic fat removal based on the patient’s skeletal frame",
-          "Small access points (approx. 4 mm) placed with scar visibility in mind",
+          "Small access points (approx. 3 mm) placed with scar visibility in mind",
           "No drains for routine Awake Lipo 360 in Dr. Kalsow’s technique",
           "Personal surgical planning and follow-up with Dr. Kalsow",
         ],
@@ -499,18 +533,20 @@ export const LIPO_360_V2: Lv2Page = {
         height: 1456,
       },
       images: [
+        // Both from the doctor's Squarespace prototype page. The Plaza photo
+        // was 732 px wide there: upscaled with Real-ESRGAN (x4, then 1600 px).
         {
-          src: "/img/office/office-exterior.jpg",
-          alt: "The entrance of 635 Madison Avenue in Manhattan, home of Dr. Kalsow’s practice",
-          width: 1500,
-          height: 941,
-          caption: "635 Madison Avenue, New York City",
+          src: "/img/lipo-v2/hotel-plaza.jpg",
+          alt: "The Plaza hotel on Fifth Avenue at dusk, a few blocks from Dr. Kalsow’s practice",
+          width: 1600,
+          height: 1200,
+          caption: "The Plaza, a few blocks from the practice",
         },
         {
-          src: "/img/team/kalsow-team.jpg",
-          alt: "Dr. Kalsow with a member of his team at the practice, the Manhattan skyline behind them",
-          width: 1280,
-          height: 720,
+          src: "/img/lipo-v2/team-office.jpg",
+          alt: "Dr. Kalsow with two members of his team in maroon scrubs at the practice",
+          width: 1200,
+          height: 800,
           caption: "Dr. Kalsow and his team",
         },
       ],
@@ -550,8 +586,8 @@ export const LIPO_360_V2: Lv2Page = {
           a: "The numbing process and parts of the procedure can be uncomfortable. Patients may feel pressure or movement. Comfort varies, and the procedure should not be described as pain-free.",
         },
         {
-          // VALIDATE: assembled only from sentences of draft 2 (candidacy
-          // and limitations). Nothing added.
+          // Assembled only from sentences of draft 2 (candidacy and
+          // limitations), nothing added; approved by the client on 28 Sep.
           q: "Can Awake Lipo 360 create an hourglass shape without fat transfer?",
           a: "Lipo 360 can target the waist, love handles, abdomen and back to create more curves. The rib cage and underlying bone structure limit how narrow the waist can become. Fat transfer may soften hip dips, but it may not fill them completely; the result depends on your anatomy, skin and how much fat is available. At your consultation, Dr. Kalsow will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
         },
@@ -561,7 +597,7 @@ export const LIPO_360_V2: Lv2Page = {
         },
         {
           q: "Will I have scars?",
-          a: "Yes, small ones. All incisions leave scars, even when they are small. Dr. Kalsow uses small access points of approximately 4 mm, positioned to reach the planned areas, using creases or less visible locations when possible. His typical Lipo 360 plan uses approximately 12 incisions; fat transfer may require two more. He will show you the proposed locations during your consultation.",
+          a: "Yes, small ones. All incisions leave scars, even when they are small. Dr. Kalsow uses small access points of approximately 3 mm, positioned to reach the planned areas, using creases or less visible locations when possible. His typical Lipo 360 plan uses approximately 12 incisions; fat transfer may require two more. He will show you the proposed locations during your consultation.",
         },
         {
           q: "Can you correct liposuction performed somewhere else?",
