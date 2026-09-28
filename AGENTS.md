@@ -127,8 +127,11 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   view de `/thank-you` con `source`).
 - **Velo de fotos clínicas (solo la B, excepción autorizada por Nico a la
   regla PG):** los before/after del doctor, sin recortar y con su censura,
-  viven en `public/img/lipo-v2/ba/full/` con `X-Robots-Tag: noindex`
-  (también vía `/_next/image`, en `next.config.mjs`). La grilla muestra
+  viven en `public/img/lipo-v2/ba/full/`. `next.config.mjs` les pone
+  `X-Robots-Tag: noindex`, pero en Hostinger los archivos de `public/` los
+  sirve LiteSpeed directo, sin pasar por Next: ahí el header solo llega vía
+  `/_next/image`. Para blindarlos, moverlos fuera de `public/` detrás de un
+  route handler. La grilla muestra
   solo campos de color CSS (`lipo-360-v2-veils.ts`) y el original se pide
   recién al tocar, en el lightbox. Ninguna URL de original ni nombre de
   archivo del Drive puede llegar al HTML, al RSC, a un preload ni a un
