@@ -31,6 +31,24 @@ const nextConfig = {
       { source: "/new-page-1", destination: "/awake-lipo-360-nyc", statusCode: 301 },
     ];
   },
+  // Variant B of the Awake Lipo 360 A/B test (/lipo-360-v2) shows the
+  // doctor's clinical before/after photos only in a lightbox, after a tap;
+  // the page itself carries blurred previews. Keep the originals out of
+  // image search as well, in case anything ever links to them.
+  async headers() {
+    return [
+      {
+        source: "/img/lipo-v2/ba/full/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, noimageindex" }],
+      },
+      // the same originals served through the image optimizer
+      {
+        source: "/_next/image",
+        has: [{ type: "query", key: "url", value: "(?<original>/img/lipo-v2/ba/full/.*)" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, noimageindex" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

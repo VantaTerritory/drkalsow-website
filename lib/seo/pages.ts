@@ -17,7 +17,12 @@ import { siteConfig } from "@/lib/site-config";
    descriptions are ours (the sheet has no description column).
    ============================================================ */
 
-export type PageGroup = "core" | "procedure" | "practice" | "landing" | "utility";
+/**
+ * "experiment": paid-traffic test variants of a landing (Google Ads A/B).
+ * Like utility pages they stay out of the index, sitemap, nav and llms.txt,
+ * but unlike them /thank-you can send the patient back to one.
+ */
+export type PageGroup = "core" | "procedure" | "practice" | "landing" | "utility" | "experiment";
 export type ProcedureCategory = "face" | "breast" | "body" | "hair";
 
 export interface SitePage {
@@ -280,6 +285,24 @@ export const SITE_PAGES: readonly SitePage[] = [
     h1: "Breast Reduction in NYC",
     group: "landing",
     schema: "WebPage + MedicalProcedure + FAQPage + BreadcrumbList",
+  },
+
+  // ---- Experiments (Google Ads A/B) ----
+  // Awake Lipo 360, variant B (Sep 2026): the client's content and order on
+  // the site's design, tested against /awake-lipo-360-nyc (variant A, the
+  // control, untouched). Title and description = A's; H1 = the client's.
+  // Not an SEO page: noindex, out of sitemap, nav and llms.txt, no page
+  // JSON-LD. Label = A's, so /thank-you reads "Back to Awake Lipo 360".
+  {
+    path: "/lipo-360-v2",
+    label: "Awake Lipo 360",
+    title: "Awake Lipo 360 NYC | Dr. Sergei Kalsow",
+    description:
+      "Explore Awake Lipo 360 in New York City with Dr. Sergei Kalsow. Learn treatment areas, candidacy, recovery, results, and what to expect. Request a consultation.",
+    h1: "Awake Lipo 360 by Sergei Kalsow, MD",
+    group: "experiment",
+    inSitemap: false,
+    noindex: true,
   },
 
   // ---- Practice / secondary ----

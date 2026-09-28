@@ -43,3 +43,7 @@ next-env.d.ts
 
 # memoria local (vault)
 CLAUDE.local.md
+
+# client reference material: the doctor's prototype screenshots include
+# clinical nudity and this repo is public. Local input only, never committed.
+docs/referencia-web-doctor/

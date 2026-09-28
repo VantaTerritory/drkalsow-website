@@ -107,6 +107,34 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   componer before | after cuadrado (1000 galería, 1100 carousel). Solo se
   publican vistas con ropa interior; nada con pezones, glúteos desnudos ni
   barras negras, y nunca las capturas de Instagram ni el retrato IA.
+- **Variante B de Awake Lipo 360 (`/lipo-360-v2`, test A/B de Google Ads,
+  sep 2026):** la A (`/awake-lipo-360-nyc`) es el control y no se toca, ni
+  su HTML ni el CSS que descarga. La B es el diseño Aubergine con el
+  contenido y el orden del doctor: bloques tipados en
+  `lib/landings/lipo-360-v2.ts` (se reordenan, quitan o duplican ahí),
+  componentes en `components/marketing/lipo-v2/` y **CSS propio en
+  `components/marketing/lipo-v2/lipo-v2.css`**, una hoja de la ruta y no
+  `globals.css`, para que la A no baje ni un byte de B. Todo selector lleva
+  `lv2-`. Tailwind v4 escanea el código y los .md: una palabra suelta que
+  coincida con una utilidad (p. ej. un valor de `display` en un comentario)
+  agrega esa regla al CSS global de todo el sitio; después de tocar B,
+  comprobar que el CSS que baja la A sigue siendo el de `main`. En el
+  registro es `group: "experiment"`
+  (noindex, fuera de sitemap, nav y llms.txt, sin JSON-LD de página;
+  `/thank-you` sí vuelve a ella). Tracking: `landing_variant: "B"` y
+  `click_to_call` al dataLayer (`variant-tracker.tsx`); las conversiones
+  del test se miden igual en A y B (trigger de GTM en links `tel:` y page
+  view de `/thank-you` con `source`).
+- **Velo de fotos clínicas (solo la B, excepción autorizada por Nico a la
+  regla PG):** los before/after del doctor, sin recortar y con su censura,
+  viven en `public/img/lipo-v2/ba/full/` con `X-Robots-Tag: noindex`
+  (también vía `/_next/image`, en `next.config.mjs`). La grilla muestra
+  solo campos de color CSS (`lipo-360-v2-veils.ts`) y el original se pide
+  recién al tocar, en el lightbox. Ninguna URL de original ni nombre de
+  archivo del Drive puede llegar al HTML, al RSC, a un preload ni a un
+  chunk de cliente, y esos archivos no se linkean desde ningún lado.
+  `docs/referencia-web-doctor/` (capturas del prototipo del doctor, con
+  desnudez) está en `.gitignore`: el repo es público.
 
 ## Reglas
 
@@ -115,6 +143,7 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   (sans). No agregar familias.
 - **Sin before/after explícitos en `public/`** — las imágenes de galería se
   curan con Nico antes de subirse (algunas del sitio viejo son explícitas).
+  Única excepción: `public/img/lipo-v2/ba/full/`, detrás del velo de la B.
 - **Solo NYC** (635 Madison Ave). Miami se descartó — el cliente no tiene
   oficina ahí, aunque el sitio viejo la mencione.
 - **Claims verificables:** nada de "15+ years" ni fechas de fundación
