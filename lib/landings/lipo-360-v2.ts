@@ -4,27 +4,44 @@
    Variant A is /awake-lipo-360-nyc (lib/landings/content.ts), the
    control: it stays exactly as it is. Variant B keeps the site's design
    system and takes the client's content and order (his prototype, his
-   "Awake lipo 360. draft 2" document and the meetings of 23 and 24 Sep).
-   Round 1 of his changes; a fuller proposal is coming, so the page is a
-   list of blocks: reorder, drop or duplicate them here (a duplicate
-   needs its own `id`).
+   "Awake lipo 360. draft 2" document, the meetings of 23 and 24 Sep and
+   Andrés's review of 29 Sep). The page is a list of blocks: reorder,
+   drop or duplicate them here (a duplicate needs its own `id`).
+
+   Round 2 (29 Sep): the order follows draft 2. Hero → why patients choose
+   him → his philosophy → the gallery → an honest assessment → what Lipo
+   360 is → … → FAQ. The long-form sections of draft 2 live in
+   lipo-360-v2-guide.ts.
 
    Copy rules: no em dashes (client), and nothing medical beyond what the
    doctor wrote. Where an answer is assembled from several sentences of
    draft 2, a comment says so.
 
-   Before/after photos: the doctor's own composites, uncropped, behind a
-   veil. In the grid each view is only a blurred field of its colours,
-   drawn in CSS (lipo-360-v2-veils.ts); the lightbox builds the original's
-   URL (/img/lipo-v2/ba/full/<id>.webp) from the id after a tap, so no
-   clinical photo, nor its URL, is in the HTML (Ads review).
+   Before/after photos: the doctor's own composites, uncropped and with
+   the censoring they already have, shown as they are since 29 Sep (Nico
+   lifted the veil at the client's request, accepting the Google Ads
+   review risk). A tap opens the original in the lightbox.
    ============================================================ */
 
 import { siteConfig } from "@/lib/site-config";
+import {
+  NAME_BLOCK,
+  HOW_BLOCK,
+  CANDIDATE_BLOCK,
+  CHOICES_BLOCK,
+  LIMITATIONS_BLOCK,
+  UNHAPPY_BLOCK,
+  COMPLICATIONS_BLOCK,
+  LESSONS_BLOCK,
+  REVISION_BLOCK,
+  MORE_BLOCK,
+} from "@/lib/landings/lipo-360-v2-guide";
 
 export type Lv2Link = { label: string; href: string };
 export type Lv2Image = { src: string; alt: string; width: number; height: number };
 export type Lv2Figure = Lv2Image & { caption: string };
+/** An image whose caption is optional (stock images carry "Not a patient"). */
+export type Lv2Picture = Lv2Image & { caption?: string };
 export type Lv2Video = {
   src: string;
   poster: string;
@@ -35,14 +52,17 @@ export type Lv2Video = {
 };
 export type Lv2Stat = { value: string; label: string };
 export type Lv2Card = { title: string; body: string };
+/** A titled point whose text can run to several paragraphs. */
+export type Lv2TextItem = { title: string; body: string | string[] };
 export type Lv2Faq = { q: string; a: string };
+/** Light section backgrounds, so neighbouring blocks can alternate. */
+export type Lv2Tone = "white" | "cream" | "lavender";
 
 /** One view of a patient: the before | after pair, 2164x1350 as the doctor composed it. */
 export type Lv2BaView = {
-  /** Veil: BA_VEILS[id] (CSS) · original, after a tap: /img/lipo-v2/ba/full/<id>.webp */
+  /** The file: /img/lipo-v2/ba/full/<id>.webp */
   id: string;
   view: "Front" | "Side" | "Back";
-  /** For the original in the lightbox. No clinical detail. */
   alt: string;
   /** Files in the doctor's Drive, for traceability. Never rendered. */
   source: string;
@@ -55,6 +75,11 @@ export type Lv2Patient = {
   views: Lv2BaView[];
 };
 
+export type Lv2HeroPhoto = Lv2Image & {
+  /** Width / height of its frame when the photo is shown in another shape (cropped to cover). */
+  frame?: number;
+};
+
 export type Lv2HeroBlock = {
   kind: "hero";
   id: string;
@@ -64,14 +89,32 @@ export type Lv2HeroBlock = {
   stats: Lv2Stat[];
   call: Lv2Link;
   primary: Lv2Link;
-  photo: Lv2Image;
+  /** Left to right, before the clip. The first one is the LCP and the only one phones show beside the clip. */
+  photos: [Lv2HeroPhoto, ...Lv2HeroPhoto[]];
+  /** Phones: a head crop of the second photo, beside his name in the band that follows the hero. */
+  avatar?: Lv2Image;
   video: Lv2Video;
   /**
    * Phones: the lead, stats and CTAs render after this block instead of in
-   * the hero, so the first screen is photo → moving video → before/after
-   * (the doctor's brief). The sticky Call / Request bar covers the CTAs.
+   * the hero, so the first screen is his photo and the moving clip. The
+   * sticky Call / Request bar covers the CTAs.
    */
   mobileDetailsAfter?: string;
+};
+
+/** "Why thousands of patients choose Dr. Kalsow": his reasons, then the patients' own messages. */
+export type Lv2WhyBlock = {
+  kind: "why";
+  id: string;
+  eyebrow: string;
+  heading: string;
+  reasons: Lv2Card[];
+  /**
+   * Screenshots of the patients' messages, published with their consent.
+   * Pictures, not links: the client does not want them to open on a tap.
+   * The alt text is the message itself.
+   */
+  messages: Lv2Image[];
 };
 
 export type Lv2ResultsBlock = {
@@ -80,10 +123,21 @@ export type Lv2ResultsBlock = {
   eyebrow: string;
   heading: string;
   intro: string;
-  veil: { label: string; note: string };
+  /** One line under the intro: how to see a view full size. */
+  hint: string;
   patients: Lv2Patient[];
   gallery: Lv2Link;
   disclaimer: string;
+};
+
+/** A short statement on a tinted tile (draft 2's "An Honest Assessment"). */
+export type Lv2CalloutBlock = {
+  kind: "callout";
+  id: string;
+  tone: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  body: string;
 };
 
 /** What Lipo 360 is, the three diagrams back to back, then incisions: one block so nothing can land between them. */
@@ -95,6 +149,8 @@ export type Lv2ProcedureBlock = {
   body: string[];
   support: string;
   marking: { image: Lv2Image; caption: string };
+  /** Draft 2's "What Is Lipo 360?", right above the diagrams it introduces. */
+  diagramsIntro?: { heading: string; body: string };
   diagrams: Lv2Figure[];
   incisions: {
     id: string;
@@ -110,6 +166,7 @@ export type Lv2ProcedureBlock = {
 export type Lv2ExperienceBlock = {
   kind: "experience";
   id: string;
+  tone?: Lv2Tone;
   eyebrow: string;
   heading: string;
   cards: Lv2Card[];
@@ -118,18 +175,18 @@ export type Lv2ExperienceBlock = {
 export type Lv2TestimonialsBlock = {
   kind: "testimonials";
   id: string;
+  tone?: Lv2Tone;
   eyebrow: string;
   heading: string;
   intro: string;
   videos: Lv2Video[];
-  /** Patients' own messages and reviews (screenshots, published with their consent). */
-  screenshots?: { heading: string; items: Lv2Image[] };
   more: Lv2Link;
 };
 
 export type Lv2DestinationBlock = {
   kind: "destination";
   id: string;
+  tone?: Lv2Tone;
   eyebrow: string;
   heading: string;
   body: string[];
@@ -141,12 +198,88 @@ export type Lv2DestinationBlock = {
   reel: Lv2Video;
 };
 
-export type Lv2FaqBlock = {
-  kind: "faq";
+/* ---- generic long-form blocks (draft 2), rendered by guide.tsx ---- */
+
+/** Text with an optional opening statement, lead-in points, a tinted aside and an image beside it. */
+export type Lv2ProseBlock = {
+  kind: "prose";
+  id: string;
+  tone: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  /** Opening statement, set larger than the body. */
+  lead?: string;
+  body: string[];
+  /** "Lead-in: text" points after the body. */
+  points?: Lv2Card[];
+  /** Closing line after the points. */
+  outro?: string;
+  /** A second, related topic on a tinted tile. */
+  aside?: Lv2TextItem;
+  image?: Lv2Picture;
+  /** The image's side from tablet up (phones stack it). Default "end". */
+  imageSide?: "start" | "end";
+};
+
+/** Titled points in a ruled grid. */
+export type Lv2PointsBlock = {
+  kind: "points";
+  id: string;
+  tone: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  intro?: string;
+  items: Lv2TextItem[];
+  /** Columns from desktop up. */
+  columns: 2 | 3;
+  numbered?: boolean;
+  image?: Lv2Picture;
+};
+
+/** Long lists as native <details>, in groups (why some patients are unhappy, complications). */
+export type Lv2DisclosureBlock = {
+  kind: "disclosure";
+  id: string;
+  tone: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  intro?: string;
+  groups: { title?: string; items: Lv2Card[] }[];
+};
+
+/** The doctor's first-person lessons, on a dark band beside his portrait. */
+export type Lv2LessonsBlock = {
+  kind: "lessons";
   id: string;
   eyebrow: string;
   heading: string;
-  items: Lv2Faq[];
+  items: Lv2Card[];
+  portrait: Lv2Image;
+};
+
+/** Revision liposuction, with the views of one patient of the results block. */
+export type Lv2RevisionBlock = {
+  kind: "revision";
+  id: string;
+  tone: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  body: string;
+  /** The questions he asks himself before recommending a revision. */
+  questions: string[];
+  /** Number of a patient in the results block: its tiles and lightbox render here too. */
+  patient: string;
+  link: Lv2Link;
+};
+
+export type Lv2FaqBlock = {
+  kind: "faq";
+  id: string;
+  tone?: Lv2Tone;
+  eyebrow: string;
+  heading: string;
+  /** The first group is the prototype's ten questions, in his order; the rest come from draft 2. */
+  groups: { title?: string; items: Lv2Faq[] }[];
 };
 
 export type Lv2ClosingBlock = {
@@ -170,13 +303,23 @@ export type Lv2ConsultationBlock = {
   body: string;
 };
 
+export type Lv2GuideBlock =
+  | Lv2ProseBlock
+  | Lv2PointsBlock
+  | Lv2DisclosureBlock
+  | Lv2LessonsBlock
+  | Lv2RevisionBlock;
+
 export type Lv2Block =
   | Lv2HeroBlock
+  | Lv2WhyBlock
   | Lv2ResultsBlock
+  | Lv2CalloutBlock
   | Lv2ProcedureBlock
   | Lv2ExperienceBlock
   | Lv2TestimonialsBlock
   | Lv2DestinationBlock
+  | Lv2GuideBlock
   | Lv2FaqBlock
   | Lv2ClosingBlock
   | Lv2ConsultationBlock;
@@ -189,11 +332,11 @@ export type Lv2Page = {
   blocks: Lv2Block[];
 };
 
-/** Veiled preview and original for a before/after view id (client code imports them from the -media module). */
+/** Where the before/after files live (client code imports them from the -media module). */
 export { BA_FULL_DIR, BA_SIZE } from "@/lib/landings/lipo-360-v2-media";
 
 /** "212-653-8726", the format on the client's call buttons. */
-const PHONE = siteConfig.phone.display.replace(/[()]/g, "").replace(" ", "-");
+export const PHONE = siteConfig.phone.display.replace(/[()]/g, "").replace(" ", "-");
 const CALL: Lv2Link = { label: `Call ${PHONE}`, href: `tel:${siteConfig.phone.tel}` };
 const REQUEST: Lv2Link = { label: "Request Consultation", href: "#consultation" };
 
@@ -232,11 +375,29 @@ export const LIPO_360_V2: Lv2Page = {
       ],
       call: CALL,
       primary: REQUEST,
-      photo: {
-        src: "/img/team/dr-kalsow-whitecoat.jpg",
-        alt: "Dr. Sergei Kalsow, MD, smiling, in a white coat over surgical scrubs at his New York City practice",
-        width: 933,
-        height: 1400,
+      photos: [
+        // The AI portrait the client asked for on 29 Sep (draft 2's hero
+        // photo, "Sergei Kalsow MD NYC" in his Drive), cropped to about 3:4.
+        {
+          src: "/img/portrait/dr-kalsow-dreams.jpg",
+          alt: "Portrait of Dr. Sergei Kalsow, MD, in a dark suit and tie",
+          width: 1254,
+          height: 1254,
+          frame: 0.76,
+        },
+        {
+          src: "/img/team/dr-kalsow-whitecoat.jpg",
+          alt: "Dr. Sergei Kalsow, MD, smiling, in a white coat over surgical scrubs at his New York City practice",
+          width: 933,
+          height: 1400,
+        },
+      ],
+      // the white-coat photo's head and shoulders (168x216, shown at 56x72)
+      avatar: {
+        src: "/img/lipo-v2/whitecoat-avatar.jpg",
+        alt: "",
+        width: 168,
+        height: 216,
       },
       // IMG_0877.MOV ("087"): the doctor marking a patient. A short muted
       // cut without her face and with as little exposure as possible.
@@ -249,7 +410,87 @@ export const LIPO_360_V2: Lv2Page = {
         // short on purpose: on phones it rides on the clip as a pill
         caption: "Standing markings",
       },
-      mobileDetailsAfter: "results",
+      mobileDetailsAfter: "top",
+    },
+    {
+      kind: "why",
+      id: "why-dr-kalsow",
+      eyebrow: "Thousands of happy patients",
+      heading: "Why Thousands of Patients Choose Dr. Kalsow",
+      // Draft 2's six reasons, his words (grammar corrected). Where he wrote a
+      // single sentence, the short title is ours and the sentence is his.
+      reasons: [
+        { title: "Results", body: "Unparalleled for a particular body type." },
+        { title: "Experience behind thousands of procedures", body: "More than 5,000 Awake Lipo 360 cases performed." },
+        {
+          title: "Dr. Kalsow, personally",
+          body: "Dr. Kalsow performs all his procedures personally and sees all his patients personally before and after surgery.",
+        },
+        {
+          title: "Advanced revision body contouring",
+          body: "Patients from around the world come to Dr. Kalsow after having liposuction elsewhere.",
+        },
+        {
+          title: "A practice dedicated to awake body contouring",
+          body: "An experienced, specialized team and coordinators.",
+        },
+        {
+          title: "The ability to do it awake",
+          body: "Internationally recognized as the leading expert in Awake Lipo 360.",
+        },
+      ],
+      // The doctor's two ChatGPT compositions of the screenshots (on his
+      // Squarespace prototype page), split into one card per patient
+      // (consent confirmed by Nico on 28 Sep).
+      messages: [
+        {
+          src: "/img/lipo-v2/testimonials/t1-corvette.jpg",
+          alt: "A patient's message: “I'm so happy with my results!!! My husband is so happy too, he said that its like having a new Corvette”, with a photo of her after surgery.",
+          width: 970,
+          height: 1365,
+        },
+        {
+          src: "/img/lipo-v2/testimonials/t2-review.jpg",
+          alt: "A patient's review with her photo: “Dr. kalsow is a great license experience Doctor. Dr Kalsow Did my 360 BBL on January 25,2020. I give Dr.Kalsow All 5 stars. He Grant me excellent results with my 360 BBL surgery. He definitely enhanced my figure and gave me a wonderful shape that I'm in love with. I'm glad I had my 360 BBL surgery with Dr.Kalsow. He's the best for 360 Bbl if you in need of a excellent Doctor Dr. is your man. I'm A K-Doll now. Thank you so much Dr. Kalsow.” The practice adds: “This patient wanted a tiny waist and to be curvy, she couldn't be happier with her results!”",
+          width: 580,
+          height: 950,
+        },
+        {
+          src: "/img/lipo-v2/testimonials/t3-seven-weeks.jpg",
+          alt: "Two patient messages. A mirror photo with “Thank you, I love my result”, and a direct message: “Hiii! I'm almost 7 weeks post op and I just wanted to say I LOVE my results, you're amazing, thank you so much”.",
+          width: 450,
+          height: 1000,
+        },
+        {
+          src: "/img/lipo-v2/testimonials/t4-one-year.jpg",
+          alt: "A patient's message: “Hello Dr K. In 4 days it'll be exactly a year since you changed my life. I'm still in stock with the changes and the motivation it's brought my life. Couldn't thank you enough!!”, with her photo. The practice adds: “The photo is distorted but the curves are visible!”",
+          width: 450,
+          height: 684,
+        },
+      ],
+    },
+    {
+      kind: "prose",
+      id: "philosophy",
+      tone: "white",
+      eyebrow: "How he works",
+      heading: "Dr. Kalsow’s Philosophy",
+      // Draft 2, word for word (its em dashes as commas).
+      lead: "The goal is the best possible result while maintaining safety.",
+      body: [
+        "In liposuction, the surgeon must be able to remove the maximum amount of fat possible safely for each person’s body. That is the first requirement. The name of a technique or piece of equipment matters far less than what the surgeon can accomplish with it.",
+        "The second requirement is the ability to sculpt: knowing where to remove the most fat, how to shape the transition between areas, and where to be more conservative to avoid dents, particularly in the lower abdomen.",
+        "Every part of Dr. Kalsow’s approach, from numbing and positioning to the tools he uses, is focused on removing the maximum amount of fat possible safely while creating a smooth, sculpted result.",
+      ],
+      // A real photo: draft 2 has the navy-suit ChatGPT portrait here, which
+      // does not look like him (see the vault).
+      image: {
+        src: "/img/portrait/dr-kalsow-home.jpg",
+        alt: "Dr. Sergei Kalsow, MD, smiling, in surgical scrubs and cap at his practice",
+        width: 1500,
+        height: 2130,
+      },
+      imageSide: "start",
     },
     {
       kind: "results",
@@ -258,10 +499,7 @@ export const LIPO_360_V2: Lv2Page = {
       heading: "Awake Lipo 360 Results",
       intro:
         "Seven of Dr. Kalsow’s Awake Lipo 360 patients, each photographed from the front, the side and the back. The photographs are shown uncropped, as the practice took them.",
-      veil: {
-        label: "Medical photos · Tap to view",
-        note: "These are clinical before-and-after photographs and include partial nudity. Each one opens full size when you tap it.",
-      },
+      hint: "Tap or click any photo to see it full size.",
       patients: [
         {
           number: "01",
@@ -333,6 +571,15 @@ export const LIPO_360_V2: Lv2Page = {
       disclaimer: "Before-and-after photographs show individual outcomes and do not guarantee a particular result.",
     },
     {
+      kind: "callout",
+      id: "honest-assessment",
+      tone: "white",
+      eyebrow: "At your consultation",
+      heading: "An Honest Assessment",
+      // Draft 2, word for word (its em dash as a comma).
+      body: "Dr. Kalsow will tell you what is possible, what is not, and how much fat he expects he can remove or transfer, so you can decide whether surgery is right for you. If he believes the change would be too small or that you would be unhappy with the result, he will tell you, and may advise against surgery. His priority is a meaningful result for you, not putting you through surgery and recovery without a worthwhile benefit.",
+    },
+    {
       kind: "procedure",
       id: "what-is-lipo-360",
       // Heading and first paragraphs from the doctor's prototype.
@@ -353,6 +600,12 @@ export const LIPO_360_V2: Lv2Page = {
         },
         caption:
           "Dr. Kalsow marking the patient for Lipo 360. The procedure illustrates the target areas of the Lipo 360 procedure.",
+      },
+      // Draft 2's "What Is Lipo 360?" (its sentence pointing at the
+      // diagrams is left out: they follow right under it).
+      diagramsIntro: {
+        heading: "What Is Lipo 360?",
+        body: "“Lipo 360” means liposuction around the midsection, typically including the abdomen, waist, sides, and back. The exact areas vary from person to person. During your consultation, Dr. Kalsow marks the areas he recommends treating so you can see what “360” means for your body.",
       },
       // The doctor's three diagrams, in his order, back to back (captions
       // from draft 2; the fat transfer list is shortened to the areas the
@@ -417,9 +670,13 @@ export const LIPO_360_V2: Lv2Page = {
         },
       },
     },
+    NAME_BLOCK,
+    HOW_BLOCK,
+    CANDIDATE_BLOCK,
     {
       kind: "experience",
       id: "experience",
+      tone: "cream",
       eyebrow: "Experience that changes the operation",
       heading: "What Thousands Of Awake Lipo 360 Cases Teach You.",
       cards: [
@@ -441,11 +698,13 @@ export const LIPO_360_V2: Lv2Page = {
     {
       kind: "testimonials",
       id: "testimonials",
+      // lavender = the patients' proof (results, testimonials, revision), and a break
+      // in the long white / cream run between the gallery and the dark lessons band
+      tone: "lavender",
       eyebrow: "In their own words",
       heading: "Patients, in their own words.",
-      intro: "Video testimonials and messages from Dr. Kalsow’s patients.",
-      // The same real videos as /testimonials, then the screenshots of the
-      // doctor's prototype (consent confirmed by Nico on 28 Sep).
+      intro: "Video testimonials from Dr. Kalsow’s patients.",
+      // The same real videos as /testimonials.
       videos: [
         {
           src: "/video/testimonials/alex.mp4",
@@ -472,43 +731,12 @@ export const LIPO_360_V2: Lv2Page = {
           caption: "Arm + upper back liposuction",
         },
       ],
-      // The doctor's two ChatGPT compositions of the screenshots (on his
-      // Squarespace prototype page), split into one card per patient. The alt
-      // text is the message itself, word for word.
-      screenshots: {
-        heading: "Messages from patients",
-        items: [
-          {
-            src: "/img/lipo-v2/testimonials/t1-corvette.jpg",
-            alt: "A patient's message: “I'm so happy with my results!!! My husband is so happy too, he said that its like having a new Corvette”, with a photo of her after surgery.",
-            width: 970,
-            height: 1365,
-          },
-          {
-            src: "/img/lipo-v2/testimonials/t2-review.jpg",
-            alt: "A patient's review with her photo: “Dr. kalsow is a great license experience Doctor. Dr Kalsow Did my 360 BBL on January 25,2020. I give Dr.Kalsow All 5 stars. He Grant me excellent results with my 360 BBL surgery. He definitely enhanced my figure and gave me a wonderful shape that I'm in love with. I'm glad I had my 360 BBL surgery with Dr.Kalsow. He's the best for 360 Bbl if you in need of a excellent Doctor Dr. is your man. I'm A K-Doll now. Thank you so much Dr. Kalsow.” The practice adds: “This patient wanted a tiny waist and to be curvy, she couldn't be happier with her results!”",
-            width: 580,
-            height: 950,
-          },
-          {
-            src: "/img/lipo-v2/testimonials/t3-seven-weeks.jpg",
-            alt: "Two patient messages. A mirror photo with “Thank you, I love my result”, and a direct message: “Hiii! I'm almost 7 weeks post op and I just wanted to say I LOVE my results, you're amazing, thank you so much”.",
-            width: 450,
-            height: 1000,
-          },
-          {
-            src: "/img/lipo-v2/testimonials/t4-one-year.jpg",
-            alt: "A patient's message: “Hello Dr K. In 4 days it'll be exactly a year since you changed my life. I'm still in stock with the changes and the motivation it's brought my life. Couldn't thank you enough!!”, with her photo. The practice adds: “The photo is distorted but the curves are visible!”",
-            width: 450,
-            height: 684,
-          },
-        ],
-      },
       more: { label: "More Patient Stories", href: "/testimonials" },
     },
     {
       kind: "destination",
       id: "destination",
+      tone: "cream",
       eyebrow: "Why patients travel",
       heading: "A Destination Practice For Awake Lipo 360.",
       body: [
@@ -553,7 +781,7 @@ export const LIPO_360_V2: Lv2Page = {
       // From draft 2, "For Our Destination Patients".
       call: {
         heading: "Traveling to New York?",
-        body: `Once you land in New York, call or text us at ${PHONE} to let us know you’ve arrived. Send us the name of your hotel or the address where you’ll be staying and the best number to reach you while you’re here.`,
+        body: `Once you land in New York, call or text us at ${PHONE} to let us know you’ve arrived. Send us the name of your hotel or the address where you’ll be staying and the best number to reach you while you’re here. If your flight is delayed or your plans change, just keep us updated.`,
         link: CALL,
       },
       reel: {
@@ -565,56 +793,167 @@ export const LIPO_360_V2: Lv2Page = {
         caption: "From Dr. Kalsow’s Instagram, @doctor.serge.",
       },
     },
+    CHOICES_BLOCK,
+    LIMITATIONS_BLOCK,
+    UNHAPPY_BLOCK,
+    COMPLICATIONS_BLOCK,
+    LESSONS_BLOCK,
+    REVISION_BLOCK,
+    MORE_BLOCK,
     {
       kind: "faq",
       id: "faq",
+      tone: "cream",
       eyebrow: "Frequently asked questions",
       heading: "Awake Lipo 360 FAQ",
-      // Answers from the doctor's draft 2 or the ones variant A already
-      // publishes (#3 verbatim from A, #7 from the brief).
-      items: [
+      groups: [
         {
-          q: "What is Awake Lipo 360?",
-          a: "“Lipo 360” means liposuction around the midsection, typically including the abdomen, waist, sides and back; the exact areas vary from person to person. Dr. Kalsow performs Lipo 360 while the patient is awake. He treats each planned area as thoroughly as he safely can, then sculpts the transitions to create the desired shape.",
+          // The prototype's ten questions, in his order. Answers from the
+          // doctor's draft 2 or the ones variant A already publishes (#3
+          // verbatim from A, #7 from the brief).
+          items: [
+            {
+              q: "What is Awake Lipo 360?",
+              a: "“Lipo 360” means liposuction around the midsection, typically including the abdomen, waist, sides and back; the exact areas vary from person to person. Dr. Kalsow performs Lipo 360 while the patient is awake. He treats each planned area as thoroughly as he safely can, then sculpts the transitions to create the desired shape.",
+            },
+            {
+              q: "What is the difference between Lipo 360 and regular liposuction?",
+              a: "Lipo 360 is liposuction. Terms such as “Lipo 360” describe a treatment area; they do not describe a special machine or guarantee a result. You can choose liposuction of specific areas, such as the abdomen, flanks or back, instead of treating the full midsection. The trade-off is that an untreated area may interrupt the transition in your contour.",
+            },
+            {
+              q: "Am I completely pain-free during awake liposuction?",
+              a: "The numbing process and parts of the procedure can be uncomfortable. Patients may feel pressure or movement. Comfort varies, and the procedure should not be described as pain-free.",
+            },
+            {
+              // Assembled only from sentences of draft 2 (candidacy and
+              // limitations), nothing added; approved by the client on 28 Sep.
+              q: "Can Awake Lipo 360 create an hourglass shape without fat transfer?",
+              a: "Lipo 360 can target the waist, love handles, abdomen and back to create more curves. The rib cage and underlying bone structure limit how narrow the waist can become. Fat transfer may soften hip dips, but it may not fill them completely; the result depends on your anatomy, skin and how much fat is available. At your consultation, Dr. Kalsow will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
+            },
+            {
+              q: "Do you use drains?",
+              a: "Typically, no. Dr. Kalsow leaves the small liposuction incisions open so excess tumescent fluid can drain during the first day. He does not routinely use separate surgical drains. The red-tinged drainage can look alarming, so his team explains what to expect and when to call. Leaving incisions open does not replace careful limits on the amount of lidocaine used.",
+            },
+            {
+              q: "Will I have scars?",
+              a: "Yes, small ones. All incisions leave scars, even when they are small. Dr. Kalsow uses small access points of approximately 3 mm, positioned to reach the planned areas, using creases or less visible locations when possible. His typical Lipo 360 plan uses approximately 12 incisions; fat transfer may require two more. He will show you the proposed locations during your consultation.",
+            },
+            {
+              q: "Can you correct liposuction performed somewhere else?",
+              a: "Yes, Dr. Kalsow performs revision liposuction to address contour irregularities, asymmetry, or unsatisfactory results from a prior procedure. A consultation will determine the best approach for your specific case.",
+            },
+            {
+              q: "How long do results from Awake Lipo 360 last?",
+              a: "The fat cells removed are gone, so the change can last many years. Weight gain can enlarge the fat cells that remain and change your proportions. Pregnancy, aging and changes in skin quality can also alter the result.",
+            },
+            {
+              q: "Can I travel to New York for surgery?",
+              // "Potentially, yes." as variant A says it: no source supports an unconditional yes
+              a: `Potentially, yes. Dr. Kalsow treats patients who come to New York from many U.S. states and from outside the United States. Destination patients need a plan for consultation, preoperative clearance, local accommodation, transportation, postoperative visits and safe timing for travel home. Once you land, call or text the office at ${PHONE} to let us know you’ve arrived.`,
+            },
+            {
+              q: "How do I know whether I am a candidate?",
+              a: "The ideal candidate is generally near a comfortable, stable weight, in good health, and has skin that can adjust to the new contour. Dr. Kalsow also evaluates patients whose circumstances call for a more individualized plan, such as a higher BMI, major weight loss or a previous liposuction. At your consultation, he will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
+            },
+          ],
         },
         {
-          q: "What is the difference between Lipo 360 and regular liposuction?",
-          a: "Lipo 360 is liposuction. Terms such as “Lipo 360” describe a treatment area; they do not describe a special machine or guarantee a result. You can choose liposuction of specific areas, such as the abdomen, flanks or back, instead of treating the full midsection. The trade-off is that an untreated area may interrupt the transition in your contour.",
+          // Draft 2's FAQ from here on, without its source notes in brackets.
+          // Left out: "Is ultrasound used for fat transfer?" (the draft itself
+          // says to confirm the practice's protocol before publishing it) and
+          // the questions answered above or in the sections of the page.
+          title: "The procedure",
+          items: [
+            {
+              q: "What kind of liposuction does Dr. Kalsow perform?",
+              a: "He uses power-assisted liposuction (PAL). The cannula moves rapidly over a short distance while he controls where it travels and how the areas are sculpted. The device assists the surgeon; it does not determine the result.",
+            },
+            {
+              // the draft's second sentence is a note to the author, not copy
+              q: "What cannulas does he use?",
+              a: "Cannula size and shape may vary by area, the thickness of the fat layer, and whether the goal is fat removal or finer sculpting.",
+            },
+            {
+              q: "Are there other types of liposuction?",
+              a: "Yes. Surgeons may use traditional suction, power assistance, ultrasound assistance, laser assistance, or water assistance. These describe the tool used to help remove fat. The choice of tool does not replace planning, judgment, or careful contouring.",
+            },
+            {
+              q: "What makes Lipo 360 difficult to sculpt well?",
+              a: "Treating the abdomen alone can leave the flanks, bra rolls, or back out of balance. Conversely, removing too much in a thin area can create a dent. The surgeon must know where to be thorough, where to blend, and where to stop. Performing an extensive case while the patient is awake also requires experience with numbing, positioning, comfort, and steady execution throughout the procedure.",
+            },
+            {
+              q: "How much can be removed? Is that fat or fluid?",
+              a: "The amount depends on your body and the setting in which surgery is performed. The collection container holds total aspirate: fat plus tumescent fluid and other fluid. It is not a measurement of pure fat. Five liters of total aspirate is commonly used as the threshold for large-volume liposuction; it is not a promise that five liters of fat can or should be removed.",
+            },
+            {
+              // the draft points to an insurance page the site does not have
+              q: "Does insurance cover Lipo 360?",
+              a: `Lipo 360 is a cosmetic procedure and is generally not covered by health insurance. If you are looking for a procedure that may qualify for insurance coverage, call the office at ${PHONE}.`,
+            },
+          ],
         },
         {
-          q: "Am I completely pain-free during awake liposuction?",
-          a: "The numbing process and parts of the procedure can be uncomfortable. Patients may feel pressure or movement. Comfort varies, and the procedure should not be described as pain-free.",
+          title: "Results and expectations",
+          items: [
+            {
+              q: "Does removed fat “move” to another part of my body?",
+              a: "No. Fat removed by liposuction does not travel elsewhere. If you gain weight later, fat cells that remain, in treated and untreated areas, can enlarge. Maintaining a stable weight helps preserve your shape.",
+            },
+            {
+              q: "What percentage improvement should I expect: 50% flatter or 80% flatter?",
+              a: "There is no reliable percentage that applies to everyone. At your consultation, Dr. Kalsow can identify which fullness is removable fat, which is loose skin or muscle separation, and which may remain. Before-and-after photos of patients with similar anatomy are more useful than a promised percentage.",
+            },
+            {
+              q: "Does liposuction improve cellulite?",
+              a: "Liposuction is not a reliable cellulite treatment. Removing fat may leave cellulite unchanged or make it more visible in some areas, particularly where the fat layer is thin. Fat transfer does not reliably erase it either.",
+            },
+            {
+              q: "How can I get the best result?",
+              a: "Start with an honest assessment of what your anatomy allows. Follow your postoperative instructions, give swelling time to resolve, and maintain a stable weight. Compression and follow-up matter, but neither can turn loose skin into the result of a tummy tuck.",
+            },
+            {
+              q: "How can I tell whether my abdominal fat is under the skin or inside the abdomen?",
+              a: "Fat just beneath the skin can generally be pinched. Visceral fat lies deeper, behind the abdominal wall, and cannot be removed by liposuction. An examination also helps distinguish fat from loose skin, muscle separation, or a hernia.",
+            },
+          ],
         },
         {
-          // Assembled only from sentences of draft 2 (candidacy and
-          // limitations), nothing added; approved by the client on 28 Sep.
-          q: "Can Awake Lipo 360 create an hourglass shape without fat transfer?",
-          a: "Lipo 360 can target the waist, love handles, abdomen and back to create more curves. The rib cage and underlying bone structure limit how narrow the waist can become. Fat transfer may soften hip dips, but it may not fill them completely; the result depends on your anatomy, skin and how much fat is available. At your consultation, Dr. Kalsow will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
+          title: "Fat transfer and BBL",
+          items: [
+            {
+              q: "Can fat transfer fill my hip dips?",
+              a: "It may soften them, but hip dips have different causes. Some reflect a lack of fat; others are strongly influenced by the pelvis, muscle, and tightness of the tissues. A patient with a narrow frame and little available fat should not expect fat transfer alone to create a completely different body shape.",
+            },
+            {
+              q: "Why can a buttock still look square after hip-dip filling?",
+              a: "The surrounding contour matters. Prominent love handles or fullness above the buttocks can preserve a square appearance even if volume is added to the hips. Dr. Kalsow assesses where fat should be removed as well as where it might be added.",
+            },
+            {
+              q: "Does Dr. Kalsow ever reduce the buttocks?",
+              a: "In selected patients, he may conservatively reduce fullness in specific areas of the buttocks as part of the overall shape. The plan depends on the existing contour and the result you want.",
+            },
+            {
+              q: "Can I use someone else’s fat for a BBL or breast fat transfer? Can I donate mine?",
+              a: "Standard fat transfer uses your own fat. You cannot simply transfer fat suctioned from one person into another. Processed donor-derived products exist, but they are different from transferring a person’s freshly removed, living fat.",
+            },
+          ],
         },
         {
-          q: "Do you use drains?",
-          a: "Typically, no. Dr. Kalsow leaves the small liposuction incisions open so excess tumescent fluid can drain during the first day. He does not routinely use separate surgical drains. The red-tinged drainage can look alarming, so his team explains what to expect and when to call.",
-        },
-        {
-          q: "Will I have scars?",
-          a: "Yes, small ones. All incisions leave scars, even when they are small. Dr. Kalsow uses small access points of approximately 3 mm, positioned to reach the planned areas, using creases or less visible locations when possible. His typical Lipo 360 plan uses approximately 12 incisions; fat transfer may require two more. He will show you the proposed locations during your consultation.",
-        },
-        {
-          q: "Can you correct liposuction performed somewhere else?",
-          a: "Yes, Dr. Kalsow performs revision liposuction to address contour irregularities, asymmetry, or unsatisfactory results from a prior procedure. A consultation will determine the best approach for your specific case.",
-        },
-        {
-          q: "How long do results from Awake Lipo 360 last?",
-          a: "The fat cells removed are gone, so the change can last many years. Weight gain can enlarge the fat cells that remain and change your proportions. Pregnancy, aging and changes in skin quality can also alter the result.",
-        },
-        {
-          q: "Can I travel to New York for surgery?",
-          // "Potentially, yes." as variant A says it: no source supports an unconditional yes
-          a: `Potentially, yes. Dr. Kalsow treats patients who come to New York from many U.S. states and from outside the United States. Destination patients need a plan for consultation, preoperative clearance, local accommodation, transportation, postoperative visits and safe timing for travel home. Once you land, call or text the office at ${PHONE} to let us know you’ve arrived.`,
-        },
-        {
-          q: "How do I know whether I am a candidate?",
-          a: "The ideal candidate is generally near a comfortable, stable weight, in good health, and has skin that can adjust to the new contour. Dr. Kalsow also evaluates patients whose circumstances call for a more individualized plan, such as a higher BMI, major weight loss or a previous liposuction. At your consultation, he will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
+          title: "Tummy tuck",
+          items: [
+            {
+              q: "Why might a tummy tuck without enough liposuction leave an incomplete result?",
+              a: "A tummy tuck can remove loose skin and repair separated abdominal muscles, but it may leave fullness at the waist, flanks, or back. Liposuction of appropriate surrounding areas can improve the transition. The amount that can safely be combined with a tummy tuck depends on the surgical plan and blood supply.",
+            },
+            {
+              q: "Will my abdomen be completely flat after a tummy tuck?",
+              a: "Not necessarily. Repairing separated muscles can bring the abdominal wall inward, somewhat like bringing the sides of an overfilled suitcase together, but fat inside the abdomen can still push it outward. Neither a tummy tuck nor liposuction removes that internal, or visceral, fat.",
+            },
+            {
+              q: "Will a tummy tuck remove stretch marks?",
+              a: "A tummy tuck removes stretch marks only if they are on skin that is removed. Stretch marks on skin that remains may move position or become less noticeable, but the operation does not erase them. Liposuction does not remove stretch marks.",
+            },
+          ],
         },
       ],
     },

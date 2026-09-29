@@ -1,0 +1,278 @@
+/* ============================================================
+   Awake Lipo 360 · VARIANT B — the long-form "guide" blocks of the
+   doctor's draft 2 (components/marketing/lipo-v2/guide.tsx): prose,
+   points, disclosure, lessons and revision.
+
+   Imported by guide.tsx, so like lipo-v2.css it ships only with
+   /lipo-360-v2 and never reaches variant A. Every selector is lv2-scoped.
+   It relies on the tokens of globals.css (@theme and :root) and on the
+   shared pieces of lipo-v2.css: .lv2-frame / .lv2-frame--bubble (media
+   frames), .lv2-cap, .lv2-intro, .lv2-ruled-num, .lv2-dark, and the site's
+   .faq-* details. Where a rule here restyles one of those, it doubles
+   the class so it does not depend on which sheet loads first.
+
+   Grammar (same as the rest of B): arch and message-bubble frames,
+   ruled items with one accent dot on the top rule, Cormorant italic
+   numerals, tiles only for asides. Text columns stay near 60-65ch
+   (the client's "nobody reads" brief): two columns on desktop, one on
+   phones.
+   ============================================================ */
+
+/* ==== LV2 · GUIDE, SHARED ==== */
+.lv2-prose, .lv2-pts, .lv2-disc, .lv2-lessons, .lv2-rev { overflow-wrap: break-word; }
+/* one accent dot on the top rule of each ruled item */
+.lv2-prose-point::before,
+.lv2-prose-aside::before,
+.lv2-pts-list > li::before,
+.lv2-lessons-list > li::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--space-1));
+  left: 0;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--text-accent);
+}
+
+/* ==== LV2 · PROSE ==== */
+/* phones and tablets: heading, photo, text */
+.lv2-prose-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "media" "copy"; }
+.lv2-prose-head { grid-area: head; min-width: 0; }
+.lv2-prose-head .h-sec { max-width: 20ch; }
+.lv2-prose-head .divider-svg { margin: var(--space-3) 0 var(--space-4); }
+.lv2-prose-copy { grid-area: copy; min-width: 0; }
+/* direct children only: the aside has paragraphs of its own */
+.lv2-prose-copy > p {
+  margin: 0 0 var(--space-3);
+  max-width: 58ch;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+.lv2-prose-copy > p:last-child { margin-bottom: 0; }
+/* the opening statement (like the procedure's support line, one step larger) */
+.lv2-prose-copy > p.lv2-prose-lead {
+  margin-bottom: var(--space-4);
+  max-width: 30ch;
+  font-family: var(--font-display);
+  font-size: clamp(25px, 2.5vw, 30px);
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--text-accent);
+  text-wrap: balance;
+}
+.lv2-prose-copy > p.lv2-prose-outro, .lv2-prose-more > .lv2-prose-outro { color: var(--text-primary); }
+.lv2-prose-figure { grid-area: media; min-width: 0; width: 100%; max-width: 560px; margin: var(--space-1) 0 var(--space-5); }
+.lv2-prose-grid[data-media="tall"] .lv2-prose-figure { max-width: 440px; }
+.lv2-prose-frame { aspect-ratio: var(--lv2-r, 3 / 2); }
+.lv2-frame.lv2-prose-frame { background: var(--color-primary-100); }
+/* tall photos: the site's arch; stacked, cropped to 4:5 so a portrait
+   does not fill a whole phone screen (heads sit in the upper third) */
+.lv2-frame.lv2-prose-frame--arch { aspect-ratio: 4 / 5; border-radius: var(--radius-arch); }
+.lv2-prose-frame--arch > img { object-position: 50% 28%; }
+.lv2-prose-figure .lv2-cap { margin-top: var(--space-2); }
+
+/* a second, related topic: a ruled block with the accent dot (tiles are for point data only) */
+.lv2-prose-aside { position: relative; margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--border-medium); }
+.lv2-prose-aside-title { margin: 0 0 var(--space-3); font-family: var(--font-display); font-size: clamp(25px, 2.4vw, 29px); font-weight: 400; line-height: 1.2; color: var(--text-primary); text-wrap: balance; }
+.lv2-prose-aside p { margin: 0 0 var(--space-3); max-width: 58ch; font-family: var(--font-sans); font-size: 16px; line-height: 1.75; color: var(--text-secondary); }
+.lv2-prose-aside p:last-child { margin-bottom: 0; }
+
+/* lead-in points and the closing line, under the pair */
+.lv2-prose-more { margin-top: var(--space-6); }
+.lv2-prose-points { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4) var(--space-6); }
+.lv2-prose-point { position: relative; min-width: 0; padding-top: var(--space-3); border-top: 1px solid var(--border-medium); }
+.lv2-prose-point dt { margin: 0 0 var(--space-1); font-family: var(--font-display); font-size: 22px; font-weight: var(--fw-medium); line-height: 1.25; color: var(--text-primary); }
+.lv2-prose-point dd { margin: 0; max-width: 58ch; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: var(--text-secondary); }
+.lv2-prose-more > .lv2-prose-outro { margin: var(--space-6) 0 0; max-width: 58ch; font-family: var(--font-sans); font-size: 16px; line-height: 1.75; }
+.lv2-prose-more > .lv2-prose-aside { max-width: 760px; }
+
+@media (min-width: 600px) {
+  .lv2-prose-points { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  /* text | photo. The spacer rows centre the text on a taller photo; a
+     photo shorter than the text is centred on it instead. Portraits stay
+     at 420px, so the tallest (9:16) is not twice the height of its text. */
+  .lv2-prose-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: ". media" "head media" "copy media" ". media";
+    column-gap: var(--space-7);
+  }
+  .lv2-prose-grid[data-side="start"] { grid-template-areas: "media ." "media head" "media copy" "media ."; }
+  .lv2-prose-grid[data-media="tall"] { grid-template-columns: minmax(0, 1fr) minmax(0, 420px); }
+  .lv2-prose-grid[data-media="tall"][data-side="start"] { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); }
+  .lv2-prose-grid[data-media="none"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "head" "copy"; }
+  .lv2-prose-figure { align-self: center; margin: 0; max-width: none; }
+  .lv2-prose-grid[data-side="end"] .lv2-prose-figure { justify-self: end; }
+  .lv2-prose-grid[data-media="tall"] .lv2-prose-figure { max-width: 420px; }
+  .lv2-frame.lv2-prose-frame--arch { aspect-ratio: var(--lv2-r, 4 / 5); }
+  .lv2-prose-more { margin-top: var(--space-7); }
+}
+@media (max-width: 767px) {
+  .lv2-prose-copy > p.lv2-prose-lead { font-size: 25px; }
+}
+
+/* ==== LV2 · POINTS ==== */
+.lv2-pts-copy { min-width: 0; }
+.lv2-pts-copy .h-sec { max-width: 22ch; }
+.lv2-pts-copy .lv2-intro { margin-top: var(--space-3); }
+.lv2-pts-figure { min-width: 0; max-width: 560px; margin: var(--space-5) 0 0; }
+.lv2-frame.lv2-pts-frame { aspect-ratio: 3 / 2; background: var(--color-primary-100); }
+.lv2-pts-figure .lv2-cap { margin-top: var(--space-2); }
+.lv2-pts-list {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5) var(--space-6);
+}
+.lv2-pts-head[data-media] + .lv2-pts-list { margin-top: var(--space-7); }
+.lv2-pts-list > li { position: relative; min-width: 0; padding-top: var(--space-4); border-top: 1px solid var(--border-medium); }
+.lv2-pts-list .lv2-ruled-num { display: block; margin-bottom: var(--space-3); }
+.lv2-pts-list h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 26px; font-weight: 400; line-height: 1.15; color: var(--text-primary); text-wrap: balance; }
+.lv2-pts-list p { margin: 0; max-width: 46ch; font-family: var(--font-sans); font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+.lv2-pts-list p + p { margin-top: var(--space-2); }
+@media (min-width: 768px) {
+  .lv2-pts-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  /* heading | photo, the heading centred on it */
+  .lv2-pts-head[data-media] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); column-gap: var(--space-7); align-items: center; }
+  .lv2-pts-figure { margin: 0; max-width: none; }
+}
+@media (min-width: 1024px) {
+  .lv2-pts-list[data-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .lv2-pts-list { gap: var(--space-5); }
+  .lv2-pts-head[data-media] + .lv2-pts-list { margin-top: var(--space-6); }
+  .lv2-pts-list h3 { font-size: 24px; }
+}
+
+/* ==== LV2 · DISCLOSURE ==== */
+.lv2-disc-head { margin-bottom: var(--space-6); }
+.lv2-disc-title { min-width: 0; }
+.lv2-disc-title .h-sec { max-width: 24ch; }
+.lv2-disc-head .lv2-intro { margin-top: var(--space-3); }
+.lv2-disc-group + .lv2-disc-group { margin-top: var(--space-7); }
+.lv2-disc-group-title { margin: 0 0 var(--space-3); font-family: var(--font-display); font-size: clamp(25px, 2.4vw, 30px); font-weight: 400; line-height: 1.2; color: var(--text-primary); text-wrap: balance; }
+.lv2-disc-stacks { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* each stack opens with a rule, the site's details close each item with one */
+.lv2-disc-stack { min-width: 0; border-top: 0.5px solid var(--border-medium); }
+.lv2-disc-item.faq-item { border-bottom-color: var(--border-medium); }
+@media (min-width: 900px) {
+  .lv2-disc-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-7); align-items: end; }
+  .lv2-disc-head .lv2-intro { margin-top: 0; }
+  .lv2-disc-stacks { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-6); align-items: start; }
+}
+@media (max-width: 899px) {
+  /* one stack after the other: a single list */
+  .lv2-disc-stack + .lv2-disc-stack { border-top: 0; }
+}
+
+/* ==== LV2 · LESSONS (dark) ==== */
+/* The arch stands on the band's lower edge: the band has no bottom
+   padding, the list keeps the section's space under it instead. */
+.lv2-lessons { --lv2-lessons-end: var(--ld-section-space, var(--space-9)); }
+section.lv2-sec.lv2-lessons { padding-bottom: 0; }
+.lv2-lessons-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "list" "figure"; }
+.lv2-lessons-head { grid-area: head; min-width: 0; }
+.lv2-lessons-head .h-sec { max-width: 18ch; }
+.lv2-lessons-list {
+  grid-area: list;
+  min-width: 0;
+  list-style: none;
+  margin: var(--space-6) 0 var(--space-6);
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5) var(--space-6);
+}
+.lv2-lessons-list > li { position: relative; min-width: 0; padding-top: var(--space-4); border-top: 1px solid color-mix(in srgb, var(--color-neutral-50) 20%, transparent); }
+.lv2-lessons-list > li::before { background: var(--color-primary-200); }
+.lv2-lessons-num { display: block; margin-bottom: var(--space-2); font-family: var(--font-display); font-size: 26px; font-style: italic; line-height: 1; color: var(--color-primary-200); }
+.lv2-lessons-list h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 23px; font-style: italic; font-weight: var(--fw-medium); line-height: 1.25; color: var(--text-on-dark); text-wrap: balance; }
+.lv2-lessons-list p { margin: 0; max-width: 46ch; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: var(--color-primary-100); }
+/* his cutout in a flat arch of the lighter aubergine; the arch clips the
+   photo's cut edges (the arm at its right side, the chest at its base) */
+.lv2-lessons-figure {
+  --lv2-fig-w: min(300px, 80vw);
+  grid-area: figure;
+  justify-self: center;
+  position: relative;
+  width: var(--lv2-fig-w);
+  aspect-ratio: 513 / 660;          /* phones and tablets: head and shoulders */
+  padding-top: calc(var(--lv2-fig-w) * 0.12);   /* headroom under the arch */
+  overflow: hidden;
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
+  background: color-mix(in srgb, var(--color-primary-600) 70%, var(--color-primary-800));
+}
+.lv2-lessons-figure img { display: block; width: 100%; height: auto; }
+@media (min-width: 600px) {
+  .lv2-lessons-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lv2-lessons-figure { --lv2-fig-w: 320px; }
+}
+@media (min-width: 1200px) {
+  /* list | arch. The arch starts level with the list's first rule and
+     runs to the band's edge; he stands on its base. Not below 1200px:
+     narrower list columns run taller than the portrait and the arch
+     would be mostly empty above his head. */
+  .lv2-lessons-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+    grid-template-areas: "head head" "list figure";
+    column-gap: var(--space-7);
+  }
+  .lv2-lessons-list { margin-bottom: var(--lv2-lessons-end); }
+  .lv2-lessons-figure {
+    display: grid;
+    align-content: end;
+    align-self: stretch;
+    justify-self: stretch;
+    width: auto;
+    aspect-ratio: auto;
+    margin-top: var(--space-6);
+    padding-top: 22%;
+  }
+}
+
+/* ==== LV2 · REVISION ==== */
+.lv2-rev-head { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "copy" "questions" "more"; gap: var(--space-5); }
+.lv2-rev-copy { grid-area: copy; min-width: 0; }
+.lv2-rev-copy .h-sec { margin-bottom: var(--space-3); }
+.lv2-rev-body { margin: 0; max-width: 56ch; font-family: var(--font-sans); font-size: 16px; line-height: 1.75; color: var(--text-secondary); }
+/* the three questions: hanging Cormorant numerals, one rule between them */
+.lv2-rev-questions { grid-area: questions; min-width: 0; list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--color-primary-200); }
+.lv2-rev-questions li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 14px 0;
+  border-top: 1px solid var(--color-primary-200);
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+.lv2-rev-num { font-family: var(--font-display); font-size: 24px; font-style: italic; line-height: 1; color: var(--text-accent); }
+.lv2-rev-more { grid-area: more; min-width: 0; }
+.lv2-rev-gallery { min-width: 0; }
+@media (min-width: 900px) {
+  /* heading, sentence and link | the questions, their last rule level with the link */
+  .lv2-rev-head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "copy questions" "more questions";
+    gap: var(--space-5) var(--space-7);
+  }
+  .lv2-rev-questions { align-self: end; }
+  .lv2-rev-more { align-self: end; }
+}
+@media (max-width: 767px) {
+  .lv2-rev-questions li { font-size: 20px; }
+  .lv2-rev-more .btn-secondary { width: 100%; min-height: 48px; }
+}

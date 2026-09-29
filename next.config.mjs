@@ -32,9 +32,8 @@ const nextConfig = {
     ];
   },
   // Variant B of the Awake Lipo 360 A/B test (/lipo-360-v2) shows the
-  // doctor's clinical before/after photos only in a lightbox, after a tap;
-  // the page itself carries blurred previews. Keep the originals out of
-  // image search as well, in case anything ever links to them.
+  // doctor's clinical before/after photos, uncropped (a noindex page).
+  // Keep them out of image search as well.
   async headers() {
     return [
       {

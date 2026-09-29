@@ -6,10 +6,14 @@ import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { SwipeCarousel } from "@/components/ui/swipe-carousel";
 import { LoopVideo, VideoFacade } from "@/components/marketing/lipo-v2/media";
+import { NearImageRow } from "@/components/marketing/lipo-v2/deferred";
 import type {
   Lv2Link,
   Lv2Video,
+  Lv2Tone,
   Lv2HeroBlock,
+  Lv2WhyBlock,
+  Lv2CalloutBlock,
   Lv2ProcedureBlock,
   Lv2ExperienceBlock,
   Lv2TestimonialsBlock,
@@ -20,7 +24,8 @@ import type {
 } from "@/lib/landings/lipo-360-v2";
 
 /* ============================================================
-   Awake Lipo 360, variant B: every section except the results.
+   Awake Lipo 360, variant B: its own sections (the results are in
+   results.tsx, the long-form sections of draft 2 in guide.tsx).
    Layout only: the copy comes from lib/landings/lipo-360-v2.ts (and
    siteConfig for the phone and the address). Styled by the lv2-* rules
    between LV2-SECTIONS-START / END in lipo-v2.css plus the shared
@@ -35,6 +40,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 /** Intrinsic ratio of an image or clip, for the frame that holds it. */
 const ratio = (m: { width: number; height: number }): CSSProperties => ({ aspectRatio: `${m.width} / ${m.height}` });
+
+/** Section background for a light tone (lavender is B's own, see LV2 · SHARED). */
+export const toneClass = (tone: Lv2Tone | undefined, fallback: Lv2Tone): string =>
+  ({ white: "bg-white", cream: "bg-cream", lavender: "lv2-lavender" })[tone ?? fallback];
 
 function CallCta({ link, location, className }: { link: Lv2Link; location: string; className: string }) {
   return (
@@ -90,10 +99,12 @@ function HeroTitle({ text }: { text: string }) {
 }
 
 export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
-  const { photo, video } = block;
-  // The media row is sized from these two ratios (see LV2 · HERO in lipo-v2.css).
+  const { photos, video } = block;
+  const [first, second] = photos;
+  // The media row is sized from these ratios (see LV2 · HERO in lipo-v2.css).
   const frames = {
-    "--lv2-photo-r": String(photo.width / photo.height),
+    "--lv2-photo-r": String(first.frame ?? first.width / first.height),
+    ...(second && { "--lv2-photo2-r": String(second.frame ?? second.width / second.height) }),
     "--lv2-clip-r": String(video.width / video.height),
   } as CSSProperties;
 
@@ -108,18 +119,21 @@ export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
         </div>
 
         <div className="lv2-hero-media">
-          <div className="lv2-hero-frames" style={frames}>
-            <div className="lv2-hero-photo">
-              {/* the LCP: eager + high priority (Next 16 advises this over `preload`) */}
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                loading="eager"
-                fetchPriority="high"
-                sizes="(max-width: 767px) 50vw, (max-width: 899px) 60vw, 320px"
-              />
-            </div>
+          <div className="lv2-hero-frames" style={frames} data-photos={photos.length}>
+            {photos.slice(0, 2).map((p, i) => (
+              <div className={`lv2-hero-photo lv2-hero-photo--${i}`} key={p.src}>
+                {/* the first is the LCP: eager + high priority (Next 16 advises this over
+                    `preload`); the second is not shown on phones, so it waits (lazy) */}
+                <Image
+                  src={p.src}
+                  alt={p.alt}
+                  fill
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchPriority={i === 0 ? "high" : undefined}
+                  sizes={i === 0 ? "(max-width: 767px) calc(57vw - 23px), (max-width: 899px) 35vw, 240px" : "(max-width: 899px) 31vw, 210px"}
+                />
+              </div>
+            ))}
             <figure className="lv2-hero-clip">
               <div className="lv2-frame">
                 <LoopVideo video={video} start="load" className="lv2-fill" />
@@ -178,12 +192,77 @@ export function HeroDetails({ hero, placement }: { hero: Lv2HeroBlock; placement
   return (
     <div className="lv2-details lv2-details--mobile lv2-dark lv2-sec">
       <div className="container">
-        <Eyebrow dark>{siteConfig.surgeon}</Eyebrow>
+        {/* phones: the white-coat photo, not in the hero there, as a small arch beside his name */}
+        <div className="lv2-details-id">
+          {hero.avatar && (
+            <span className="lv2-details-avatar">
+              <Image src={hero.avatar.src} alt={hero.avatar.alt} width={hero.avatar.width} height={hero.avatar.height} sizes="56px" />
+            </span>
+          )}
+          <Eyebrow dark>{siteConfig.surgeon}</Eyebrow>
+        </div>
         {lead}
         {stats}
         {ctas("hero_mobile")}
       </div>
     </div>
+  );
+}
+
+/* ---------------- why patients choose him ---------------- */
+export function WhyBlock({ block }: { block: Lv2WhyBlock }) {
+  // the row's total ratio, so from 900px it can scale down until all four fit (LV2 · WHY)
+  const shots = {
+    "--lv2-shots-r": block.messages.reduce((sum, m) => sum + m.width / m.height, 0).toFixed(4),
+    "--lv2-shots-n": String(block.messages.length),
+  } as CSSProperties;
+  return (
+    <section className="bg-cream section-py-lg lv2-why lv2-sec" id={block.id}>
+      <div className="container">
+        <div className="section-header lv2-sec-head">
+          <Eyebrow>{block.eyebrow}</Eyebrow>
+          <h2 className="h-sec">{block.heading}</h2>
+        </div>
+        <Reveal as="ol" className="lv2-ruled lv2-why-reasons">
+          {block.reasons.map((r, i) => (
+            <li key={r.title}>
+              <span className="lv2-ruled-num" aria-hidden>
+                {pad(i + 1)}
+              </span>
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </li>
+          ))}
+        </Reveal>
+        {/* The patients' messages: pictures only, they do not open (the client's call).
+            Each at its own ratio on one row height; wider than the row, it scrolls sideways.
+            Mounted near the viewport (see deferred.tsx): on phones they sit just under the
+            first screen and would load with the hero photo. */}
+        <NearImageRow
+          images={block.messages}
+          className="lv2-why-msgs"
+          itemClassName="lv2-why-msg"
+          label="Messages from Dr. Kalsow’s patients"
+          sizes="(max-width: 767px) 250px, 300px"
+          style={shots}
+        />
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- a statement on a tinted tile ---------------- */
+export function CalloutBlock({ block }: { block: Lv2CalloutBlock }) {
+  return (
+    <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-callout lv2-sec`} id={block.id}>
+      <div className="container">
+        <Reveal className="lv2-callout-tile">
+          <Eyebrow>{block.eyebrow}</Eyebrow>
+          <h2 className="h-sec">{block.heading}</h2>
+          <p>{block.body}</p>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 
@@ -215,6 +294,13 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
             <figcaption className="lv2-cap">{marking.caption}</figcaption>
           </figure>
         </div>
+
+        {block.diagramsIntro && (
+          <div className="lv2-diagrams-intro">
+            <h3 className="lv2-h3">{block.diagramsIntro.heading}</h3>
+            <p>{block.diagramsIntro.body}</p>
+          </div>
+        )}
 
         {/* the three diagrams back to back, in the doctor's order: nothing goes between them */}
         <Reveal className="lv2-diagrams">
@@ -270,7 +356,7 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
 /* ---------------- experience ---------------- */
 export function ExperienceBlock({ block }: { block: Lv2ExperienceBlock }) {
   return (
-    <section className="bg-white section-py-lg lv2-experience lv2-sec" id={block.id}>
+    <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-experience lv2-sec`} id={block.id}>
       <div className="container">
         <div className="section-header lv2-sec-head">
           <Eyebrow>{block.eyebrow}</Eyebrow>
@@ -295,7 +381,7 @@ export function ExperienceBlock({ block }: { block: Lv2ExperienceBlock }) {
 /* ---------------- testimonials ---------------- */
 export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
   return (
-    <section className="bg-cream section-py-lg lv2-testimonials lv2-sec" id={block.id}>
+    <section className={`${toneClass(block.tone, "cream")} section-py-lg lv2-testimonials lv2-sec`} id={block.id}>
       <div className="container lv2-tst">
         <div className="lv2-tst-head">
           <Eyebrow>{block.eyebrow}</Eyebrow>
@@ -323,22 +409,6 @@ export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
             ))}
           </SwipeCarousel>
         </Reveal>
-        {block.screenshots && block.screenshots.items.length > 0 && (
-          <div className="lv2-tst-shots">
-            <h3 className="lv2-tst-shots-title">{block.screenshots.heading}</h3>
-            {/* each at its own ratio on one row height; the full size opens in a new tab */}
-            <ul className="lv2-tst-shots-row">
-              {block.screenshots.items.map((s) => (
-                <li className="lv2-tst-shot" key={s.src} style={ratio(s)}>
-                  <a className="lv2-tst-shot-link" href={s.src} target="_blank" rel="noopener noreferrer">
-                    <Image src={s.src} alt={s.alt} fill sizes="(max-width: 767px) 70vw, 340px" />
-                    <span className="sr-only"> (opens full size in a new tab)</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </section>
   );
@@ -348,7 +418,7 @@ export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
 export function DestinationBlock({ block }: { block: Lv2DestinationBlock }) {
   const { approach, portrait, images, reel, call } = block;
   return (
-    <section className="bg-white section-py-lg lv2-destination lv2-sec" id={block.id}>
+    <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-destination lv2-sec`} id={block.id}>
       <div className="container">
         <div className="lv2-dest-intro">
           <div className="lv2-dest-copy">
@@ -415,21 +485,28 @@ export function DestinationBlock({ block }: { block: Lv2DestinationBlock }) {
 /* ---------------- FAQ (native details: opens without JavaScript) ---------------- */
 export function FaqBlock({ block }: { block: Lv2FaqBlock }) {
   return (
-    <section className="bg-cream section-py-lg lv2-faq lv2-sec" id={block.id}>
+    <section className={`${toneClass(block.tone, "cream")} section-py-lg lv2-faq lv2-sec`} id={block.id}>
       <div className="container-tight">
         <div className="section-header lv2-faq-head">
           <Eyebrow>{block.eyebrow}</Eyebrow>
           <h2 className="h-sec">{block.heading}</h2>
         </div>
-        <Reveal className="faq-list">
-          {block.items.map((item) => (
-            <details className="faq-item" key={item.q}>
-              <summary className="faq-question">
-                {item.q}
-                <span className="faq-marker" aria-hidden />
-              </summary>
-              <p className="faq-answer">{item.a}</p>
-            </details>
+        <Reveal className="lv2-faq-groups">
+          {block.groups.map((group, gi) => (
+            <div className="lv2-faq-group" key={group.title ?? gi}>
+              {group.title && <h3 className="lv2-faq-group-title">{group.title}</h3>}
+              <div className="faq-list">
+                {group.items.map((item) => (
+                  <details className="faq-item" key={item.q}>
+                    <summary className="faq-question">
+                      {item.q}
+                      <span className="faq-marker" aria-hidden />
+                    </summary>
+                    <p className="faq-answer">{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
           ))}
         </Reveal>
       </div>

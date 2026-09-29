@@ -6,11 +6,7 @@ import type { Lv2BaView } from "@/lib/landings/lipo-360-v2";
 
 export type BaLightboxItem = Pick<Lv2BaView, "id" | "view" | "alt"> & { patient: string; detail: string };
 
-/**
- * The uncropped original's URL. Built here, from the id, and only once the
- * viewer is open: it never appears in the HTML, the RSC payload or a
- * preload hint of the page.
- */
+/** The original composite at full size (the grid shows resized copies of it). */
 const fullSrc = (id: string) => `${BA_FULL_DIR}/${id}.webp`;
 
 const SWIPE_PX = 48; // horizontal travel that turns a drag into prev / next

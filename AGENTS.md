@@ -108,17 +108,31 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   publican vistas con ropa interior; nada con pezones, glúteos desnudos ni
   barras negras, y nunca el retrato IA. Capturas de testimonios: las 4 del
   prototipo del doctor tienen consentimiento de los pacientes (28 sep 2026)
-  y están en la B; las historias de Instagram del Drive (bikini o lencería)
-  no van en páginas pagas.
+  y están en la B (bloque "Why", no se abren al tocar, pedido del
+  cliente); las historias de Instagram del Drive (bikini o lencería) no
+  van en páginas pagas.
 - **Variante B de Awake Lipo 360 (`/lipo-360-v2`, test A/B de Google Ads,
   sep 2026):** la A (`/awake-lipo-360-nyc`) es el control y no se toca, ni
   su HTML ni el CSS que descarga. La B es el diseño Aubergine con el
   contenido y el orden del doctor: bloques tipados en
   `lib/landings/lipo-360-v2.ts` (se reordenan, quitan o duplican ahí),
   componentes en `components/marketing/lipo-v2/` y **CSS propio en
-  `components/marketing/lipo-v2/lipo-v2.css`**, una hoja de la ruta y no
-  `globals.css`, para que la A no baje ni un byte de B. Todo selector lleva
-  `lv2-`. Tailwind v4 escanea el código y los .md: una palabra suelta que
+  `components/marketing/lipo-v2/lipo-v2.css`** (y `lipo-v2-guide.css`),
+  hojas de la ruta y no `globals.css`, para que la A no baje ni un byte de
+  B. Todo selector lleva `lv2-`. Desde la ronda 2 (29 sep, revisión de
+  Andrés) el orden sigue el "draft 2" del doctor: hero (foto IA + la de
+  guardapolvo + clip) → "Why thousands of patients choose" (6 razones +
+  capturas) → filosofía → galería → "An honest assessment" → qué es Lipo
+  360 → … → FAQ. Las secciones largas del draft 2 son bloques genéricos
+  (`prose`, `points`, `disclosure`, `lessons`, `revision`) con el copy en
+  `lib/landings/lipo-360-v2-guide.ts` y los componentes en `guide.tsx`; si
+  la página queda larga, se mueven a otras páginas desde ahí. **Esos
+  bloques se montan en el cliente después del `load`** (`lazy-guide.tsx`,
+  `next/dynamic` sin SSR): con su texto en el HTML (y repetido en el
+  payload RSC) el documento duplicaba al de la A y el LCP del hero perdía
+  en Lighthouse. Las imágenes que quedan justo bajo el primer pantallazo en
+  phones (capturas, foto de la filosofía) montan recién cerca del viewport
+  (`deferred.tsx`): el lazy nativo las bajaba con la página. Tailwind v4 escanea el código y los .md: una palabra suelta que
   coincida con una utilidad (p. ej. un valor de `display` en un comentario)
   agrega esa regla al CSS global de todo el sitio; después de tocar B,
   comprobar que el CSS que baja la A sigue siendo el de `main`. En el
@@ -128,19 +142,23 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   `click_to_call` al dataLayer (`variant-tracker.tsx`); las conversiones
   del test se miden igual en A y B (trigger de GTM en links `tel:` y page
   view de `/thank-you` con `source`).
-- **Velo de fotos clínicas (solo la B, excepción autorizada por Nico a la
-  regla PG):** los before/after del doctor, sin recortar y con su censura,
-  viven en `public/img/lipo-v2/ba/full/`. `next.config.mjs` les pone
+- **Fotos clínicas de la B, sin velo desde el 29 sep 2026 (excepción a la
+  regla PG):** los before/after del doctor, sin recortar y con la censura
+  que ya traen, viven en `public/img/lipo-v2/ba/full/` y la grilla los
+  muestra directo (el velo de la ronda 1 se sacó por pedido del cliente;
+  Nico aceptó el riesgo de la revisión de Google Ads). Un toque abre el
+  original en el lightbox. `next.config.mjs` les pone
   `X-Robots-Tag: noindex`, pero en Hostinger los archivos de `public/` los
   sirve LiteSpeed directo, sin pasar por Next: ahí el header solo llega vía
-  `/_next/image`. Para blindarlos, moverlos fuera de `public/` detrás de un
-  route handler. La grilla muestra
-  solo campos de color CSS (`lipo-360-v2-veils.ts`) y el original se pide
-  recién al tocar, en el lightbox. Ninguna URL de original ni nombre de
-  archivo del Drive puede llegar al HTML, al RSC, a un preload ni a un
-  chunk de cliente, y esos archivos no se linkean desde ningún lado.
-  `docs/referencia-web-doctor/` (capturas del prototipo del doctor, con
-  desnudez) está en `.gitignore`: el repo es público.
+  `/_next/image` (que es lo que usa la grilla). Los nombres de archivo del
+  Drive (`source`) nunca llegan al cliente. `docs/referencia-web-doctor/`
+  (capturas del prototipo del doctor, con desnudez) está en `.gitignore`:
+  el repo es público.
+- **Fotos stock de la B (`public/img/lipo-v2/stock/`):** las eligió el
+  cliente (sitio viejo y draft 2), licencia desconocida; Nico aceptó el
+  riesgo de copyright y de Ads (29 sep 2026). Siempre con el caption
+  "Illustrative image. Not a patient.". Las chicas se mejoran con
+  Real-ESRGAN x4 antes de usarlas.
 
 ## Reglas
 
@@ -149,7 +167,8 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   (sans). No agregar familias.
 - **Sin before/after explícitos en `public/`** — las imágenes de galería se
   curan con Nico antes de subirse (algunas del sitio viejo son explícitas).
-  Única excepción: `public/img/lipo-v2/ba/full/`, detrás del velo de la B.
+  Única excepción: `public/img/lipo-v2/ba/full/`, que la B muestra sin
+  velo desde el 29 sep 2026 (decisión de Nico).
 - **Solo NYC** (635 Madison Ave). Miami se descartó — el cliente no tiene
   oficina ahí, aunque el sitio viejo la mencione.
 - **Claims verificables:** nada de "15+ years" ni fechas de fundación
