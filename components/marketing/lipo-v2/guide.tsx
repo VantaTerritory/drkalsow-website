@@ -146,13 +146,14 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
 /**
  * Titled points in a ruled grid: `columns` from 1024px, two from tablet,
  * one on phones. With a photo, the heading and the photo share the first
- * row from 900px, the heading centred on the photo.
+ * row from 900px, the heading centred on the photo; the points run below
+ * across the container.
  */
 export function PointsBlock({ block }: { block: Lv2PointsBlock }) {
   const { image } = block;
   return (
     <section id={block.id} className={sectionClass(block.tone, "lv2-pts")}>
-      <div className="container">
+      <div className="container lv2-pts-body" data-media={image ? "" : undefined}>
         <div className="lv2-pts-head" data-media={image ? "" : undefined}>
           <div className="lv2-pts-copy">
             <Eyebrow>{block.eyebrow}</Eyebrow>

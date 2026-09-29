@@ -120,10 +120,14 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   `components/marketing/lipo-v2/lipo-v2.css`** (y `lipo-v2-guide.css`),
   hojas de la ruta y no `globals.css`, para que la A no baje ni un byte de
   B. Todo selector lleva `lv2-`. Desde la ronda 2 (29 sep, revisión de
-  Andrés) el orden sigue el "draft 2" del doctor: hero (foto IA + la de
-  guardapolvo + clip) → "Why thousands of patients choose" (6 razones +
-  capturas) → filosofía → galería → "An honest assessment" → qué es Lipo
-  360 → … → FAQ. Las secciones largas del draft 2 son bloques genéricos
+  Andrés) el orden sigue el "draft 2" del doctor: hero (solo su retrato IA;
+  el clip de marcación pasó al bloque del procedimiento) → "Why thousands
+  of patients choose" (6 razones + capturas) → filosofía → galería → "An
+  honest assessment" → form → qué es Lipo 360 → … → FAQ → form. **Dos
+  forms:** `#consultation` después de la galería (ahí llevan el hero, la
+  galería y la barra fija de phones, que es compartida con la A y apunta a
+  ese id) y `#consultation-end` al pie, que toma el look que la A le da a
+  su `#consultation`. Las secciones largas del draft 2 son bloques genéricos
   (`prose`, `points`, `disclosure`, `lessons`, `revision`) con el copy en
   `lib/landings/lipo-360-v2-guide.ts` y los componentes en `guide.tsx`; si
   la página queda larga, se mueven a otras páginas desde ahí. **Esos

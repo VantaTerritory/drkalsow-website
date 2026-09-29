@@ -155,6 +155,57 @@
 .lv2-stat-value { font-family: var(--font-display); font-size: 36px; font-weight: var(--fw-medium); line-height: 1; letter-spacing: -0.01em; color: var(--text-on-dark); font-variant-numeric: lining-nums; }
 .lv2-stat-label { font-family: var(--font-sans); font-size: 10.5px; font-weight: var(--fw-medium); line-height: 1.5; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-primary-100); }
 
+/* From tablet up the media are a bento: the AI portrait tall on the left
+   (its crop keeps the practice's sign out), the white-coat photo over the
+   clip on the right. The bento's height sets its width (1.265 x), capped by
+   the viewport budget, 440px and half the hero on desktop; the clip rides
+   its caption as a pill and is cropped near square around the marking
+   hand. Phones keep photo | clip (below). */
+@media (min-width: 768px) {
+  .lv2-hero { --lv2-cap-block: 0px; }
+  .lv2-hero-grid { container-type: inline-size; }
+  .lv2-hero-media { container-type: normal; }
+  .lv2-hero-frames[data-photos="2"] {
+    --lv2-bh: min(540px, calc(100cqi / 1.265));
+    width: calc(var(--lv2-bh) * 1.265);
+    max-width: 100%;
+    height: var(--lv2-bh);
+    grid-template-columns: calc(var(--lv2-bh) * 0.72) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.45fr) minmax(0, 0.55fr);
+    grid-template-areas: "p0 p1" "p0 clip";
+    gap: var(--lv2-gap);
+    align-items: stretch;
+    margin-inline: auto;
+  }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-photo { height: auto; min-height: 0; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-photo--0 { grid-area: p0; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-photo--1 { grid-area: p1; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-photo--1 img { object-position: 50% 18%; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-clip { grid-area: clip; position: relative; min-height: 0; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-clip .lv2-frame { height: 100%; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-clip video { object-position: 50% 64%; }
+  .lv2-hero-frames[data-photos="2"] .lv2-hero-clip figcaption {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+    max-width: calc(100% - 16px);
+    margin: 0;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--color-primary-900) 78%, transparent);
+    font-size: 11px;
+    font-weight: var(--fw-medium);
+    line-height: 16px;
+    color: var(--color-neutral-50);
+    pointer-events: none;
+  }
+}
+@media (min-width: 900px) {
+  /* desktop: at most half the hero, and the first screen still holds the figures */
+  .lv2-hero-frames[data-photos="2"] { --lv2-bh: min(var(--lv2-h-max), 440px, calc(50cqi / 1.265)); margin-inline: 0; }
+}
+
 /* header fallbacks match the site header until it publishes --header-h */
 @media (max-width: 1024px) { .lv2-hero { --lv2-header: var(--header-h, 87px); } }
 @media (max-width: 768px) { .lv2-hero { --lv2-header: var(--header-h, 79px); } }
@@ -178,7 +229,7 @@
   /* copy | media, the copy centred on the media (the 1fr spacer rows), figures under both */
   .lv2-hero { --lv2-title: clamp(46px, 4.3vw, 62px); }
   .lv2-hero-grid {
-    grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: 1fr auto auto auto 1fr auto;
     grid-template-areas: ". media" "head media" "lead media" "ctas media" ". media" "stats stats";
     column-gap: var(--space-7);
@@ -367,7 +418,12 @@
 /* The form after it has a rounded top edge: run the band under those corners
    so they show aubergine, not a strip of page background. (The band must
    stay unpositioned so the form paints over the overlap.) */
-.lv2-closing:has(+ #consultation) { margin-bottom: calc(-1 * var(--lv2-consult-r)); padding-bottom: calc(var(--ld-section-space) + var(--lv2-consult-r)); }
+.lv2-closing:has(+ #consultation-end) { margin-bottom: calc(-1 * var(--lv2-consult-r)); padding-bottom: calc(var(--ld-section-space) + var(--lv2-consult-r)); }
+/* The page has two forms since 29 Sep: #consultation after the gallery (variant A's
+   mid-page look via .ld-consult-mid) and #consultation-end at the foot, which takes
+   the look variant A gives its #consultation: lavender, rounded top. */
+.lv2-page #consultation-end { background: var(--color-primary-100); border-radius: var(--radius-section) var(--radius-section) 0 0; }
+.lv2-page #consultation-end .form-helper { color: var(--text-secondary); }
 
 /* ==== LV2 · RESPONSIVE (sections) ==== */
 /* where the two CTAs stack, they share one width */
@@ -428,6 +484,7 @@
 }
 @media (max-width: 600px) {
   .lv2-closing { --lv2-consult-r: var(--radius-xl); } /* the form's corner radius here */
+  .lv2-page #consultation-end { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
 }
 /* phones: numbered lists hang their numeral beside the title (as the revision questions do) */
 @media (max-width: 767px) {
@@ -885,6 +942,36 @@
   .lv2-callout-tile > p { grid-column: 2; grid-row: 1 / span 2; }
 }
 @media (max-width: 767px) { .lv2-callout-tile { padding-top: var(--space-4); } }
+
+/* ==== LV2 · HERO, HIS PORTRAIT ALONE ==== */
+/* Since 29 Sep the hero holds only his portrait (Nico): the site's arch at
+   about 3:4, anchored right so the practice's sign stays out of the crop.
+   Desktop: as tall as the first screen allows (500px at most) beside the
+   copy. Tablet: centred under the heading. Phones: the full width, as tall
+   as the first-screen budget allows. */
+.lv2-hero-frames[data-layout="single"] { display: block; width: auto; height: auto; }
+.lv2-hero-frames[data-layout="single"] .lv2-hero-photo--0 {
+  --lv2-sh: min(var(--lv2-h-max), 540px);
+  height: var(--lv2-sh);
+  width: calc(var(--lv2-sh) * var(--lv2-photo-r, 0.76));
+  max-width: 100%;
+  margin-inline: auto;
+}
+@media (min-width: 900px) {
+  .lv2-hero-frames[data-layout="single"] .lv2-hero-photo--0 { --lv2-sh: min(var(--lv2-h-max), 500px); margin-inline: 0 0; }
+  .lv2-hero-media:has(.lv2-hero-frames[data-layout="single"]) { justify-self: end; }
+}
+@media (max-width: 767px) {
+  /* as wide as the screen while the budget allows a 3:4 crop; on short phones narrower, centred, never near square (the sign would show) */
+  .lv2-hero-frames[data-layout="single"] .lv2-hero-photo--0 {
+    --lv2-sh: min(var(--lv2-h-max), 125vw);
+    height: var(--lv2-sh);
+    width: min(100%, calc(var(--lv2-sh) * var(--lv2-photo-r, 0.76)));
+  }
+}
+
+/* the marking clip in the procedure block, in its still's 4:5 frame, cropped around the hand */
+.lv2-proc-clip .lv2-loop-video { object-position: 50% 64%; }
 
 /* ==== LV2 · SWIPE DOTS ==== */
 /* The shared dots are 7px buttons 8px apart: under WCAG 2.5.8's 24px

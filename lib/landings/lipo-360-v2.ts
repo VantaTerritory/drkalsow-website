@@ -93,7 +93,8 @@ export type Lv2HeroBlock = {
   photos: [Lv2HeroPhoto, ...Lv2HeroPhoto[]];
   /** Phones: a head crop of the second photo, beside his name in the band that follows the hero. */
   avatar?: Lv2Image;
-  video: Lv2Video;
+  /** A looping clip beside the photos (round 1); without it the hero shows his portrait alone. */
+  video?: Lv2Video;
   /**
    * Phones: the lead, stats and CTAs render after this block instead of in
    * the hero, so the first screen is his photo and the moving clip. The
@@ -148,7 +149,8 @@ export type Lv2ProcedureBlock = {
   heading: string;
   body: string[];
   support: string;
-  marking: { image: Lv2Image; caption: string };
+  /** The marking scene: the looping clip (its still as the poster) or a photo. */
+  marking: { image?: Lv2Image; video?: Lv2Video; caption: string };
   /** Draft 2's "What Is Lipo 360?", right above the diagrams it introduces. */
   diagramsIntro?: { heading: string; body: string };
   diagrams: Lv2Figure[];
@@ -338,7 +340,15 @@ export { BA_FULL_DIR, BA_SIZE } from "@/lib/landings/lipo-360-v2-media";
 /** "212-653-8726", the format on the client's call buttons. */
 export const PHONE = siteConfig.phone.display.replace(/[()]/g, "").replace(" ", "-");
 const CALL: Lv2Link = { label: `Call ${PHONE}`, href: `tel:${siteConfig.phone.tel}` };
+/* Two forms (29 Sep): #consultation right after the gallery, where the hero, the
+   results and the mobile sticky bar lead, and #consultation-end after the closing band. */
 const REQUEST: Lv2Link = { label: "Request Consultation", href: "#consultation" };
+const REQUEST_END: Lv2Link = { label: "Request Consultation", href: "#consultation-end" };
+const CONSULTATION_INTRO = {
+  eyebrow: "Request a consultation",
+  heading: "Tell Dr. Kalsow about your goals.",
+  body: "Consultations are held in person at 635 Madison Avenue or by FaceTime. Share a few details and the office will be in touch to schedule.",
+};
 
 /* Patients as numbered in the doctor's prototype (7 sets, 3 views each).
    Views are the doctor's before | after composites (1080 + 4 px + 1080).
@@ -375,9 +385,12 @@ export const LIPO_360_V2: Lv2Page = {
       ],
       call: CALL,
       primary: REQUEST,
+      // His portrait alone (Nico, 29 Sep): the AI portrait the client asked
+      // for (draft 2's hero photo, "Sergei Kalsow MD NYC" in his Drive; the
+      // Drive file is this same 1254 px one), cropped to about 3:4 so the
+      // practice's sign stays out. The white-coat photo left the hero and
+      // the marking clip moved to the procedure block.
       photos: [
-        // The AI portrait the client asked for on 29 Sep (draft 2's hero
-        // photo, "Sergei Kalsow MD NYC" in his Drive), cropped to about 3:4.
         {
           src: "/img/portrait/dr-kalsow-dreams.jpg",
           alt: "Portrait of Dr. Sergei Kalsow, MD, in a dark suit and tie",
@@ -385,31 +398,7 @@ export const LIPO_360_V2: Lv2Page = {
           height: 1254,
           frame: 0.76,
         },
-        {
-          src: "/img/team/dr-kalsow-whitecoat.jpg",
-          alt: "Dr. Sergei Kalsow, MD, smiling, in a white coat over surgical scrubs at his New York City practice",
-          width: 933,
-          height: 1400,
-        },
       ],
-      // the white-coat photo's head and shoulders (168x216, shown at 56x72)
-      avatar: {
-        src: "/img/lipo-v2/whitecoat-avatar.jpg",
-        alt: "",
-        width: 168,
-        height: 216,
-      },
-      // IMG_0877.MOV ("087"): the doctor marking a patient. A short muted
-      // cut without her face and with as little exposure as possible.
-      video: {
-        src: "/video/lipo-v2/marking.mp4",
-        poster: "/video/lipo-v2/marking-poster.jpg",
-        width: 540,
-        height: 960,
-        title: "Dr. Kalsow marking a patient for Awake Lipo 360",
-        // short on purpose: on phones it rides on the clip as a pill
-        caption: "Standing markings",
-      },
       mobileDetailsAfter: "top",
     },
     {
@@ -579,6 +568,9 @@ export const LIPO_360_V2: Lv2Page = {
       // Draft 2, word for word (its em dash as a comma).
       body: "Dr. Kalsow will tell you what is possible, what is not, and how much fat he expects he can remove or transfer, so you can decide whether surgery is right for you. If he believes the change would be too small or that you would be unhappy with the result, he will tell you, and may advise against surgery. His priority is a meaningful result for you, not putting you through surgery and recovery without a worthwhile benefit.",
     },
+    // A form right after the gallery (Nico, 29 Sep): the one at the foot of the page
+    // is 20,000 px further down and few people get there.
+    { kind: "consultation", id: "consultation", ...CONSULTATION_INTRO },
     {
       kind: "procedure",
       id: "what-is-lipo-360",
@@ -591,12 +583,17 @@ export const LIPO_360_V2: Lv2Page = {
       ],
       support:
         "Because no two frames are identical, treatment is planned around the individual anatomy rather than a standardized pattern.",
+      // IMG_0877.MOV ("087"): the doctor marking a patient, a short muted
+      // cut without her face and with as little exposure as possible. It
+      // opened the hero until 29 Sep; here it takes the place of its own
+      // still, which stays as the poster (4:5, the frame's shape).
       marking: {
-        image: {
-          src: "/img/lipo-v2/marking-still.jpg",
-          alt: "Dr. Kalsow drawing the Lipo 360 treatment markings on a patient",
+        video: {
+          src: "/video/lipo-v2/marking.mp4",
+          poster: "/img/lipo-v2/marking-still.jpg",
           width: 800,
           height: 1000,
+          title: "Dr. Kalsow marking a patient for Awake Lipo 360",
         },
         caption:
           "Dr. Kalsow marking the patient for Lipo 360. The procedure illustrates the target areas of the Lipo 360 procedure.",
@@ -964,7 +961,7 @@ export const LIPO_360_V2: Lv2Page = {
       heading: "Your Anatomy Determines The Plan.",
       body: "A consultation is the point where the procedure becomes specific: your frame, target waist, prior liposuction, skin quality, candidacy for awake surgery and the contour that can realistically be created for you.",
       call: CALL,
-      primary: REQUEST,
+      primary: REQUEST_END,
       disclaimer:
         "Surgical procedures have risks and results vary. A consultation is required to determine candidacy and the appropriate treatment plan.",
       image: {
@@ -974,12 +971,6 @@ export const LIPO_360_V2: Lv2Page = {
         height: 1000,
       },
     },
-    {
-      kind: "consultation",
-      id: "consultation",
-      eyebrow: "Request a consultation",
-      heading: "Tell Dr. Kalsow about your goals.",
-      body: "Consultations are held in person at 635 Madison Avenue or by FaceTime. Share a few details and the office will be in touch to schedule.",
-    },
+    { kind: "consultation", id: "consultation-end", ...CONSULTATION_INTRO },
   ],
 };

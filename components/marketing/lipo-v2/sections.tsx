@@ -98,14 +98,28 @@ function HeroTitle({ text }: { text: string }) {
   );
 }
 
+/**
+ * The first photo's rendered width, for next/image to pick a sharp enough
+ * file: the square portrait covers its frame by height, so it is drawn as
+ * wide as the frame is tall (see LV2 · HERO for the heights).
+ */
+function heroPhotoSizes(layout: "single" | "pair" | "bento"): string {
+  // phones: drawn about 125vw wide (its 3:4 crop is taller than the screen is wide); 100vw keeps the LCP file light
+  if (layout === "single") return "(max-width: 767px) 100vw, (max-width: 899px) 540px, 500px";
+  if (layout === "bento") return "(max-width: 767px) calc(76vw - 30px), (max-width: 899px) 540px, 440px";
+  return "(max-width: 767px) calc(76vw - 30px), (max-width: 899px) 45vw, 460px";
+}
+
 export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
   const { photos, video } = block;
   const [first, second] = photos;
+  // his portrait alone, portrait + clip, or the bento of two photos and the clip
+  const layout = !video ? "single" : second ? "bento" : "pair";
   // The media row is sized from these ratios (see LV2 · HERO in lipo-v2.css).
   const frames = {
     "--lv2-photo-r": String(first.frame ?? first.width / first.height),
     ...(second && { "--lv2-photo2-r": String(second.frame ?? second.width / second.height) }),
-    "--lv2-clip-r": String(video.width / video.height),
+    ...(video && { "--lv2-clip-r": String(video.width / video.height) }),
   } as CSSProperties;
 
   return (
@@ -119,7 +133,7 @@ export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
         </div>
 
         <div className="lv2-hero-media">
-          <div className="lv2-hero-frames" style={frames} data-photos={photos.length}>
+          <div className="lv2-hero-frames" style={frames} data-photos={photos.length} data-layout={layout}>
             {photos.slice(0, 2).map((p, i) => (
               <div className={`lv2-hero-photo lv2-hero-photo--${i}`} key={p.src}>
                 {/* the first is the LCP: eager + high priority (Next 16 advises this over
@@ -130,16 +144,18 @@ export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
                   fill
                   loading={i === 0 ? "eager" : "lazy"}
                   fetchPriority={i === 0 ? "high" : undefined}
-                  sizes={i === 0 ? "(max-width: 767px) calc(57vw - 23px), (max-width: 899px) 35vw, 240px" : "(max-width: 899px) 31vw, 210px"}
+                  sizes={i === 0 ? heroPhotoSizes(layout) : "(max-width: 899px) 280px, 240px"}
                 />
               </div>
             ))}
-            <figure className="lv2-hero-clip">
-              <div className="lv2-frame">
-                <LoopVideo video={video} start="load" className="lv2-fill" />
-              </div>
-              {video.caption && <figcaption>{video.caption}</figcaption>}
-            </figure>
+            {video && (
+              <figure className="lv2-hero-clip">
+                <div className="lv2-frame">
+                  <LoopVideo video={video} start="load" className="lv2-fill" />
+                </div>
+                {video.caption && <figcaption>{video.caption}</figcaption>}
+              </figure>
+            )}
           </div>
         </div>
 
@@ -283,14 +299,22 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
             <p className="lv2-proc-support">{block.support}</p>
           </div>
           <figure className="lv2-proc-still">
-            <div className="lv2-frame lv2-frame--bubble" style={ratio(marking.image)}>
-              <Image
-                src={marking.image.src}
-                alt={marking.image.alt}
-                fill
-                sizes="(max-width: 479px) 92vw, 440px"
-              />
-            </div>
+            {marking.video ? (
+              <div className="lv2-frame lv2-frame--bubble lv2-proc-clip" style={ratio(marking.video)}>
+                <LoopVideo video={marking.video} start="visible" className="lv2-fill" />
+              </div>
+            ) : (
+              marking.image && (
+                <div className="lv2-frame lv2-frame--bubble" style={ratio(marking.image)}>
+                  <Image
+                    src={marking.image.src}
+                    alt={marking.image.alt}
+                    fill
+                    sizes="(max-width: 479px) 92vw, 440px"
+                  />
+                </div>
+              )
+            )}
             <figcaption className="lv2-cap">{marking.caption}</figcaption>
           </figure>
         </div>
@@ -547,7 +571,11 @@ export function ConsultationIntro({ block }: { block: Lv2ConsultationBlock }) {
       <p className="form-helper">{block.body}</p>
       <p className="form-helper">
         Prefer to speak to someone?{" "}
-        <a href={`tel:${siteConfig.phone.tel}`} className="text-link" data-cta-location="consultation_intro">
+        <a
+          href={`tel:${siteConfig.phone.tel}`}
+          className="text-link"
+          data-cta-location={block.id === "consultation" ? "consultation_intro" : `${block.id.replace(/-/g, "_")}_intro`}
+        >
           {siteConfig.phone.display}
         </a>
       </p>

@@ -56,9 +56,9 @@ export function LipoV2Page() {
   return (
     <div className="ld-page lv2-page" data-landing-variant={LIPO_360_V2.variant}>
       <VariantTracker variant={LIPO_360_V2.variant} test={LIPO_360_V2.test} />
-      {blocks.map((block) => (
+      {blocks.map((block, i) => (
         <Fragment key={block.id}>
-          <Block block={block} h1={page.h1} source={page.path} patients={patients} />
+          <Block block={block} h1={page.h1} source={page.path} patients={patients} last={i === blocks.length - 1} />
           {/* phones: the hero's lead, figures and CTAs move below this block */}
           {hero?.mobileDetailsAfter === block.id && <HeroDetails hero={hero} placement="mobile" />}
         </Fragment>
@@ -74,10 +74,13 @@ function Block({
   h1,
   source,
   patients,
+  last,
 }: {
   block: Lv2Block;
   h1: string;
   source: string;
+  /** The page's last block: a form there keeps its rounded top; one mid-page runs square, as in variant A. */
+  last: boolean;
   /** The results' patients, for blocks that show one of them again (revision). */
   patients: Lv2Patient[];
 }) {
@@ -107,8 +110,10 @@ function Block({
       return <FaqBlock block={block} />;
     case "closing":
       return <ClosingBlock block={block} />;
-    case "consultation":
-      return <ConsultationForm id={block.id} source={source} intro={<ConsultationIntro block={block} />} />;
+    case "consultation": {
+      const form = <ConsultationForm id={block.id} source={source} intro={<ConsultationIntro block={block} />} />;
+      return last ? form : <div className="ld-consult-mid">{form}</div>;
+    }
     // generic blocks placed in lipo-360-v2.ts itself (the philosophy), rendered on the server
     case "prose":
       return <ProseBlock block={block} />;
