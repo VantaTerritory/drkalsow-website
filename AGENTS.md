@@ -145,7 +145,10 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   `/thank-you` sí vuelve a ella). Tracking: `landing_variant: "B"` y
   `click_to_call` al dataLayer (`variant-tracker.tsx`); las conversiones
   del test se miden igual en A y B (trigger de GTM en links `tel:` y page
-  view de `/thank-you` con `source`).
+  view de `/thank-you` con `source`). Microsoft Clarity (`clarity.tsx`, con su id
+  ahí y no en `siteConfig`, que llega a los chunks de la A) va solo en la B desde el 30 sep: producción,
+  solo en el dominio `drkalsow.com`, `lazyOnload`, y los dos forms
+  enmascarados con `data-clarity-mask`.
 - **Fotos clínicas de la B, sin velo desde el 29 sep 2026 (excepción a la
   regla PG):** los before/after del doctor, sin recortar y con la censura
   que ya traen, viven en `public/img/lipo-v2/ba/full/` y la grilla los

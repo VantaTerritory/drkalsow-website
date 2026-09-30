@@ -418,7 +418,7 @@
 /* The form after it has a rounded top edge: run the band under those corners
    so they show aubergine, not a strip of page background. (The band must
    stay unpositioned so the form paints over the overlap.) */
-.lv2-closing:has(+ #consultation-end) { margin-bottom: calc(-1 * var(--lv2-consult-r)); padding-bottom: calc(var(--ld-section-space) + var(--lv2-consult-r)); }
+.lv2-closing:has(+ .lv2-form-end) { margin-bottom: calc(-1 * var(--lv2-consult-r)); padding-bottom: calc(var(--ld-section-space) + var(--lv2-consult-r)); }
 /* The page has two forms since 29 Sep: #consultation after the gallery (variant A's
    mid-page look via .ld-consult-mid) and #consultation-end at the foot, which takes
    the look variant A gives its #consultation: lavender, rounded top. */

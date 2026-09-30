@@ -13,6 +13,7 @@ import { ConsultationForm } from "@/components/marketing/contact/consultation-fo
 import { LandingStickyCta } from "@/components/marketing/landing/landing-sections";
 import { VariantTracker } from "@/components/marketing/lipo-v2/variant-tracker";
 import { StickyBarHeight } from "@/components/marketing/lipo-v2/sticky-bar-height";
+import { Clarity } from "@/components/marketing/lipo-v2/clarity";
 import { ResultsBlock, galleryPatient } from "@/components/marketing/lipo-v2/results";
 import { GUIDE_IDS } from "@/lib/landings/lipo-360-v2-guide";
 import {
@@ -65,6 +66,7 @@ export function LipoV2Page() {
       ))}
       <LandingStickyCta />
       <StickyBarHeight />
+      <Clarity />
     </div>
   );
 }
@@ -111,8 +113,13 @@ function Block({
     case "closing":
       return <ClosingBlock block={block} />;
     case "consultation": {
+      // masked in Clarity's recordings (clarity.tsx)
       const form = <ConsultationForm id={block.id} source={source} intro={<ConsultationIntro block={block} />} />;
-      return last ? form : <div className="ld-consult-mid">{form}</div>;
+      return (
+        <div className={last ? "lv2-form-end" : "ld-consult-mid"} data-clarity-mask="True">
+          {form}
+        </div>
+      );
     }
     // generic blocks placed in lipo-360-v2.ts itself (the philosophy), rendered on the server
     case "prose":
