@@ -3141,10 +3141,10 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: var(--space-7);
   align-items: center;
-  padding-top: var(--space-8);
-  padding-bottom: var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
 }
-.contact-hero-copy .h-display { max-width: 14ch; }
+.contact-hero-copy .h-display { max-width: 18ch; }
 .contact-hero-lead {
   margin: var(--space-4) 0 var(--space-5);
   max-width: 46ch;
@@ -3159,8 +3159,8 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-6);
-  margin: var(--space-6) 0 0;
-  padding-top: var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-4);
   border-top: 0.5px solid var(--border-medium);
 }
 .contact-hero-facts dt {
@@ -3183,7 +3183,7 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 .contact-hero-aside { display: grid; gap: var(--space-4); }
 .contact-hero-photo {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9; /* wide, so the hero stays short and the form comes sooner */
   border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
   overflow: hidden;
   border: 0.5px solid var(--border-soft);
@@ -3826,6 +3826,58 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 .ld-spotlight-copy .ld-spotlight-figures { margin: var(--space-5) 0 var(--space-4); }
 .ld-spotlight-copy .ld-points { margin-top: var(--space-5); }
 .ld-spotlight-copy .ld-closing { margin-top: var(--space-4); }
+
+/* the surgeon and the form side by side (2 Oct 2026): copy on the left,
+   the form card on the right follows the scroll; phones read
+   intro → form → facts. */
+.ld-sc {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-areas: "head form" "rest form";
+  grid-template-rows: auto 1fr;
+  gap: 0 var(--space-8);
+  align-items: start;
+}
+.ld-sc-head { grid-area: head; }
+.ld-sc-rest { grid-area: rest; }
+.ld-sc-form { grid-area: form; }
+/* compact card beside the surgeon, so it fits under header + quick nav */
+.ld-sc-form .contact-form { padding: var(--space-4) var(--space-5); }
+.ld-sc-form .ld-form-title { margin-block: var(--space-1); }
+.ld-sc-form .form-fields { gap: 8px; }
+.ld-sc-form .form-input, .ld-sc-form .form-select { padding-block: 9px; }
+.ld-sc-form .form-textarea { min-height: 56px; height: 56px; padding-block: 9px; }
+.ld-sc-form .ld-form-head { margin-bottom: var(--space-3); }
+/* the card follows the scroll while the surgeon's copy runs (desktop with
+   room for the whole card under the header and the quick nav, ~68px) */
+@media (min-width: 901px) and (min-height: 860px) {
+  .ld-sc-form { position: sticky; top: calc(var(--header-h, 95px) + 68px + var(--space-3)); }
+}
+/* a card in the section, not the band the mid-page form is elsewhere */
+.ld-page #consultation.contact-form--bare { border-radius: var(--radius-lg); border: 0; box-shadow: none; }
+/* desktop: a wide portrait leads the column, as wide as the copy */
+.ld-sc-title { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-5); }
+.ld-sc-title .h-sec { margin-bottom: 0; }
+.ld-page .ld-sc-portrait { flex: none; width: 100%; max-width: none; margin: 0; aspect-ratio: 16 / 9; }
+.ld-sc-portrait img { object-position: center 10%; }
+.ld-page .ld-sc-portrait { border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); }
+.ld-sc-head .ld-spotlight-figures { margin: var(--space-5) 0; }
+.ld-sc-head .ld-lead { max-width: 46ch; }
+.ld-sc-rest .ld-points { margin-top: 0; }
+.ld-sc-rest .ld-closing { margin-top: var(--space-4); }
+.contact-form--bare .ld-form-head { margin-bottom: var(--space-4); }
+.ld-form-title { font-family: var(--font-display); font-size: clamp(26px, 2.2vw, 32px); font-weight: 400; line-height: 1.15; color: var(--text-primary); margin: var(--space-2) 0 var(--space-2); }
+.ld-form-head .form-helper { color: var(--text-secondary); margin: 0; }
+
+@media (max-width: 1100px) {
+  .ld-sc { gap: 0 var(--space-6); }
+}
+@media (max-width: 900px) {
+  .ld-sc { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "form" "rest"; grid-template-rows: none; gap: var(--space-6); }
+  /* phones: a small arch beside the heading, so the form still comes early */
+  .ld-sc-title { flex-direction: row; align-items: center; gap: var(--space-4); }
+  .ld-page .ld-sc-portrait { width: 84px; aspect-ratio: 4 / 5; border-radius: var(--radius-arch); }
+}
 
 /* numbered cases */
 .ld-cases-head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--space-4) var(--space-7); align-items: end; margin-bottom: var(--space-6); }

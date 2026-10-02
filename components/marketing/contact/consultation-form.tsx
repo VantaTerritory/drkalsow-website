@@ -22,6 +22,8 @@ export function ConsultationForm({
   id: sectionId = "request",
   source,
   intro,
+  bare = false,
+  tone = "cream",
 }: {
   /** Section id (anchor target). The landing pages use "consultation". */
   id?: string;
@@ -29,6 +31,11 @@ export function ConsultationForm({
   source?: string;
   /** Replaces the default left column (eyebrow, heading, helper copy). */
   intro?: React.ReactNode;
+  /** Only the form card, for a column of another section: `id` goes on the
+   *  form and `intro` sits inside the card, above the fields. */
+  bare?: boolean;
+  /** Section background, so the page around it keeps alternating. */
+  tone?: "cream" | "white";
 } = {}) {
   const id = useId();
   const [status, setStatus] = useState<Status>("idle");
@@ -79,8 +86,184 @@ export function ConsultationForm({
     }
   }
 
+  const form = (
+    <form
+      className={bare ? "contact-form contact-form--bare" : "contact-form"}
+      id={bare ? sectionId : undefined}
+      onSubmit={onSubmit}
+      noValidate
+    >
+      {bare && intro}
+      <div className="form-fields">
+        {source && <input type="hidden" name="source" value={source} />}
+        <div className="form-row">
+          <div className="form-field">
+            <label className="form-field-label" htmlFor={`${id}-first`}>
+              First name
+            </label>
+            <input
+              className="form-input"
+              id={`${id}-first`}
+              name="firstName"
+              autoComplete="given-name"
+              placeholder="e.g. Sophia"
+              aria-invalid={errors.firstName ? "true" : undefined}
+              aria-describedby={errors.firstName ? `${id}-first-err` : undefined}
+            />
+            {errors.firstName && (
+              <p className="form-error" id={`${id}-first-err`}>
+                {errors.firstName}
+              </p>
+            )}
+          </div>
+
+          <div className="form-field">
+            <label className="form-field-label" htmlFor={`${id}-last`}>
+              Last name
+            </label>
+            <input
+              className="form-input"
+              id={`${id}-last`}
+              name="lastName"
+              autoComplete="family-name"
+              placeholder="e.g. Martinez"
+              aria-invalid={errors.lastName ? "true" : undefined}
+              aria-describedby={errors.lastName ? `${id}-last-err` : undefined}
+            />
+            {errors.lastName && (
+              <p className="form-error" id={`${id}-last-err`}>
+                {errors.lastName}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-field">
+            <label className="form-field-label" htmlFor={`${id}-email`}>
+              Email
+            </label>
+            <input
+              className="form-input"
+              id={`${id}-email`}
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              aria-invalid={errors.email ? "true" : undefined}
+              aria-describedby={errors.email ? `${id}-email-err` : undefined}
+            />
+            {errors.email && (
+              <p className="form-error" id={`${id}-email-err`}>
+                {errors.email}
+              </p>
+            )}
+          </div>
+
+          <div className="form-field">
+            <label className="form-field-label" htmlFor={`${id}-phone`}>
+              Phone number
+            </label>
+            <input
+              className="form-input"
+              id={`${id}-phone`}
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="(212) 555-0123"
+              aria-invalid={errors.phone ? "true" : undefined}
+              aria-describedby={errors.phone ? `${id}-phone-err` : undefined}
+            />
+            {errors.phone && (
+              <p className="form-error" id={`${id}-phone-err`}>
+                {errors.phone}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="form-field">
+          <label className="form-field-label" htmlFor={`${id}-type`}>
+            Which consult are you requesting?
+          </label>
+          <select className="form-select" id={`${id}-type`} name="consultType" defaultValue={CONSULT_TYPES[0]}>
+            {CONSULT_TYPES.map((type) => (
+              <option key={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label className="form-field-label" htmlFor={`${id}-referral`}>
+            How did you first hear about us?
+          </label>
+          <select
+            className="form-select"
+            id={`${id}-referral`}
+            name="referral"
+            defaultValue=""
+            aria-invalid={errors.referral ? "true" : undefined}
+            aria-describedby={errors.referral ? `${id}-referral-err` : undefined}
+          >
+            <option value="" disabled>
+              Select one
+            </option>
+            {REFERRAL_SOURCES.map((source) => (
+              <option key={source}>{source}</option>
+            ))}
+          </select>
+          {errors.referral && (
+            <p className="form-error" id={`${id}-referral-err`}>
+              {errors.referral}
+            </p>
+          )}
+        </div>
+
+        <div className="form-field">
+          <label className="form-field-label" htmlFor={`${id}-message`}>
+            Any questions you would like to ask, or how else can we help?
+          </label>
+          <textarea
+            className="form-textarea"
+            id={`${id}-message`}
+            name="message"
+            rows={4}
+            placeholder="Tell us what you would like to improve, or ask us anything."
+          />
+        </div>
+
+        {/* bots fill this; people never see it */}
+        <div className="honeypot" aria-hidden>
+          <label htmlFor={`${id}-company`}>Company</label>
+          <input id={`${id}-company`} name="company" tabIndex={-1} autoComplete="off" />
+        </div>
+
+        <p className="form-consent">
+          By sending this form you agree to be contacted about your consultation. Please do
+          not include medical details you would not want sent by email.
+        </p>
+
+        {status === "error" && (
+          <p className="form-error" role="alert">
+            {failure} Please call{" "}
+            <CallLink className="text-link">{siteConfig.phone.display}</CallLink> and the
+            office will take your request directly.
+          </p>
+        )}
+
+        <button type="submit" className="form-submit" disabled={status === "sending"}>
+          {status === "sending" ? "Sending…" : "Request my consultation"}
+        </button>
+      </div>
+    </form>
+  );
+
+  if (bare) return form;
+
   return (
-    <section className="bg-cream section-py-lg" id={sectionId}>
+    <section className={`${tone === "white" ? "bg-white" : "bg-cream"} section-py-lg`} id={sectionId}>
       <div className="container contact-form-layout">
         {intro ?? (
         <div className="contact-form-intro">
@@ -107,171 +290,7 @@ export function ConsultationForm({
         </div>
         )}
 
-        <form className="contact-form" onSubmit={onSubmit} noValidate>
-          <div className="form-fields">
-            {source && <input type="hidden" name="source" value={source} />}
-            <div className="form-row">
-              <div className="form-field">
-                <label className="form-field-label" htmlFor={`${id}-first`}>
-                  First name
-                </label>
-                <input
-                  className="form-input"
-                  id={`${id}-first`}
-                  name="firstName"
-                  autoComplete="given-name"
-                  placeholder="e.g. Sophia"
-                  aria-invalid={errors.firstName ? "true" : undefined}
-                  aria-describedby={errors.firstName ? `${id}-first-err` : undefined}
-                />
-                {errors.firstName && (
-                  <p className="form-error" id={`${id}-first-err`}>
-                    {errors.firstName}
-                  </p>
-                )}
-              </div>
-
-              <div className="form-field">
-                <label className="form-field-label" htmlFor={`${id}-last`}>
-                  Last name
-                </label>
-                <input
-                  className="form-input"
-                  id={`${id}-last`}
-                  name="lastName"
-                  autoComplete="family-name"
-                  placeholder="e.g. Martinez"
-                  aria-invalid={errors.lastName ? "true" : undefined}
-                  aria-describedby={errors.lastName ? `${id}-last-err` : undefined}
-                />
-                {errors.lastName && (
-                  <p className="form-error" id={`${id}-last-err`}>
-                    {errors.lastName}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-field">
-                <label className="form-field-label" htmlFor={`${id}-email`}>
-                  Email
-                </label>
-                <input
-                  className="form-input"
-                  id={`${id}-email`}
-                  name="email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  aria-invalid={errors.email ? "true" : undefined}
-                  aria-describedby={errors.email ? `${id}-email-err` : undefined}
-                />
-                {errors.email && (
-                  <p className="form-error" id={`${id}-email-err`}>
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-              <div className="form-field">
-                <label className="form-field-label" htmlFor={`${id}-phone`}>
-                  Phone number
-                </label>
-                <input
-                  className="form-input"
-                  id={`${id}-phone`}
-                  name="phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="(212) 555-0123"
-                  aria-invalid={errors.phone ? "true" : undefined}
-                  aria-describedby={errors.phone ? `${id}-phone-err` : undefined}
-                />
-                {errors.phone && (
-                  <p className="form-error" id={`${id}-phone-err`}>
-                    {errors.phone}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="form-field">
-              <label className="form-field-label" htmlFor={`${id}-type`}>
-                Which consult are you requesting?
-              </label>
-              <select className="form-select" id={`${id}-type`} name="consultType" defaultValue={CONSULT_TYPES[0]}>
-                {CONSULT_TYPES.map((type) => (
-                  <option key={type}>{type}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-field">
-              <label className="form-field-label" htmlFor={`${id}-referral`}>
-                How did you first hear about us?
-              </label>
-              <select
-                className="form-select"
-                id={`${id}-referral`}
-                name="referral"
-                defaultValue=""
-                aria-invalid={errors.referral ? "true" : undefined}
-                aria-describedby={errors.referral ? `${id}-referral-err` : undefined}
-              >
-                <option value="" disabled>
-                  Select one
-                </option>
-                {REFERRAL_SOURCES.map((source) => (
-                  <option key={source}>{source}</option>
-                ))}
-              </select>
-              {errors.referral && (
-                <p className="form-error" id={`${id}-referral-err`}>
-                  {errors.referral}
-                </p>
-              )}
-            </div>
-
-            <div className="form-field">
-              <label className="form-field-label" htmlFor={`${id}-message`}>
-                Any questions you would like to ask, or how else can we help?
-              </label>
-              <textarea
-                className="form-textarea"
-                id={`${id}-message`}
-                name="message"
-                rows={4}
-                placeholder="Tell us what you would like to improve, or ask us anything."
-              />
-            </div>
-
-            {/* bots fill this; people never see it */}
-            <div className="honeypot" aria-hidden>
-              <label htmlFor={`${id}-company`}>Company</label>
-              <input id={`${id}-company`} name="company" tabIndex={-1} autoComplete="off" />
-            </div>
-
-            <p className="form-consent">
-              By sending this form you agree to be contacted about your consultation. Please do
-              not include medical details you would not want sent by email.
-            </p>
-
-            {status === "error" && (
-              <p className="form-error" role="alert">
-                {failure} Please call{" "}
-                <CallLink className="text-link">{siteConfig.phone.display}</CallLink> and the
-                office will take your request directly.
-              </p>
-            )}
-
-            <button type="submit" className="form-submit" disabled={status === "sending"}>
-              {status === "sending" ? "Sending…" : "Request my consultation"}
-            </button>
-          </div>
-        </form>
+        {form}
       </div>
     </section>
   );

@@ -9,6 +9,8 @@ import {
   LandingQuickNav,
   LandingPillars,
   LandingSurgeonSpotlight,
+  LandingSurgeonConsult,
+  LandingFormCardHead,
   LandingWhatIsIt,
   LandingDetailsIntro,
   LandingGoals,
@@ -68,6 +70,20 @@ function LandingSection({
       return <LandingPillars content={content} />;
     case "surgeon-spotlight":
       return <LandingSurgeonSpotlight content={content} />;
+    case "surgeon-consult":
+      return (
+        <LandingSurgeonConsult
+          content={content}
+          form={
+            <ConsultationForm
+              id="consultation"
+              source={page.path}
+              bare
+              intro={<LandingFormCardHead content={content} />}
+            />
+          }
+        />
+      );
     case "results":
       return <LandingResults content={content} />;
     case "scars":

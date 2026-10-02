@@ -81,6 +81,8 @@ export type LandingSectionKey =
   | "quicknav"
   | "pillars"
   | "surgeon-spotlight"
+  /** The surgeon and the form side by side, in one section. */
+  | "surgeon-consult"
   | "results"
   | "scars"
   | "consultation"
@@ -238,8 +240,9 @@ const ABOUT = "/about-dr-sergei-kalsow";
    AWAKE LIPO 360 — the pillar page and main Google Ads landing.
    Restructured 22 Sep 2026 after the client's review (meeting notes of
    21 Sep): the doctor wants patients to meet him first and associate him
-   with the cases, so the page runs surgeon → numbered cases → scars →
-   form, with the SEO team's procedure copy underneath. His figures
+   with the cases. Since 2 Oct the form sits beside the surgeon, in the
+   same section (surgeon | form → numbered cases → scars), so it is one
+   scroll away; the SEO team's procedure copy goes underneath. His figures
    (5,000 awake liposuction procedures, 8,000 awake procedures, 10,000+
    surgeries) come from that meeting, relayed by Andrés.
    ------------------------------------------------------------ */
@@ -247,10 +250,9 @@ export const AWAKE_LIPO_360: LandingContent = {
   path: "/awake-lipo-360-nyc",
   sections: [
     "quicknav",
-    "surgeon-spotlight",
+    "surgeon-consult",
     "results",
     "scars",
-    "consultation",
     "details-intro",
     "what-is-it",
     "goals",

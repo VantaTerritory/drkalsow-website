@@ -36,7 +36,7 @@ const OPTIONS = [
 
 export function ConsultationOptions() {
   return (
-    <section className="bg-white section-py-lg">
+    <section className="bg-cream section-py-lg">
       <div className="container">
         <div className="section-header">
           <Eyebrow>How to begin</Eyebrow>
@@ -64,7 +64,7 @@ export function ConsultationOptions() {
                     </a>
                   ) : (
                     <a className={linkClass} href={option.action.href}>
-                      {option.action.label} <span aria-hidden>↓</span>
+                      {option.action.label} <span aria-hidden>↑</span>
                     </a>
                   )}
                 </div>

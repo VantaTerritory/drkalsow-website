@@ -81,9 +81,13 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   **El orden de secciones es data** (`sections` en cada landing). Awake
   Lipo 360 va "authority-first" desde el 22 sep 2026 (revisión del cliente
   del 21 sep): hero → doctor con sus cifras (5,000+ awake lipo, 8,000+
-  awake, 10,000+ cirugías, dichas por el doctor) → casos numerados
-  (Case 01, 02…, before | after, videos como tiles) → cicatrices → form
-  mid-page → detalle del procedimiento → FAQ → banda final. Breast
+  awake, 10,000+ cirugías, dichas por el doctor) y el form AL COSTADO, en
+  la misma sección (`surgeon-consult`, 2 oct, pedido del cliente vía Nico:
+  llegar al form sin bajar; en phones va presentación + cifras → form →
+  resto de los datos; el form no es sticky porque mide ~810 px) → casos
+  numerados (Case 01, 02…,
+  before | after, videos como tiles) → cicatrices → detalle del
+  procedimiento → FAQ → banda final. Breast
   Reduction conserva el orden original del SEO team hasta que el cliente
   la revise; los cambios se replican una landing a la vez.
 - **Thank-you page (`/thank-you`):** los tres forms redirigen ahí tras un
@@ -113,7 +117,8 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   van en páginas pagas.
 - **Variante B de Awake Lipo 360 (`/lipo-360-v2`, test A/B de Google Ads,
   sep 2026):** la A (`/awake-lipo-360-nyc`) es el control y no se toca, ni
-  su HTML ni el CSS que descarga. La B es el diseño Aubergine con el
+  su HTML ni el CSS que descarga, salvo pedido explícito de Nico (2 oct:
+  form al costado del doctor). La B es el diseño Aubergine con el
   contenido y el orden del doctor: bloques tipados en
   `lib/landings/lipo-360-v2.ts` (se reordenan, quitan o duplican ahí),
   componentes en `components/marketing/lipo-v2/` y **CSS propio en

@@ -281,6 +281,80 @@ export function LandingSurgeonSpotlight({ content }: Props) {
   );
 }
 
+/* ---------------- surgeon + form side by side ---------------- */
+/**
+ * The surgeon's block with the consultation form beside it, so the form is
+ * one scroll away (client request, 2 Oct 2026). Grid areas: on desktop the
+ * copy runs down the left and the form card follows the scroll on the right; on
+ * phones the order is introduction and figures → form → the rest of his
+ * facts, so the form still comes early. A wide portrait leads the left
+ * column on desktop and shrinks to a small arch beside the heading on phones.
+ */
+export function LandingSurgeonConsult({ content, form }: Props & { form: React.ReactNode }) {
+  const s = content.surgeon;
+  const photo = s.photo ?? SURGEON_PORTRAIT;
+  return (
+    <section className="bg-white section-py-lg ld-surgeon-consult" id="meet-kalsow">
+      <div className="container">
+        <div className="ld-sc">
+          <div className="ld-split-copy ld-sc-head">
+            <div className="ld-sc-title">
+              <div className="ld-portrait ld-sc-portrait">
+                <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 84px, 640px" />
+              </div>
+              <div>
+                <Eyebrow>{s.eyebrow}</Eyebrow>
+                <h2 className="h-sec">{s.heading}</h2>
+              </div>
+            </div>
+            <Divider />
+            <p className="ld-lead">{s.lead}</p>
+            {s.body.map((p) => (
+              <p key={p.slice(0, 40)}>{p}</p>
+            ))}
+            {s.stats && <StatBento stats={s.stats} className="ld-spotlight-figures" />}
+          </div>
+
+          <div className="ld-sc-form">{form}</div>
+
+          <div className="ld-split-copy ld-sc-rest">
+            <ul className="ld-points">
+              {s.points.map((p) => (
+                <li key={p.title}>
+                  <strong>{p.title}</strong>
+                  <span>{p.body}</span>
+                </li>
+              ))}
+            </ul>
+            {s.closing && <p className="ld-closing">{s.closing}</p>}
+            <div className="hero-cta-group">
+              <Link href={ABOUT_PATH} className="btn-secondary">
+                More About Dr. Kalsow
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Top of the form card when the form sits beside the surgeon. */
+export function LandingFormCardHead({ content }: Props) {
+  const s = content.finalCta;
+  const loc = siteConfig.locations[0];
+  return (
+    <div className="ld-form-head">
+      <Eyebrow>{s.eyebrow}</Eyebrow>
+      <h3 className="ld-form-title">{s.heading}</h3>
+      <p className="form-helper">
+        In person at {loc.address.split(",")[0]} or by FaceTime. Prefer to talk?{" "}
+        <CallLink className="text-link">{siteConfig.phone.display}</CallLink>
+      </p>
+    </div>
+  );
+}
+
 /* ---------------- what is it ---------------- */
 export function LandingWhatIsIt({ content }: Props) {
   const s = content.whatIsIt;

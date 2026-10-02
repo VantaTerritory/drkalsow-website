@@ -10,7 +10,8 @@ export const metadata: Metadata = pageMetadata("/call-our-office");
 
 /**
  * Contact — mirrors the live drkalsow.com/call-our-office: phone first, the
- * three consultation routes with their published fees, the request form and
+ * request form right under the hero (moved up on 2 Oct 2026 so it is one
+ * scroll away), the three consultation routes with their published fees and
  * the office location. The live page also repeats the home-page stat strip
  * and the awake-lipo philosophy blocks (including the copywriter's unedited
  * production notes); neither belongs on a contact page.
@@ -22,8 +23,8 @@ export default function Page() {
     <>
       <JsonLd nodes={buildPageJsonLd(page)} />
       <ContactHero page={page} />
+      <ConsultationForm tone="white" />
       <ConsultationOptions />
-      <ConsultationForm />
       <OfficeVisit />
     </>
   );
