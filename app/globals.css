@@ -77,6 +77,10 @@
   /* Arched panels */
   --radius-arch: 200px 200px 16px 16px;
   --radius-section: 80px;
+  /* Interior page heroes share one height: same vertical padding and the
+     same minimum panel height (home and the landings keep their own). */
+  --hero-pad-y: var(--space-7);
+  --hero-min-h: 560px;
 
   /* Spacing · 8px scale */
   --space-1: 4px;
@@ -432,13 +436,11 @@ h1, h2, h3, h4, h5 { margin: 0 0 var(--space-3); font-weight: var(--fw-medium); 
 }
 /* Keep the canvas behind the rounded panel aligned with the next white section. */
 main:has(.abt-hero-section) { background: var(--bg-surface); }
-.abt-hero { display: grid; grid-template-columns: 1.05fr 0.9fr; gap: var(--space-7); align-items: stretch; }
-.abt-hero-copy { padding: var(--space-7) 0 var(--space-6); align-self: center; }
-/* offset from the header; the image keeps the message-bubble motif. */
+.abt-hero { display: grid; grid-template-columns: 1.05fr 0.9fr; gap: var(--space-7); align-items: center; min-height: var(--hero-min-h); padding: var(--hero-pad-y) 0; }
+/* the image keeps the message-bubble motif and fills the shared hero height */
 .abt-hero-media {
   position: relative;
-  min-height: 540px;
-  margin-top: var(--space-5);
+  height: calc(var(--hero-min-h) - 2 * var(--hero-pad-y));
   border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
   overflow: hidden;
   background: var(--color-primary-100);
@@ -451,6 +453,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   color: var(--text-accent);
   margin: var(--space-4) 0 0;
 }
+.abt-stats-band { background: var(--bg-surface); padding-top: var(--space-5); }
 .abt-stats { border-top: 0; }
 .abt-stats .stat-label { color: var(--text-secondary); } /* tertiary fell under AA on the lavender hero */
 .abt-lead {
@@ -1450,11 +1453,16 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 
 /* Testimonials page */
 .testimonials-hero {
-  padding: var(--space-7) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--hero-min-h);
+  padding: var(--hero-pad-y) 0;
   background: var(--color-primary-100);
   border-radius: 0 0 var(--radius-section) var(--radius-section);
   overflow: hidden;
 }
+main:has(.testimonials-hero) { background: var(--bg-surface); } /* the corners open onto the white stories, not the page cream */
 .testimonials-hero-grid {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
@@ -1490,7 +1498,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: var(--space-3);
-  padding: 14px 12px 8px;
+  padding: 12px 12px 6px;
   color: var(--color-primary-100);
 }
 .testimonials-featured-caption span {
@@ -1838,7 +1846,7 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
 }
 
 @media (max-width: 768px) {
-  :root { --radius-section: 48px; }
+  :root { --radius-section: 48px; --hero-pad-y: var(--space-6); --hero-min-h: 0px; }
   .container, .container-tight, .header-inner { padding-left: var(--space-3); padding-right: var(--space-3); }
   .header-cta-full { display: none; }
   .header-cta-short { display: inline; }
@@ -1872,9 +1880,8 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   .section-py-lg { padding-top: var(--space-7); padding-bottom: var(--space-7); }
   .about-grid { grid-template-columns: 1fr; gap: var(--space-5); }
   .about-story-portrait { min-height: 420px; }
-  .abt-hero { grid-template-columns: 1fr; gap: 0; }
-  .abt-hero-copy { padding: var(--space-6) 0 var(--space-5); }
-  .abt-hero-media { min-height: 420px; margin-top: 0; border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); }
+  .abt-hero { grid-template-columns: 1fr; gap: var(--space-5); }
+  .abt-hero-media { height: 420px; border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); }
   .awards-intro { margin-bottom: var(--space-6); }
   .award-timeline { --timeline-date: 78px; --timeline-node: 28px; }
   .award-date { padding-right: var(--space-2); }
@@ -1914,7 +1921,6 @@ main:has(.abt-hero-section) { background: var(--bg-surface); }
   /* stacked: the absolute track no longer inherits the video height */
   .sp-carousel { height: 380px; }
   .sp-track { left: 42px; right: 42px; }
-  .testimonials-hero { padding: var(--space-6) 0; }
   .testimonials-hero-grid { grid-template-columns: 1fr; }
   .testimonials-hero-copy { max-width: 620px; }
   .testimonials-featured-caption { grid-template-columns: 1fr; gap: 4px; }
@@ -2266,9 +2272,10 @@ main:has(.ba-gallery-hero) { background: var(--bg-surface); }
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
   gap: var(--space-8);
-  align-items: end;
-  padding-top: var(--space-7);
-  padding-bottom: var(--space-7);
+  align-items: center;
+  min-height: var(--hero-min-h);
+  padding-top: var(--hero-pad-y);
+  padding-bottom: var(--hero-pad-y);
 }
 .ba-gallery-hero-copy .h-display { max-width: 760px; }
 .ba-gallery-hero-copy > p {
@@ -2478,7 +2485,7 @@ main:has(.ba-gallery-hero) { background: var(--bg-surface); }
   .ba-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 720px) {
-  .ba-gallery-hero-inner { grid-template-columns: 1fr; padding-top: var(--space-6); padding-bottom: var(--space-6); }
+  .ba-gallery-hero-inner { grid-template-columns: 1fr; }
   .ba-gallery-index-inner { padding-right: 0; }
   .ba-gallery-index-links { padding-right: var(--space-3); }
   .ba-gallery-procedure { padding: var(--space-7) 0; scroll-margin-top: 126px; }
@@ -2621,7 +2628,8 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
   grid-template-columns: 1fr 1.05fr;
   gap: var(--space-7);
   align-items: center;
-  padding: var(--space-7) 0;
+  min-height: var(--hero-min-h);
+  padding: var(--hero-pad-y) 0;
 }
 .proc-hero-lead {
   font-family: var(--font-sans);
@@ -2895,7 +2903,7 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
 }
 
 @media (max-width: 768px) {
-  .proc-hero { grid-template-columns: 1fr; gap: var(--space-5); padding: var(--space-6) 0; }
+  .proc-hero { grid-template-columns: 1fr; gap: var(--space-5); padding: var(--hero-pad-y) 0; }
   .proc-hero-portrait { aspect-ratio: 4 / 4.2; }
   .proc-intro { grid-template-columns: 1fr; gap: var(--space-4); }
   .proc-philosophy { padding: var(--space-7) 0; }
@@ -3085,7 +3093,6 @@ main:has(.proc-hero-section) { background: var(--bg-surface); }
 @media (max-width: 768px) {
   /* the panel's 48px bottom radius consumed the whole 48px bottom padding, so
      the featured video card's corners sat right on the panel curve */
-  .testimonials-hero { padding-bottom: var(--space-7); }
   /* caption wraps to two lines on narrow phones: keep it off the card edge */
   .testimonials-featured-caption { padding-bottom: 12px; }
   /* match the section's own 64px top padding instead of the base 96px */
@@ -3141,12 +3148,13 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: var(--space-7);
   align-items: center;
-  padding-top: var(--space-6);
-  padding-bottom: var(--space-6);
+  min-height: var(--hero-min-h);
+  padding-top: var(--hero-pad-y);
+  padding-bottom: var(--hero-pad-y);
 }
 .contact-hero-copy .h-display { max-width: 18ch; }
 .contact-hero-lead {
-  margin: var(--space-4) 0 var(--space-5);
+  margin: var(--space-3) 0 var(--space-4);
   max-width: 46ch;
   font-size: 15px;
   line-height: 1.75;
@@ -3159,8 +3167,8 @@ main:has(.contact-hero) { background: var(--bg-surface); }
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-6);
-  margin: var(--space-5) 0 0;
-  padding-top: var(--space-4);
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
   border-top: 0.5px solid var(--border-medium);
 }
 .contact-hero-facts dt {
@@ -3183,7 +3191,7 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 .contact-hero-aside { display: grid; gap: var(--space-4); }
 .contact-hero-photo {
   position: relative;
-  aspect-ratio: 16 / 9; /* wide, so the hero stays short and the form comes sooner */
+  aspect-ratio: 21 / 9; /* wide, so the photo and the note fit the shared hero height */
   border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
   overflow: hidden;
   border: 0.5px solid var(--border-soft);
@@ -3292,7 +3300,6 @@ main:has(.contact-hero) { background: var(--bg-surface); }
 }
 
 @media (max-width: 768px) {
-  .contact-hero-inner { padding-top: var(--space-6); padding-bottom: var(--space-6); }
   .contact-hero-actions .btn-primary,
   .contact-hero-actions .btn-secondary { flex: 1 1 auto; justify-content: center; }
   .contact-hero-facts { gap: var(--space-5); }
