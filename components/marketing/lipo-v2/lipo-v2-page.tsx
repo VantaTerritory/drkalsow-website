@@ -30,9 +30,11 @@ import {
   WhyBlock,
   CalloutBlock,
   ProcedureBlock,
-  ExperienceBlock,
+  DiagramsBlock,
+  IncisionsBlock,
   TestimonialsBlock,
   DestinationBlock,
+  InstagramBlock,
   FaqBlock,
   ClosingBlock,
   ConsultationIntro,
@@ -53,13 +55,15 @@ export function LipoV2Page() {
   const { blocks } = LIPO_360_V2;
   const hero = blocks.find((b): b is Lv2HeroBlock => b.kind === "hero");
   const patients = blocks.find((b): b is Lv2ResultsBlock => b.kind === "results")?.patients ?? [];
+  // the foot form keeps its rounded top; any other runs square, as in variant A
+  const lastForm = blocks.findLast((b) => b.kind === "consultation")?.id;
 
   return (
     <div className="ld-page lv2-page" data-landing-variant={LIPO_360_V2.variant}>
       <VariantTracker variant={LIPO_360_V2.variant} test={LIPO_360_V2.test} />
-      {blocks.map((block, i) => (
+      {blocks.map((block) => (
         <Fragment key={block.id}>
-          <Block block={block} h1={page.h1} source={page.path} patients={patients} last={i === blocks.length - 1} />
+          <Block block={block} h1={page.h1} source={page.path} patients={patients} foot={block.id === lastForm} />
           {/* phones: the hero's lead, figures and CTAs move below this block */}
           {hero?.mobileDetailsAfter === block.id && <HeroDetails hero={hero} placement="mobile" />}
         </Fragment>
@@ -76,13 +80,13 @@ function Block({
   h1,
   source,
   patients,
-  last,
+  foot,
 }: {
   block: Lv2Block;
   h1: string;
   source: string;
-  /** The page's last block: a form there keeps its rounded top; one mid-page runs square, as in variant A. */
-  last: boolean;
+  /** The page's last form, near the foot. */
+  foot: boolean;
   /** The results' patients, for blocks that show one of them again (revision). */
   patients: Lv2Patient[];
 }) {
@@ -102,8 +106,12 @@ function Block({
       return <CalloutBlock block={block} />;
     case "procedure":
       return <ProcedureBlock block={block} />;
-    case "experience":
-      return <ExperienceBlock block={block} />;
+    case "diagrams":
+      return <DiagramsBlock block={block} />;
+    case "incisions":
+      return <IncisionsBlock block={block} />;
+    case "instagram":
+      return <InstagramBlock block={block} />;
     case "testimonials":
       return <TestimonialsBlock block={block} />;
     case "destination":
@@ -116,7 +124,7 @@ function Block({
       // masked in Clarity's recordings (clarity.tsx)
       const form = <ConsultationForm id={block.id} source={source} intro={<ConsultationIntro block={block} />} />;
       return (
-        <div className={last ? "lv2-form-end" : "ld-consult-mid"} data-clarity-mask="True">
+        <div className={foot ? "lv2-form-end" : "ld-consult-mid"} data-clarity-mask="True">
           {form}
         </div>
       );

@@ -116,6 +116,33 @@
   .lv2-prose-copy > p.lv2-prose-lead { font-size: 25px; }
 }
 
+/* round 3 (the doctor's edit) */
+/* a composite with its own title and logo: shown whole, on a plain rounded frame */
+.lv2-frame.lv2-prose-frame--plain { border-radius: var(--radius-lg); background: var(--color-primary-900); }
+.lv2-prose-frame--plain > img { object-fit: contain; }
+/* the doctor's list of goals (candidacy) */
+.lv2-prose-bullets { margin: 0; padding-left: 22px; max-width: 58ch; font-family: var(--font-sans); font-size: 16px; line-height: 1.65; color: var(--text-secondary); }
+.lv2-prose-bullets li { padding-left: 5px; margin-bottom: var(--space-3); }
+.lv2-prose-bullets li::marker { color: var(--text-accent); }
+.lv2-prose-bullets li:last-child { margin-bottom: 0; }
+/* a caption that makes a statement about the photo */
+.lv2-prose-figure .lv2-cap--lead { margin-top: var(--space-3); font-size: 22px; font-weight: var(--fw-semibold); line-height: 1.35; color: var(--text-accent); }
+/* no heading: photo | text from the top (phones: photo, then text) */
+.lv2-prose-grid[data-head="none"] { grid-template-areas: "media" "copy"; }
+.lv2-prose-grid[data-head="none"] .lv2-prose-figure { max-width: 480px; justify-self: center; }
+.lv2-prose-grid[data-head="none"] .lv2-prose-copy > p:first-child { margin-top: 0; }
+@media (min-width: 900px) {
+  .lv2-prose-grid[data-head="none"] {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: none;
+    grid-template-areas: "media copy";
+    column-gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+  .lv2-prose-grid[data-head="none"][data-side="end"] { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); grid-template-areas: "copy media"; }
+  .lv2-prose-grid[data-head="none"] .lv2-prose-figure { align-self: start; max-width: none; }
+}
+
 /* ==== LV2 · POINTS ==== */
 .lv2-pts-copy { min-width: 0; }
 .lv2-pts-copy .h-sec { max-width: 22ch; }
@@ -188,18 +215,19 @@
 }
 
 /* ==== LV2 · LESSONS (dark) ==== */
-/* The arch stands on the band's lower edge: the band has no bottom
-   padding, the list keeps the section's space under it instead. */
-.lv2-lessons { --lv2-lessons-end: var(--ld-section-space, var(--space-9)); }
-section.lv2-sec.lv2-lessons { padding-bottom: 0; }
-.lv2-lessons-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "list" "figure"; }
+/* heading, a strip of three photos of him at work (round 3), then the list */
+.lv2-lessons-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "strip" "list"; }
 .lv2-lessons-head { grid-area: head; min-width: 0; }
 .lv2-lessons-head .h-sec { max-width: 18ch; }
+/* one band of three 9:16 photos, joined, rounded at its own corners */
+.lv2-lessons-strip { grid-area: strip; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-6); overflow: hidden; border-radius: var(--radius-lg); background: var(--color-primary-900); }
+.lv2-lessons-photo { position: relative; aspect-ratio: 9 / 16; }
+.lv2-lessons-photo img { object-fit: cover; }
 .lv2-lessons-list {
   grid-area: list;
   min-width: 0;
   list-style: none;
-  margin: var(--space-6) 0 var(--space-6);
+  margin: var(--space-6) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -210,46 +238,8 @@ section.lv2-sec.lv2-lessons { padding-bottom: 0; }
 .lv2-lessons-num { display: block; margin-bottom: var(--space-2); font-family: var(--font-display); font-size: 26px; font-style: italic; line-height: 1; color: var(--color-primary-200); }
 .lv2-lessons-list h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 23px; font-style: italic; font-weight: var(--fw-medium); line-height: 1.25; color: var(--text-on-dark); text-wrap: balance; }
 .lv2-lessons-list p { margin: 0; max-width: 46ch; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: var(--color-primary-100); }
-/* his cutout in a flat arch of the lighter aubergine; the arch clips the
-   photo's cut edges (the arm at its right side, the chest at its base) */
-.lv2-lessons-figure {
-  --lv2-fig-w: min(300px, 80vw);
-  grid-area: figure;
-  justify-self: center;
-  position: relative;
-  width: var(--lv2-fig-w);
-  aspect-ratio: 513 / 660;          /* phones and tablets: head and shoulders */
-  padding-top: calc(var(--lv2-fig-w) * 0.12);   /* headroom under the arch */
-  overflow: hidden;
-  border-radius: var(--radius-full) var(--radius-full) 0 0;
-  background: color-mix(in srgb, var(--color-primary-600) 70%, var(--color-primary-800));
-}
-.lv2-lessons-figure img { display: block; width: 100%; height: auto; }
 @media (min-width: 600px) {
   .lv2-lessons-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lv2-lessons-figure { --lv2-fig-w: 320px; }
-}
-@media (min-width: 1200px) {
-  /* list | arch. The arch starts level with the list's first rule and
-     runs to the band's edge; he stands on its base. Not below 1200px:
-     narrower list columns run taller than the portrait and the arch
-     would be mostly empty above his head. */
-  .lv2-lessons-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
-    grid-template-areas: "head head" "list figure";
-    column-gap: var(--space-7);
-  }
-  .lv2-lessons-list { margin-bottom: var(--lv2-lessons-end); }
-  .lv2-lessons-figure {
-    display: grid;
-    align-content: end;
-    align-self: stretch;
-    justify-self: stretch;
-    width: auto;
-    aspect-ratio: auto;
-    margin-top: var(--space-6);
-    padding-top: 22%;
-  }
 }
 
 /* ==== LV2 · REVISION ==== */

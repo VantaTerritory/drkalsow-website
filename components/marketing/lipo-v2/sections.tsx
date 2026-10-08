@@ -15,9 +15,11 @@ import type {
   Lv2WhyBlock,
   Lv2CalloutBlock,
   Lv2ProcedureBlock,
-  Lv2ExperienceBlock,
+  Lv2DiagramsBlock,
+  Lv2IncisionsBlock,
   Lv2TestimonialsBlock,
   Lv2DestinationBlock,
+  Lv2InstagramBlock,
   Lv2FaqBlock,
   Lv2ClosingBlock,
   Lv2ConsultationBlock,
@@ -171,18 +173,23 @@ export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
  * the block named in hero.mobileDetailsAfter (hidden from tablet up).
  */
 export function HeroDetails({ hero, placement }: { hero: Lv2HeroBlock; placement: "desktop" | "mobile" }) {
-  const lead = (
-    <p className="lv2-lead">
-      {hero.lead.before}
-      <strong>{hero.lead.bold}</strong>
-      {hero.lead.after}
-    </p>
+  // the lead's slot (grid area "lead" from tablet up) holds the lead or the figures' heading
+  const lead = hero.statsHeading ? (
+    <h2 className="lv2-lead lv2-stats-heading">{hero.statsHeading}</h2>
+  ) : (
+    hero.lead && (
+      <p className="lv2-lead">
+        {hero.lead.before}
+        <strong>{hero.lead.bold}</strong>
+        {hero.lead.after}
+      </p>
+    )
   );
   const stats = (
     <ul className="lv2-stats">
       {hero.stats.map((s) => (
         <li className="lv2-stat" key={`${s.value} ${s.label}`}>
-          <strong className="lv2-stat-value">{s.value}</strong>
+          <strong className={s.word ? "lv2-stat-value lv2-stat-value--word" : "lv2-stat-value"}>{s.value}</strong>
           <span className="lv2-stat-label">{s.label}</span>
         </li>
       ))}
@@ -235,21 +242,25 @@ export function WhyBlock({ block }: { block: Lv2WhyBlock }) {
   return (
     <section className="bg-cream section-py-lg lv2-why lv2-sec" id={block.id}>
       <div className="container">
-        <div className="section-header lv2-sec-head">
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="h-sec">{block.heading}</h2>
-        </div>
-        <Reveal as="ol" className="lv2-ruled lv2-why-reasons">
-          {block.reasons.map((r, i) => (
-            <li key={r.title}>
-              <span className="lv2-ruled-num" aria-hidden>
-                {pad(i + 1)}
-              </span>
-              <h3>{r.title}</h3>
-              <p>{r.body}</p>
-            </li>
-          ))}
-        </Reveal>
+        {block.heading && (
+          <div className="section-header lv2-sec-head">
+            {block.eyebrow && <Eyebrow>{block.eyebrow}</Eyebrow>}
+            <h2 className="h-sec">{block.heading}</h2>
+          </div>
+        )}
+        {block.reasons && (
+          <Reveal as="ol" className="lv2-ruled lv2-why-reasons">
+            {block.reasons.map((r, i) => (
+              <li key={r.title}>
+                <span className="lv2-ruled-num" aria-hidden>
+                  {pad(i + 1)}
+                </span>
+                <h3>{r.title}</h3>
+                <p>{r.body}</p>
+              </li>
+            ))}
+          </Reveal>
+        )}
         {/* The patients' messages: pictures only, they do not open (the client's call).
             Each at its own ratio on one row height; wider than the row, it scrolls sideways.
             Mounted near the viewport (see deferred.tsx): on phones they sit just under the
@@ -282,9 +293,9 @@ export function CalloutBlock({ block }: { block: Lv2CalloutBlock }) {
   );
 }
 
-/* ---------------- what Lipo 360 is, the diagrams, the incisions ---------------- */
+/* ---------------- what Lipo 360 is, beside the marking clip ---------------- */
 export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
-  const { marking, diagrams, incisions } = block;
+  const { marking } = block;
   return (
     <section className="bg-cream section-py-lg lv2-procedure lv2-sec" id={block.id}>
       <div className="container">
@@ -319,16 +330,24 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
           </figure>
         </div>
 
-        {block.diagramsIntro && (
-          <div className="lv2-diagrams-intro">
-            <h3 className="lv2-h3">{block.diagramsIntro.heading}</h3>
-            <p>{block.diagramsIntro.body}</p>
-          </div>
-        )}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- the three diagrams ---------------- */
+export function DiagramsBlock({ block }: { block: Lv2DiagramsBlock }) {
+  return (
+    <section className="bg-cream section-py-lg lv2-procedure lv2-sec" id={block.id}>
+      <div className="container">
+        <div className="lv2-diagrams-intro">
+          <h2 className="lv2-h3">{block.heading}</h2>
+          <p>{block.body}</p>
+        </div>
 
         {/* the three diagrams back to back, in the doctor's order: nothing goes between them */}
         <Reveal className="lv2-diagrams">
-          {diagrams.map((d) => (
+          {block.diagrams.map((d) => (
             <figure className="lv2-diagram" key={d.src}>
               <div className="lv2-diagram-frame">
                 <Image
@@ -345,26 +364,35 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
             </figure>
           ))}
         </Reveal>
+      </div>
+    </section>
+  );
+}
 
-        <div className="lv2-incisions" id={incisions.id}>
+/* ---------------- scars and incisions ---------------- */
+export function IncisionsBlock({ block }: { block: Lv2IncisionsBlock }) {
+  return (
+    <section className="bg-cream section-py-lg lv2-procedure lv2-sec" id={block.id}>
+      <div className="container">
+        <div className="lv2-incisions">
           <div className="lv2-inc-copy">
-            <Eyebrow>{incisions.eyebrow}</Eyebrow>
-            <h3 className="lv2-h3">{incisions.heading}</h3>
-            <p>{incisions.body}</p>
+            <Eyebrow>{block.eyebrow}</Eyebrow>
+            <h2 className="lv2-h3">{block.heading}</h2>
+            <p>{block.body}</p>
             {/* point data in a tile; the explanation stays text */}
             <p className="lv2-figure-tile">
-              <strong>{incisions.figure.value}</strong>
-              <span>{incisions.figure.label}</span>
+              <strong>{block.figure.value}</strong>
+              <span>{block.figure.label}</span>
             </p>
           </div>
           <figure className="lv2-inc-media">
-            <div className="lv2-frame" style={ratio(incisions.video)}>
-              <LoopVideo video={incisions.video} start="visible" className="lv2-fill" />
+            <div className="lv2-frame" style={ratio(block.video)}>
+              <LoopVideo video={block.video} start="visible" className="lv2-fill" />
             </div>
-            {incisions.video.caption && <figcaption className="lv2-cap">{incisions.video.caption}</figcaption>}
+            {block.video.caption && <figcaption className="lv2-cap">{block.video.caption}</figcaption>}
           </figure>
           <ul className="lv2-facts">
-            {incisions.facts.map((f) => (
+            {block.facts.map((f) => (
               <li key={f.title}>
                 <strong>{f.title}</strong>
                 <span>{f.body}</span>
@@ -372,31 +400,6 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
             ))}
           </ul>
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- experience ---------------- */
-export function ExperienceBlock({ block }: { block: Lv2ExperienceBlock }) {
-  return (
-    <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-experience lv2-sec`} id={block.id}>
-      <div className="container">
-        <div className="section-header lv2-sec-head">
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="h-sec">{block.heading}</h2>
-        </div>
-        <Reveal as="ol" className="lv2-ruled">
-          {block.cards.map((c, i) => (
-            <li key={c.title}>
-              <span className="lv2-ruled-num" aria-hidden>
-                {pad(i + 1)}
-              </span>
-              <h3>{c.title}</h3>
-              <p>{c.body}</p>
-            </li>
-          ))}
-        </Reveal>
       </div>
     </section>
   );
@@ -440,67 +443,111 @@ export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
 
 /* ---------------- destination practice ---------------- */
 export function DestinationBlock({ block }: { block: Lv2DestinationBlock }) {
-  const { approach, portrait, images, reel, call } = block;
+  const { intro, mosaic } = block;
   return (
     <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-destination lv2-sec`} id={block.id}>
       <div className="container">
-        <div className="lv2-dest-intro">
-          <div className="lv2-dest-copy">
-            <Eyebrow>{block.eyebrow}</Eyebrow>
-            <h2 className="h-sec">{block.heading}</h2>
-            <Divider />
-            {block.body.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-          </div>
-          <aside className="lv2-approach">
-            <h3 className="lv2-approach-title">{approach.title}</h3>
-            <ul className="lv2-dots">
-              {approach.items.map((item) => (
-                <li key={item}>{item}</li>
+        {intro && (
+          <div className="lv2-dest-intro">
+            <div className="lv2-dest-copy">
+              <Eyebrow>{intro.eyebrow}</Eyebrow>
+              <h2 className="h-sec">{intro.heading}</h2>
+              <Divider />
+              {intro.body.map((p) => (
+                <p key={p}>{p}</p>
               ))}
-            </ul>
-          </aside>
-        </div>
+            </div>
+            <aside className="lv2-approach">
+              <h3 className="lv2-approach-title">{intro.approach.title}</h3>
+              <ul className="lv2-dots">
+                {intro.approach.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+        )}
 
         {/* one mosaic, no holes: portrait | practice and team over the call panel | reel */}
-        <Reveal className="lv2-dest-grid" data-images={images.length}>
-          <div className="lv2-dest-portrait">
-            <Image
-              src={portrait.src}
-              alt={portrait.alt}
-              fill
-              sizes="(max-width: 767px) 92vw, (max-width: 1023px) 30vw, 270px"
-            />
-          </div>
-          {images.map((img, i) => (
-            <figure className={`lv2-dest-img lv2-dest-img--${i}`} key={img.src}>
-              <div className="lv2-frame lv2-frame--photo">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="(max-width: 767px) 46vw, (max-width: 1023px) 36vw, 270px"
-                />
+        {mosaic && (
+          <Reveal className="lv2-dest-grid" data-images={mosaic.images.length}>
+            <div className="lv2-dest-portrait">
+              <Image
+                src={mosaic.portrait.src}
+                alt={mosaic.portrait.alt}
+                fill
+                sizes="(max-width: 767px) 92vw, (max-width: 1023px) 30vw, 270px"
+              />
+            </div>
+            {mosaic.images.map((img, i) => (
+              <figure className={`lv2-dest-img lv2-dest-img--${i}`} key={img.src}>
+                <div className="lv2-frame lv2-frame--photo">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    sizes="(max-width: 767px) 46vw, (max-width: 1023px) 36vw, 270px"
+                  />
+                </div>
+                <figcaption className="lv2-cap">{img.caption}</figcaption>
+              </figure>
+            ))}
+            <figure className="lv2-dest-reel">
+              {/* 9:16 from CSS (lv2-frame--reel), so the mosaic can let it stretch */}
+              <div className="lv2-frame lv2-frame--reel">
+                <VideoFacade video={mosaic.reel} className="lv2-fill" />
               </div>
-              <figcaption className="lv2-cap">{img.caption}</figcaption>
+              <ClipCaption video={mosaic.reel} />
             </figure>
-          ))}
-          <figure className="lv2-dest-reel">
-            {/* 9:16 from CSS (lv2-frame--reel), so the mosaic can let it stretch */}
-            <div className="lv2-frame lv2-frame--reel">
-              <VideoFacade video={reel} className="lv2-fill" />
+            <div className="lv2-dest-call lv2-dark">
+              <div>
+                <h3>{mosaic.call.heading}</h3>
+                <p>{mosaic.call.body}</p>
+              </div>
+              <CallCta link={mosaic.call.link} location="destination" className="btn-light" />
             </div>
-            <ClipCaption video={reel} />
-          </figure>
-          <div className="lv2-dest-call lv2-dark">
-            <div>
-              <h3>{call.heading}</h3>
-              <p>{call.body}</p>
-            </div>
-            <CallCta link={call.link} location="destination" className="btn-light" />
+          </Reveal>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Instagram: the reel, then photos that open his profile ---------------- */
+export function InstagramBlock({ block }: { block: Lv2InstagramBlock }) {
+  return (
+    <section className={`${toneClass(block.tone, "white")} section-py-lg lv2-ig lv2-sec`} id={block.id}>
+      <div className="container">
+        <div className="lv2-ig-head">
+          <div>
+            <Eyebrow>{block.eyebrow}</Eyebrow>
+            <h2 className="h-sec">{block.heading}</h2>
+            <p className="lv2-intro">{block.intro}</p>
           </div>
-        </Reveal>
+          <a className="btn-secondary" href={block.follow.href} target="_blank" rel="noopener noreferrer">
+            {block.follow.label}
+          </a>
+        </div>
+        {/* focusable so the sideways roll scrolls from the keyboard */}
+        <div className="lv2-ig-roll" tabIndex={0} role="region" aria-label={`${block.heading} Scroll sideways for more.`}>
+          <figure className="lv2-ig-card">
+            <div className="lv2-frame lv2-frame--reel">
+              <VideoFacade video={block.reel} className="lv2-fill" />
+            </div>
+            <ClipCaption video={block.reel} />
+          </figure>
+          {block.posts.map((post) => (
+            <a className="lv2-ig-card lv2-ig-post" href={block.follow.href} target="_blank" rel="noopener noreferrer" key={post.src}>
+              <span className="lv2-frame lv2-frame--reel">
+                <Image src={post.src} alt={post.alt} fill sizes="(max-width: 767px) 76vw, 300px" />
+              </span>
+              <span className="lv2-media-cap">
+                <strong>{post.caption}</strong>
+              </span>
+            </a>
+          ))}
+        </div>
+        <p className="lv2-ig-hint">{block.hint}</p>
       </div>
     </section>
   );
@@ -566,6 +613,12 @@ export function ConsultationIntro({ block }: { block: Lv2ConsultationBlock }) {
   const loc = siteConfig.locations[0];
   return (
     <div className="contact-form-intro">
+      {/* a small result floated beside the heading (round 3) */}
+      {block.photo && (
+        <span className="lv2-consult-photo">
+          <Image src={block.photo.src} alt={block.photo.alt} fill sizes="144px" />
+        </span>
+      )}
       <Eyebrow>{block.eyebrow}</Eyebrow>
       <h2 className="h-sec">{block.heading}</h2>
       <p className="form-helper">{block.body}</p>
@@ -582,6 +635,11 @@ export function ConsultationIntro({ block }: { block: Lv2ConsultationBlock }) {
       <p className="form-helper ld-muted">
         {loc.address} · {loc.cityState}
       </p>
+      {block.teamPhoto && (
+        <span className="lv2-consult-team" style={ratio(block.teamPhoto)}>
+          <Image src={block.teamPhoto.src} alt={block.teamPhoto.alt} fill sizes="(max-width: 899px) 92vw, 480px" />
+        </span>
+      )}
     </div>
   );
 }

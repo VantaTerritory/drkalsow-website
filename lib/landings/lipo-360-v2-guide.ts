@@ -13,7 +13,13 @@
    Stock images: the client's choice (Andrés, 29 Sep), taken from his old
    site and draft 2, license unknown; Nico accepted the copyright and Ads
    risk. Each one carries "Illustrative image. Not a patient." so no
-   reader takes them for results.
+   reader takes them for results, except where the doctor says otherwise
+   (the candidacy photo, round 3).
+
+   Round 3 (8 Oct, the doctor's edit of the page): "The Name Is Newer
+   Than The Procedure" and "How Is Lipo 360 Performed?" left the page,
+   candidacy became his list of goals, and his lessons sit under three
+   photos of him at work.
    ============================================================ */
 
 import type {
@@ -26,96 +32,35 @@ import type {
 
 const NOT_A_PATIENT = "Illustrative image. Not a patient.";
 
-/** Draft 2, after the diagrams: what the name does and does not mean. */
-export const NAME_BLOCK: Lv2PointsBlock = {
-  kind: "points",
-  id: "the-name",
-  tone: "white",
-  eyebrow: "Good to know",
-  heading: "The Name Is Newer Than The Procedure.",
-  columns: 3,
-  items: [
-    {
-      title: "Still liposuction",
-      body: "Liposuction still works by removing fat through small incisions using a thin tube. The skill lies in how much fat is removed, where it is removed, and how smoothly one area blends into the next. The skin then adjusts to the new contour, although the amount of tightening varies from person to person.",
-    },
-    {
-      title: "A treatment area, not a machine",
-      body: "Terms such as “Lipo 360” can help describe a treatment area, but they do not describe a special machine or guarantee a result. There is also no such thing as truly scarless liposuction: even very small incisions leave scars.",
-    },
-    {
-      title: "Nonsurgical treatments",
-      body: "Nonsurgical treatments such as CoolSculpting work differently and generally produce a different degree of change. CoolSculpting also carries a rare risk called paradoxical adipose hyperplasia, in which the treated area becomes larger rather than smaller and may require surgery to correct.",
-    },
-  ],
-};
-
-/** "How Is Lipo 360 Performed?" (its drains paragraph is left out: the incisions facts right above say the same). */
-export const HOW_BLOCK: Lv2ProseBlock = {
-  kind: "prose",
-  id: "how-it-is-performed",
-  tone: "cream",
-  eyebrow: "The procedure",
-  heading: "How Is Lipo 360 Performed?",
-  body: [
-    "Lipo 360 is liposuction. The basic process has remained much the same for decades: small incisions are made, tumescent fluid is injected to numb the area and limit bleeding, and fat is removed through thin tubes called cannulas. If fat transfer is planned, such as a BBL or breast fat grafting, suitable fat is then prepared and injected into the planned areas.",
-    "Dr. Kalsow performs Lipo 360 while the patient is awake. He treats each planned area as thoroughly as he safely can, then sculpts the transitions to create the desired shape. Depending on the patient’s anatomy and goals, he may focus on the love handles, bra rolls, waist, back, sides of the breasts, and abdominal definition.",
-  ],
-  image: {
-    src: "/img/team/dr-kalsow-or.jpg",
-    alt: "Dr. Sergei Kalsow in surgical gown, cap and mask in the operating room",
-    width: 1800,
-    height: 1202,
-    caption: "Dr. Kalsow in the operating room.",
-  },
-  imageSide: "end",
-};
-
 /** "Am I a Candidate for Lipo 360?" */
 export const CANDIDATE_BLOCK: Lv2ProseBlock = {
   kind: "prose",
   id: "candidate",
   tone: "white",
   eyebrow: "Candidacy",
-  heading: "Am I a Candidate for Lipo 360?",
-  lead: "Why liposuction instead of weight loss? Because the goal may be a change in shape, not just size.",
-  body: [
-    "Diet and exercise can reduce body fat, but they cannot choose where it comes off. You might become smaller while still having a relatively straight waist. Lipo 360 can target the waist, love handles, abdomen, and back to create more curves. You do not have to prove that you have exercised enough to want a different shape.",
-    "The ideal candidate is generally near a comfortable, stable weight, in good health, and has skin that can adjust to the new contour. Dr. Kalsow also evaluates patients whose circumstances call for a more individualized plan:",
+  // round 3: the doctor's list of goals in place of draft 2's text and points
+  heading: "Am I a Candidate for Lipo360?",
+  body: [],
+  bullets: [
+    // his em dash as a colon (client rule)
+    "You want more shape: a smaller waist and more curves.",
+    "You have tried diet and exercise, but stubborn fat deposits remain.",
+    "You want a flatter stomach.",
+    "You want to reduce bra rolls and create a smoother contour in that area.",
+    "You want a sculpted back and smaller love handles.",
+    "You want to remove fullness above your buttocks to reveal a more defined curve.",
+    "If your goal is a more sculpted shape, Lipo 360 may be the procedure for you.",
   ],
-  points: [
-    { title: "Higher BMI", body: "The procedure may need to be divided into two stages to stay within safe limits." },
-    { title: "Major weight loss", body: "If excess skin is the main concern, liposuction alone may not give the desired result." },
-    {
-      title: "Second or third liposuction procedure",
-      body: "Prior surgery changes the tissue and may limit what can be improved.",
-    },
-    {
-      title: "Previous CoolSculpting",
-      body: "The treated tissue and contour need to be assessed before planning liposuction.",
-    },
-    {
-      title: "Low BMI",
-      body: "There may still be fullness at the sides that can be sculpted, even when there is little fat elsewhere.",
-    },
-    {
-      title: "Medical conditions or lymphedema",
-      body: "These need an individual assessment of risks and expected benefit.",
-    },
-    {
-      title: "A history of thick or raised scars",
-      body: "Dr. Kalsow will examine your scars and discuss whether scar treatment may help. Many scars patients call “keloids” are actually a different type of raised scar.",
-    },
-  ],
-  outro:
-    "At your consultation, Dr. Kalsow will explain what can realistically change for your body and whether Lipo 360 is the right way to achieve it.",
-  // draft 2's own image, next to "For Our Destination Patients" there (upscaled x4, Real-ESRGAN)
+  // Draft 2's own image (upscaled x4, Real-ESRGAN). The doctor's round 3
+  // caption says she is his patient: TO CONFIRM with him before this
+  // publishes (the image came from his old site as stock, license unknown).
   image: {
     src: "/img/lipo-v2/stock/sunset-dress.jpg",
     alt: "A woman in a fitted beige dress on a beach at sunset",
     width: 900,
     height: 1597,
-    caption: NOT_A_PATIENT,
+    caption: "Dr. Kalsow’s real patient",
+    captionLead: true,
   },
   imageSide: "end",
 };
@@ -135,13 +80,12 @@ export const CHOICES_BLOCK: Lv2ProseBlock = {
     title: "Are There Alternatives to Lipo 360?",
     body: "You can choose liposuction of specific areas, such as the abdomen, flanks, or back, instead of treating the full midsection. The trade-off is that an untreated area may interrupt the transition in your contour. Fat transfer or fillers add volume rather than remove it. If loose skin or separated abdominal muscles are the main concern, a tummy tuck may be more appropriate. In some cases, a tummy tuck and liposuction are combined.",
   },
-  // from the old drkalsow.com, upscaled x4 (Real-ESRGAN)
+  // round 3: the doctor's photo of him and his team in the operating room
   image: {
-    src: "/img/lipo-v2/stock/black-lingerie.jpg",
-    alt: "A woman in black lace lingerie",
-    width: 1400,
-    height: 1400,
-    caption: NOT_A_PATIENT,
+    src: "/img/lipo-v2/or-team.jpg",
+    alt: "Dr. Kalsow with two people in the operating room",
+    width: 1536,
+    height: 2048,
   },
   imageSide: "start",
 };
@@ -175,12 +119,12 @@ export const LIMITATIONS_BLOCK: Lv2PointsBlock = {
       body: "Repeated procedures can leave firm scar tissue. After several rounds, some fullness that looks like fat may actually be scar tissue that liposuction cannot remove. Further passes with a cannula may create more scarring without meaningfully improving the contour.",
     },
   ],
-  // from the old drkalsow.com (1651 px, no upscale needed)
+  // from the old drkalsow.com, upscaled x4 (Real-ESRGAN); round 3 moved it here from "Why stay awake"
   image: {
-    src: "/img/lipo-v2/stock/white-bikini.jpg",
-    alt: "A woman in a white bikini sitting on a white floor",
-    width: 1600,
-    height: 1066,
+    src: "/img/lipo-v2/stock/black-lingerie.jpg",
+    alt: "A woman in black lace lingerie",
+    width: 1400,
+    height: 1400,
     caption: NOT_A_PATIENT,
   },
 };
@@ -396,12 +340,17 @@ export const LESSONS_BLOCK: Lv2LessonsBlock = {
       body: "Every body has limits, and every operation has risks. Social media shows only a small selection of a surgeon’s work; use it as a starting point for questions, not a guarantee of your result.",
     },
   ],
-  portrait: {
-    src: "/img/portrait/dr-kalsow-bust.png",
-    alt: "Dr. Sergei Kalsow, MD, smiling, in surgical scrubs and cap",
-    width: 513,
-    height: 1155,
-  },
+  // round 3: the doctor's three photos at work, in place of his cutout
+  photos: [
+    {
+      src: "/img/lipo-v2/or-1.jpg",
+      alt: "Dr. Kalsow in the operating room, behind two canisters of removed fat",
+      width: 1125,
+      height: 2000,
+    },
+    { src: "/img/lipo-v2/or-2.jpg", alt: "Dr. Kalsow in surgical gown and cap during liposuction", width: 1125, height: 2000 },
+    { src: "/img/lipo-v2/or-3.jpg", alt: "Dr. Kalsow in scrubs, sitting in his operating room", width: 1536, height: 2048 },
+  ],
 };
 
 /** "Revision Liposuction", with the draft's "[Before-and-after photos: a patient treated by Dr. Kalsow after liposuction elsewhere]": patient 06. */
@@ -445,14 +394,6 @@ export const MORE_BLOCK: Lv2PointsBlock = {
       body: "Patients often ask about liposuction above the knees, along the front of the legs, or on the inner thighs. These areas can be difficult to contour smoothly, and the inner thighs are particularly sensitive to loose skin. Dr. Kalsow will assess whether treating them is likely to give you a worthwhile result.",
     },
   ],
-  // from the old drkalsow.com, upscaled x4 (Real-ESRGAN)
-  image: {
-    src: "/img/lipo-v2/stock/orange-bikini.jpg",
-    alt: "A woman's hips and buttocks in an orange bikini by a pool",
-    width: 1600,
-    height: 1096,
-    caption: NOT_A_PATIENT,
-  },
 };
 
 /**
@@ -462,8 +403,6 @@ export const MORE_BLOCK: Lv2PointsBlock = {
  * photo's LCP past variant A's in Lighthouse.
  */
 export const GUIDE_BLOCKS = [
-  NAME_BLOCK,
-  HOW_BLOCK,
   CANDIDATE_BLOCK,
   CHOICES_BLOCK,
   LIMITATIONS_BLOCK,

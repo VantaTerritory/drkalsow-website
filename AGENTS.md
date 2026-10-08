@@ -124,15 +124,18 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   componentes en `components/marketing/lipo-v2/` y **CSS propio en
   `components/marketing/lipo-v2/lipo-v2.css`** (y `lipo-v2-guide.css`),
   hojas de la ruta y no `globals.css`, para que la A no baje ni un byte de
-  B. Todo selector lleva `lv2-`. Desde la ronda 2 (29 sep, revisión de
-  Andrés) el orden sigue el "draft 2" del doctor: hero (solo su retrato IA;
-  el clip de marcación pasó al bloque del procedimiento) → "Why thousands
-  of patients choose" (6 razones + capturas) → filosofía → galería → "An
-  honest assessment" → form → qué es Lipo 360 → … → FAQ → form. **Dos
-  forms:** `#consultation` después de la galería (ahí llevan el hero, la
-  galería y la barra fija de phones, que es compartida con la A y apunta a
-  ese id) y `#consultation-end` al pie, que toma el look que la A le da a
-  su `#consultation`. Las secciones largas del draft 2 son bloques genéricos
+  B. Todo selector lleva `lv2-`. Desde la ronda 3 (8 oct) el orden es el
+  de la edición que hizo el propio doctor sobre la copia estática (zip
+  "DrKalsow-Lipo360-V2 (12)"): hero (su retrato IA; su heading "Why
+  thousands of patients around the world choose" sobre las cifras) → qué
+  es Lipo 360 + clip de marcación → filosofía junto a un resultado →
+  galería → candidatura → diagramas → limitaciones → lecciones → banda de
+  cierre → form → testimonios → Instagram → FAQ → incisiones → … → form →
+  capturas de pacientes. **Dos forms:** `#consultation` después de la
+  banda de cierre (ahí llevan el hero, la galería y la barra fija de
+  phones, que es compartida con la A y apunta a ese id) y
+  `#consultation-end` cerca del pie; los dos con el fondo del lobby y las
+  fotos que pidió el doctor. Las secciones largas del draft 2 son bloques genéricos
   (`prose`, `points`, `disclosure`, `lessons`, `revision`) con el copy en
   `lib/landings/lipo-360-v2-guide.ts` y los componentes en `guide.tsx`; si
   la página queda larga, se mueven a otras páginas desde ahí. **Esos
@@ -144,7 +147,10 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   (`deferred.tsx`): el lazy nativo las bajaba con la página. Tailwind v4 escanea el código y los .md: una palabra suelta que
   coincida con una utilidad (p. ej. un valor de `display` en un comentario)
   agrega esa regla al CSS global de todo el sitio; después de tocar B,
-  comprobar que el CSS que baja la A sigue siendo el de `main`. En el
+  comprobar que el CSS que baja la A sigue siendo el de `main`. Lo mismo
+  con los tokens: un token de `@theme` que la A no usa, citado en
+  el CSS de B o en un .md, hace que Tailwind lo emita en el theme global y cambia el
+  CSS de la A (pasó con el neutral 400: por eso acá no va su nombre literal). En el
   registro es `group: "experiment"`
   (noindex, fuera de sitemap, nav y llms.txt, sin JSON-LD de página;
   `/thank-you` sí vuelve a ella). Tracking: `landing_variant: "B"` y
