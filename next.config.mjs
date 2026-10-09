@@ -16,6 +16,14 @@
 const nextConfig = {
   async redirects() {
     return [
+      // One host (SEO audit of 9 Oct 2026, T01): the bare domain answered 200
+      // too, splitting signals. Path and query (gclid, UTMs) carry over.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "drkalsow.com" }],
+        destination: "https://www.drkalsow.com/:path*",
+        statusCode: 301,
+      },
       // Squarespace served the home at /home (GSC still shows /home/).
       { source: "/home", destination: "/", statusCode: 301 },
       // Live /hair-transplantation had Facelift content under wrong metadata;

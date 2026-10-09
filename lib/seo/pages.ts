@@ -268,9 +268,10 @@ export const SITE_PAGES: readonly SitePage[] = [
   {
     path: "/awake-lipo-360-nyc",
     label: "Awake Lipo 360",
-    title: "Awake Lipo 360 NYC | Dr. Sergei Kalsow",
+    // SEO audit of 9 Oct 2026 (sheet 03_Landings): procedure intent, a title of its own
+    title: "Awake Lipo 360 in NYC | Dr. Sergei Kalsow",
     description:
-      "Explore Awake Lipo 360 in New York City with Dr. Sergei Kalsow. Learn treatment areas, candidacy, recovery, results, and what to expect. Request a consultation.",
+      "Learn how Awake Lipo 360 works in NYC with Dr. Sergei Kalsow. Explore treatment areas, candidacy, recovery, risks and consultation options.",
     h1: "Awake Lipo 360 in NYC",
     group: "landing",
     schema: "WebPage + MedicalProcedure + FAQPage + BreadcrumbList",

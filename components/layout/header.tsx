@@ -148,45 +148,50 @@ export function Header() {
                   <path d="M1 1 L5 5 L9 1" stroke="currentColor" strokeWidth="1.2" />
                 </svg>
               </button>
-              {procsOpen && (
-                <div id="procedures-navigation" className="nav-dropdown-panel" aria-label="Procedures by area">
-                  <div className="nav-dropdown-intro">
-                    <p className="nav-dropdown-kicker">Explore procedures</p>
-                  </div>
-
-                  <div className="nav-dropdown-grid">
-                    {PROCEDURE_CATEGORIES.map((cat, index) => (
-                      <div
-                        key={cat.key}
-                        className="nav-dropdown-category"
-                        data-active={activeCategory === cat.key ? "true" : undefined}
-                      >
-                        <div className="nav-dropdown-category-head">
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <p>{cat.label}</p>
-                        </div>
-                        <ul className="nav-dropdown-list">
-                          {proceduresByCategory(cat.key).map((procedure) => (
-                            <li key={procedure.path}>
-                              <Link
-                                href={procedure.path}
-                                className="mega-menu-link"
-                                aria-current={current(procedure.path)}
-                                onClick={() => setProcsOpen(false)}
-                              >
-                                <span>{procedure.label}</span>
-                                <span className="mega-menu-arrow" aria-hidden>
-                                  ↗
-                                </span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
+              {/* always in the server HTML, hidden while closed: crawlers find every
+                  procedure through these links, not only those the footer lists */}
+              <div
+                id="procedures-navigation"
+                className="nav-dropdown-panel"
+                aria-label="Procedures by area"
+                hidden={!procsOpen}
+              >
+                <div className="nav-dropdown-intro">
+                  <p className="nav-dropdown-kicker">Explore procedures</p>
                 </div>
-              )}
+
+                <div className="nav-dropdown-grid">
+                  {PROCEDURE_CATEGORIES.map((cat, index) => (
+                    <div
+                      key={cat.key}
+                      className="nav-dropdown-category"
+                      data-active={activeCategory === cat.key ? "true" : undefined}
+                    >
+                      <div className="nav-dropdown-category-head">
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <p>{cat.label}</p>
+                      </div>
+                      <ul className="nav-dropdown-list">
+                        {proceduresByCategory(cat.key).map((procedure) => (
+                          <li key={procedure.path}>
+                            <Link
+                              href={procedure.path}
+                              className="mega-menu-link"
+                              aria-current={current(procedure.path)}
+                              onClick={() => setProcsOpen(false)}
+                            >
+                              <span>{procedure.label}</span>
+                              <span className="mega-menu-arrow" aria-hidden>
+                                ↗
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </nav>
 

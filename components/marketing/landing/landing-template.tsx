@@ -145,6 +145,9 @@ function buildLandingJsonLd(page: SitePage, content: LandingContent) {
       url,
       name: page.title,
       description: page.description,
+      inLanguage: "en-US",
+      isPartOf: { "@id": `${siteConfig.meta.url}/#website` },
+      breadcrumb: { "@id": `${url}#breadcrumb` },
       about: { "@id": procedureId },
       mainEntity: { "@id": PHYSICIAN_ID },
     },
@@ -171,6 +174,7 @@ function buildLandingJsonLd(page: SitePage, content: LandingContent) {
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.meta.url },
         { "@type": "ListItem", position: 2, name: page.h1, item: url },

@@ -77,6 +77,7 @@ export function buildJsonLd() {
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": `${SITE}/#website`,
       name: siteConfig.meta.siteName,
       url: SITE,
       about: { "@id": PERSON_ID },

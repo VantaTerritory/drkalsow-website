@@ -2011,6 +2011,8 @@ main:has(.testimonials-hero) { background: var(--bg-surface); } /* the corners o
   overflow: hidden;
   animation: mega-menu-in var(--transition-base) both;
 }
+/* closed: kept in the HTML for crawlers (header.tsx), out of view and the tab order */
+.nav-dropdown-panel[hidden] { display: none; }
 @keyframes mega-menu-in {
   from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
