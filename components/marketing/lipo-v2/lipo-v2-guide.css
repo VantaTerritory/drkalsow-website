@@ -19,7 +19,7 @@
    ============================================================ */
 
 /* ==== LV2 · GUIDE, SHARED ==== */
-.lv2-prose, .lv2-pts, .lv2-disc, .lv2-lessons, .lv2-rev { overflow-wrap: break-word; }
+.lv2-prose, .lv2-pts, .lv2-lim, .lv2-disc, .lv2-lessons, .lv2-rev { overflow-wrap: break-word; }
 /* one accent dot on the top rule of each ruled item */
 .lv2-prose-point::before,
 .lv2-prose-aside::before,
@@ -193,6 +193,107 @@
   .lv2-pts-list h3 { font-size: 24px; }
 }
 
+/* ==== LV2 · POINTS AS A ROW OF CARDS (layout "track", limitations-track.tsx) ==== */
+/* A compact heading over one row: the photo, then the numbered cards. By default
+   (phones, reduced motion, short windows) the row is a native scroller with snap
+   points. With data-pin (set by the script from 900px) the section grows by the
+   row's run, its frame holds under the header and the row slides by --lv2-lim-x. */
+.lv2-lim {
+  --lv2-lim-g: var(--space-5); /* the container's gutter at this width */
+  --lv2-lim-pad: max(var(--lv2-lim-g), calc((100% - 1200px) / 2 + var(--lv2-lim-g)));
+  --lv2-lim-w: 360px; /* one card */
+}
+.lv2-lim-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-6); align-items: end; }
+.lv2-lim-copy { min-width: 0; }
+.lv2-lim-copy .h-sec { max-width: 22ch; }
+.lv2-lim-copy .lv2-intro { margin-top: var(--space-3); }
+/* thin progress rule, only while the row is driven by the page */
+.lv2-lim-progress { display: none; width: 168px; height: 2px; margin-bottom: var(--space-2); overflow: hidden; border-radius: var(--radius-full); background: var(--border-medium); }
+.lv2-lim-progress > span { display: block; width: 100%; height: 100%; background: var(--text-accent); transform: scaleX(var(--lv2-lim-p, 0)); transform-origin: 0 50%; }
+
+.lv2-lim-viewport {
+  margin-top: var(--space-6);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--lv2-lim-pad);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-200) transparent;
+}
+.lv2-lim-viewport:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 4px; border-radius: var(--radius-lg); }
+.lv2-lim-track { display: flex; align-items: stretch; gap: var(--space-4); width: max-content; padding: var(--space-1) var(--lv2-lim-pad) var(--space-3); }
+.lv2-lim-list { display: flex; align-items: stretch; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+
+/* the photo: the first card, as tall as the row, its caption under it */
+.lv2-lim-photo { flex: none; display: flex; flex-direction: column; width: 300px; margin: 0; scroll-snap-align: start; }
+.lv2-frame.lv2-lim-frame { flex: 1 1 auto; min-height: 260px; background: var(--color-primary-100); }
+.lv2-lim-frame > img { object-position: 50% 30%; }
+.lv2-lim-photo .lv2-cap { margin-top: var(--space-2); }
+
+/* the cards: white on the cream band, a hairline, the message-bubble corner */
+.lv2-lim-card {
+  flex: none;
+  width: var(--lv2-lim-w);
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+  scroll-snap-align: start;
+  /* the numeral holds the top, the text settles at the foot: the row's
+     cards share the tallest one's height without reading half empty */
+  display: flex;
+  flex-direction: column;
+}
+.bg-white .lv2-lim-card { background: var(--bg-page); }
+.lv2-ruled-num.lv2-lim-num { margin-bottom: var(--space-4); font-size: 40px; }
+.lv2-lim-card h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 26px; font-weight: 400; line-height: 1.15; color: var(--text-primary); text-wrap: balance; }
+.lv2-lim-card p { margin: 0; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: var(--text-secondary); }
+.lv2-lim-card p + p { margin-top: var(--space-2); }
+
+/* dots whenever the row is a scroller of its own */
+.lv2-lim:not([data-pin]) .lv2-lim-dots { display: flex; }
+
+/* held in place: the page's scroll drives the row */
+.lv2-lim[data-pin] {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: calc(100svh - var(--header-h, 95px) + var(--lv2-lim-run, 0px));
+}
+.lv2-lim[data-pin] .lv2-lim-pin {
+  position: sticky;
+  top: var(--header-h, 95px);
+  height: calc(100svh - var(--header-h, 95px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.lv2-lim[data-pin] .lv2-lim-progress { display: block; }
+.lv2-lim[data-pin] .lv2-lim-viewport { margin-top: var(--space-5); overflow: hidden; scroll-snap-type: none; }
+.lv2-lim[data-pin] .lv2-lim-track { transform: translate3d(var(--lv2-lim-x, 0px), 0, 0); will-change: transform; }
+
+@media (max-width: 1024px) {
+  .lv2-lim { --lv2-lim-g: var(--space-4); }
+}
+@media (max-width: 899px) {
+  /* phones and tablets: swiped, the next card peeking, dots instead of a scrollbar */
+  .lv2-lim { --lv2-lim-w: min(82vw, 380px); }
+  .lv2-lim-head { grid-template-columns: minmax(0, 1fr); }
+  .lv2-lim-viewport { margin-top: var(--space-5); scrollbar-width: none; }
+  .lv2-lim-viewport::-webkit-scrollbar { display: none; }
+  .lv2-lim-track, .lv2-lim-list { gap: var(--space-3); }
+  .lv2-lim-photo { width: min(72vw, 320px); }
+  .lv2-lim-dots { margin-top: var(--space-3); }
+}
+@media (max-width: 768px) {
+  .lv2-lim { --lv2-lim-g: var(--space-3); }
+  .lv2-lim-card { padding: var(--space-4); }
+  .lv2-lim-card h3 { font-size: 24px; }
+  .lv2-ruled-num.lv2-lim-num { padding-bottom: var(--space-4); font-size: 34px; }
+}
+
 /* ==== LV2 · DISCLOSURE ==== */
 .lv2-disc-head { margin-bottom: var(--space-6); }
 .lv2-disc-title { min-width: 0; }
@@ -215,31 +316,138 @@
 }
 
 /* ==== LV2 · LESSONS (dark) ==== */
-/* heading, a strip of three photos of him at work (round 3), then the list */
-.lv2-lessons-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "strip" "list"; }
+/* heading on one line, a bento of his three photos (pinned beside the notes on
+   desktop), then his eight notes: cards from 600px, an accordion on phones
+   (lessons-list.tsx). Two notes, his lines to the patient, are light cards. */
+.lv2-lessons-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "bento" "list"; }
 .lv2-lessons-head { grid-area: head; min-width: 0; }
-.lv2-lessons-head .h-sec { max-width: 18ch; }
-/* one band of three 9:16 photos, joined, rounded at its own corners */
-.lv2-lessons-strip { grid-area: strip; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-6); overflow: hidden; border-radius: var(--radius-lg); background: var(--color-primary-900); }
-.lv2-lessons-photo { position: relative; aspect-ratio: 9 / 16; }
-.lv2-lessons-photo img { object-fit: cover; }
-.lv2-lessons-list {
-  grid-area: list;
+.lv2-lessons-head .h-sec { max-width: none; }
+
+/* bento */
+.lv2-lessons-bento { grid-area: bento; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "lead lead" "one two"; gap: var(--space-2); margin-top: var(--space-5); }
+.lv2-lessons-tile { position: relative; margin: 0; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-primary-900); }
+.lv2-lessons-tile img { object-fit: cover; }
+.lv2-lessons-tile[data-tile="lead"] { grid-area: lead; aspect-ratio: 1 / 1; border-radius: var(--radius-arch); }
+.lv2-lessons-tile[data-tile="lead"] img { object-position: 50% 35%; }
+.lv2-lessons-tile[data-tile="one"] { grid-area: one; aspect-ratio: 3 / 4; }
+.lv2-lessons-tile[data-tile="one"] img { object-position: 50% 30%; }
+.lv2-lessons-tile[data-tile="two"] { grid-area: two; aspect-ratio: 3 / 4; }
+.lv2-lessons-tile[data-tile="two"] img { object-position: 50% 60%; }
+
+/* the notes, shared */
+.lv2-lessons-notes { grid-area: list; min-width: 0; list-style: none; margin: var(--space-5) 0 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+.lv2-lesson {
+  position: relative;
   min-width: 0;
-  list-style: none;
-  margin: var(--space-6) 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5) var(--space-6);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-primary-900) 60%, var(--color-primary-800));
+  border: 1px solid color-mix(in srgb, var(--color-neutral-50) 10%, transparent);
 }
-.lv2-lessons-list > li { position: relative; min-width: 0; padding-top: var(--space-4); border-top: 1px solid color-mix(in srgb, var(--color-neutral-50) 20%, transparent); }
-.lv2-lessons-list > li::before { background: var(--color-primary-200); }
-.lv2-lessons-num { display: block; margin-bottom: var(--space-2); font-family: var(--font-display); font-size: 26px; font-style: italic; line-height: 1; color: var(--color-primary-200); }
-.lv2-lessons-list h3 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 23px; font-style: italic; font-weight: var(--fw-medium); line-height: 1.25; color: var(--text-on-dark); text-wrap: balance; }
-.lv2-lessons-list p { margin: 0; max-width: 46ch; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: var(--color-primary-100); }
+.lv2-lesson-num { font-family: var(--font-display); font-style: italic; font-size: 20px; line-height: 1; color: var(--color-primary-200); }
+.lv2-lesson-title { font-family: var(--font-display); font-weight: var(--fw-medium); line-height: 1.22; color: var(--text-on-dark); text-wrap: balance; }
+.lv2-lesson-body { margin: 0; font-family: var(--font-sans); font-size: 15px; line-height: 1.65; color: var(--color-primary-100); }
+/* his two lines to the patient: light cards */
+.lv2-lesson[data-wide] { background: var(--color-primary-100); border-color: transparent; }
+.lv2-lesson[data-wide] .lv2-lesson-num,
+.lv2-lesson[data-wide] .lv2-lesson-title,
+.lv2-lesson[data-wide] .lv2-lesson-body { color: var(--color-primary-800); }
+
+/* phones: accordion, one open at a time */
+.lv2-lessons-acc > li { min-width: 0; }
+.lv2-lessons-acc .lv2-lesson { border-radius: var(--radius-lg); }
+.lv2-lessons-acc summary {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 56px;
+  padding: 14px var(--space-3);
+  cursor: pointer;
+  list-style: none;
+  color: var(--color-primary-200);
+}
+.lv2-lessons-acc summary::-webkit-details-marker { display: none; }
+.lv2-lessons-acc .lv2-lesson-num { font-size: 18px; }
+.lv2-lessons-acc .lv2-lesson-title { font-size: 20px; }
+.lv2-lessons-acc .lv2-lesson-body { padding: 0 var(--space-3) var(--space-3) calc(var(--space-3) + 28px + var(--space-2)); }
+.lv2-lesson-icon { position: relative; width: 24px; height: 24px; transition: transform 200ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.lv2-lesson-icon::before,
+.lv2-lesson-icon::after { content: ""; position: absolute; top: 11px; left: 5px; width: 14px; height: 1.5px; border-radius: var(--radius-full); background: currentColor; }
+.lv2-lesson-icon::after { transform: rotate(90deg); }
+.lv2-lessons-acc .lv2-lesson[data-wide] summary { color: var(--color-primary-800); }
+.lv2-lessons-acc details[open] .lv2-lesson-icon { transform: rotate(45deg); }
+.lv2-lessons-acc summary:focus-visible { outline: 2px solid var(--color-primary-200); outline-offset: 2px; border-radius: var(--radius-lg); }
+@supports selector(::details-content) {
+  .lv2-lessons-acc { interpolate-size: allow-keywords; }
+  .lv2-lessons-acc details::details-content { block-size: 0; overflow: clip; transition: block-size 260ms cubic-bezier(0.2, 0.7, 0.2, 1), content-visibility 260ms allow-discrete; }
+  .lv2-lessons-acc details[open]::details-content { block-size: auto; }
+}
+
+/* cards */
 @media (min-width: 600px) {
-  .lv2-lessons-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lv2-lessons-bento { gap: var(--space-3); margin-top: var(--space-6); grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); grid-template-areas: "lead one" "lead two"; }
+  .lv2-lessons-tile[data-tile="lead"] { aspect-ratio: auto; }
+  .lv2-lessons-tile[data-tile="lead"] img { object-position: 50% 40%; }
+  .lv2-lessons-tile[data-tile="one"],
+  .lv2-lessons-tile[data-tile="two"] { aspect-ratio: 4 / 3; }
+  .lv2-lessons-tile[data-tile="one"] img { object-position: 50% 28%; }
+  .lv2-lessons-tile[data-tile="two"] img { object-position: 50% 36%; }
+
+  .lv2-lessons-cards { margin-top: var(--space-6); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .lv2-lessons-cards .lv2-lesson { display: flex; flex-direction: column; gap: var(--space-2); padding: 28px; transition: border-color 160ms ease-out; }
+  .lv2-lessons-cards .lv2-lesson-num { margin-bottom: var(--space-2); }
+  .lv2-lessons-cards .lv2-lesson-title { margin: 0; font-size: 25px; }
+  .lv2-lessons-cards .lv2-lesson[data-wide] {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas: "num num" "title body";
+    align-items: start;
+    column-gap: var(--space-5);
+    padding: var(--space-5);
+    overflow: hidden;
+  }
+  .lv2-lessons-cards .lv2-lesson[data-wide] .lv2-lesson-num { grid-area: num; }
+  .lv2-lessons-cards .lv2-lesson[data-wide] .lv2-lesson-title { grid-area: title; font-size: 32px; max-width: 26ch; }
+  .lv2-lessons-cards .lv2-lesson[data-wide] .lv2-lesson-body { grid-area: body; max-width: 52ch; }
+  .lv2-lessons-cards .lv2-lesson[data-wide]::after {
+    content: "\201C" / "";
+    position: absolute;
+    top: calc(-1 * var(--space-4));
+    right: var(--space-4);
+    font-family: var(--font-display);
+    font-size: 180px;
+    line-height: 1;
+    color: color-mix(in srgb, var(--color-primary-800) 12%, transparent);
+    pointer-events: none;
+  }
+}
+@media (hover: hover) and (min-width: 600px) {
+  .lv2-lessons-cards .lv2-lesson:not([data-wide]):hover { border-color: color-mix(in srgb, var(--color-primary-200) 45%, transparent); }
+}
+
+/* desktop: the bento stays beside the notes */
+@media (min-width: 900px) {
+  .lv2-lessons-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "head head" "bento list"; column-gap: var(--space-7); align-items: start; }
+  .lv2-lessons-bento { position: sticky; top: calc(var(--header-h, 95px) + var(--space-5)); grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "lead lead" "one two"; }
+  .lv2-lessons-tile[data-tile="lead"] { aspect-ratio: 4 / 3; }
+  .lv2-lessons-tile[data-tile="lead"] img { object-position: 50% 30%; }
+  .lv2-lessons-tile[data-tile="one"],
+  .lv2-lessons-tile[data-tile="two"] { aspect-ratio: 3 / 4; }
+  .lv2-lessons-tile[data-tile="one"] img { object-position: 50% 30%; }
+  .lv2-lessons-tile[data-tile="two"] img { object-position: 50% 60%; }
+  .lv2-lessons-cards { grid-template-columns: minmax(0, 1fr); }
+  .lv2-lessons-cards .lv2-lesson[data-wide] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "num" "title" "body"; row-gap: var(--space-2); }
+}
+@media (min-width: 1100px) {
+  .lv2-lessons-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lv2-lessons-cards .lv2-lesson[data-wide] { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: "num num" "title body"; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv2-lesson-icon,
+  .lv2-lessons-cards .lv2-lesson { transition: none; }
+  .lv2-lessons-acc details::details-content { transition: none; }
 }
 
 /* ==== LV2 · REVISION ==== */
@@ -278,3 +486,188 @@
   .lv2-rev-questions li { font-size: 20px; }
   .lv2-rev-more .btn-secondary { width: 100%; min-height: 48px; }
 }
+
+/* a block that continues the one above (the philosophy after the procedure, 12 Oct):
+   one band, so no top padding; phones read text, then photo, like the block above */
+section.lv2-prose--joined.lv2-sec { padding-top: 0; }
+@media (max-width: 899px) {
+  .lv2-prose--joined .lv2-prose-grid[data-head="none"] { grid-template-areas: "copy" "media"; }
+  .lv2-prose--joined .lv2-prose-grid[data-head="none"] .lv2-prose-figure { justify-self: start; margin: var(--space-5) 0 0; }
+}
+
+/* ==== LV2 · PROSE, candidacy list (data-variant, 12 Oct) ==== */
+/* The goals as ruled lines with the accent dot on the rule, aligned with the
+   heading; the photo a narrow column at its own ratio, the whole figure shown. */
+.lv2-prose--check.section-py-lg { padding-top: var(--space-7); padding-bottom: var(--space-7); }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-head .h-sec { max-width: none; }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-head .divider-svg { margin: var(--space-3) 0 var(--space-5); }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure { width: min(52vw, 220px); max-width: none; margin: var(--space-2) auto var(--space-5); justify-self: center; }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-frame { aspect-ratio: var(--lv2-r); }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-frame > img { object-position: 50% 50%; }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure .lv2-cap { text-align: center; }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li {
+  position: relative;
+  margin: 0;
+  padding: var(--space-2) 0 0;
+  border-top: 1px solid var(--border-medium);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--space-1));
+  left: 0;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--text-accent);
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro {
+  margin: var(--space-5) 0 0;
+  max-width: 40ch;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.3;
+}
+@media (min-width: 768px) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-5); }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li { padding-top: var(--space-3); }
+}
+@media (min-width: 900px) {
+  .lv2-prose--check.section-py-lg { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+  .lv2-prose-grid[data-variant="checklist"] { grid-template-columns: minmax(0, 1fr) 288px; column-gap: var(--space-7); }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure { width: 288px; margin: 0; align-self: center; justify-self: end; }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure .lv2-cap { text-align: start; }
+}
+
+/* ==== LV2 · CANDIDACY CHECKS (12 Oct, Nico: no dot on a rule) ==== */
+/* Each goal is a soft lavender tile with a check in an accent disc, the
+   text beside it; the closing line sits on a dark band with an arrow, so
+   the list ends on the answer. */
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets { gap: var(--space-3); }
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-50);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.55;
+  transition: background var(--transition-base), transform var(--transition-base);
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li::before {
+  content: "";
+  position: static;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-800);
+}
+/* the check, drawn over the disc */
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 5px);
+  left: calc(var(--space-3) + 11px);
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--color-neutral-50);
+  border-bottom: 2px solid var(--color-neutral-50);
+  transform: rotate(-45deg);
+}
+@media (hover: hover) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li:hover { background: var(--color-primary-100); transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li { transition: none; }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li:hover { transform: none; }
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: none;
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+  background: var(--color-primary-800);
+  color: var(--text-on-dark);
+  font-size: clamp(21px, 2vw, 25px);
+  font-style: italic;
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro::after {
+  content: "\2192" / "";
+  flex: none;
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 22px;
+  color: var(--color-primary-200);
+}
+@media (min-width: 768px) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets { gap: var(--space-3); }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-bullets li { padding-top: var(--space-3); }
+}
+@media (max-width: 767px) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro { padding: var(--space-4); font-size: 21px; }
+}
+
+/* lessons (12 Oct, Nico): heading centred; the lead photo a plain rounded rectangle, not the arch */
+.lv2-lessons-head { text-align: center; }
+.lv2-lessons-head .eyebrow-group { justify-content: center; }
+.lv2-lessons-head .h-sec { margin-inline: auto; }
+.lv2-lessons-tile[data-tile="lead"] { border-radius: var(--radius-lg); }
+
+/* question sets after the FAQ (12 Oct): same split and scroll box, one band */
+.lv2-disc--box .lv2-disc-head { display: block; margin-bottom: 0; }
+.lv2-disc--box .lv2-disc-head .lv2-intro { margin-top: var(--space-3); }
+.lv2-disc--box .lv2-faq-groups { display: grid; gap: var(--space-6); }
+section.lv2-disc--box.lv2-sec { padding-top: var(--space-6); }
+@media (max-width: 899px) { .lv2-disc--box .lv2-disc-head { margin-bottom: var(--space-5); } }
+@media (min-width: 900px) { .lv2-disc--box .lv2-disc-head { position: sticky; top: calc(var(--header-h, 95px) + var(--space-5)); } }
+
+/* candidacy closing line (12 Oct): no arrow (it read as a link), legible on the
+   aubergine (upright, heavier, near white) and never a lone last word */
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro {
+  display: block;
+  font-style: normal;
+  font-weight: var(--fw-semibold);
+  font-size: clamp(22px, 2vw, 26px);
+  line-height: 1.35;
+  color: var(--color-neutral-50);
+  text-wrap: balance;
+}
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro::after { content: none; }
+/* one line when it fits (balanced, it always split in two); still no lone word */
+.lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro { text-wrap: pretty; }
+@media (min-width: 1100px) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-copy > p.lv2-prose-outro { font-size: clamp(19px, 1.45vw, 23px); padding-inline: var(--space-5); }
+}
+/* candidacy photo on phones (12 Oct): the full width, square, caption on the left */
+@media (max-width: 899px) {
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure { width: 100%; margin-inline: 0; justify-self: stretch; }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-frame.lv2-prose-frame { aspect-ratio: 1; border-radius: var(--radius-xl); }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-frame > img { object-position: 50% 30%; }
+  .lv2-prose-grid[data-variant="checklist"] .lv2-prose-figure .lv2-cap { text-align: left; }
+}
+/* phones' accordion (12 Oct, Nico): every note the same light lavender */
+.lv2-lessons-acc .lv2-lesson { background: var(--color-primary-100); border-color: transparent; }
+.lv2-lessons-acc summary,
+.lv2-lessons-acc .lv2-lesson-num,
+.lv2-lessons-acc .lv2-lesson-title,
+.lv2-lessons-acc .lv2-lesson-body { color: var(--color-primary-800); }
+.lv2-lessons-acc summary:focus-visible { outline-color: var(--color-primary-800); }

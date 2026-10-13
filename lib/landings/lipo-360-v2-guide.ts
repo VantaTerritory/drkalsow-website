@@ -37,6 +37,8 @@ export const CANDIDATE_BLOCK: Lv2ProseBlock = {
   kind: "prose",
   id: "candidate",
   tone: "white",
+  // 12 Oct (Nico): less height, the list aligned with the heading, the whole figure shown
+  variant: "checklist",
   eyebrow: "Candidacy",
   // round 3: the doctor's list of goals in place of draft 2's text and points
   heading: "Am I a Candidate for Lipo360?",
@@ -49,8 +51,8 @@ export const CANDIDATE_BLOCK: Lv2ProseBlock = {
     "You want to reduce bra rolls and create a smoother contour in that area.",
     "You want a sculpted back and smaller love handles.",
     "You want to remove fullness above your buttocks to reveal a more defined curve.",
-    "If your goal is a more sculpted shape, Lipo 360 may be the procedure for you.",
   ],
+  outro: "If your goal is a more sculpted shape, Lipo 360 may be the procedure for you.",
   // Draft 2's own image (upscaled x4, Real-ESRGAN). The doctor's round 3
   // caption says she is his patient: TO CONFIRM with him before this
   // publishes (the image came from his old site as stock, license unknown).
@@ -60,7 +62,6 @@ export const CANDIDATE_BLOCK: Lv2ProseBlock = {
     width: 900,
     height: 1597,
     caption: "Dr. Kalsow’s real patient",
-    captionLead: true,
   },
   imageSide: "end",
 };
@@ -70,6 +71,8 @@ export const CHOICES_BLOCK: Lv2ProseBlock = {
   kind: "prose",
   id: "why-awake",
   tone: "white",
+  // 12 Oct (Nico): photo | text, then the alternatives across the width
+  asideWide: true,
   eyebrow: "Awake surgery",
   heading: "Why Stay Awake for Lipo 360?",
   body: [
@@ -99,6 +102,8 @@ export const LIMITATIONS_BLOCK: Lv2PointsBlock = {
   heading: "Limitations of Lipo 360",
   columns: 3,
   numbered: true,
+  // client's review (12 oct): cards on a horizontal row, held in place while it slides
+  layout: "track",
   items: [
     {
       title: "Hip dips",
@@ -133,7 +138,15 @@ export const LIMITATIONS_BLOCK: Lv2PointsBlock = {
 export const UNHAPPY_BLOCK: Lv2DisclosureBlock = {
   kind: "disclosure",
   id: "why-unhappy",
-  tone: "white",
+  // 12 Oct: inside the FAQ's flow, with the doctor and a patient in the lounge
+  tone: "cream",
+  flow: true,
+  photo: {
+    src: "/img/team/dr-kalsow-lounge.jpg",
+    alt: "Dr. Kalsow talking with a patient in the practice's lounge",
+    width: 1800,
+    height: 1350,
+  },
   eyebrow: "Before you decide",
   heading: "Why Are Some Patients Unhappy After Liposuction?",
   groups: [
@@ -231,7 +244,15 @@ export const UNHAPPY_BLOCK: Lv2DisclosureBlock = {
 export const COMPLICATIONS_BLOCK: Lv2DisclosureBlock = {
   kind: "disclosure",
   id: "complications",
+  // 12 Oct: inside the FAQ's flow, with the doctor in the operating room
   tone: "cream",
+  flow: true,
+  photo: {
+    src: "/img/team/dr-kalsow-or.jpg",
+    alt: "Dr. Kalsow in surgical gown, cap and mask in the operating room",
+    width: 1800,
+    height: 1202,
+  },
   eyebrow: "Safety",
   heading: "Possible Complications and Concerns After Liposuction",
   intro: "Any surgery carries risk. Here are the problems and recovery changes patients most often ask about.",
@@ -340,8 +361,12 @@ export const LESSONS_BLOCK: Lv2LessonsBlock = {
       body: "Every body has limits, and every operation has risks. Social media shows only a small selection of a surgeon’s work; use it as a starting point for questions, not a guarantee of your result.",
     },
   ],
-  // round 3: the doctor's three photos at work, in place of his cutout
+  // his two lines to the patient, as light cards (12 Oct)
+  wide: [3, 8],
+  // round 3: the doctor's three photos at work, in place of his cutout; since
+  // 12 Oct a bento led by the one of him seated
   photos: [
+    { src: "/img/lipo-v2/or-3.jpg", alt: "Dr. Kalsow in scrubs, sitting in his operating room", width: 1536, height: 2048 },
     {
       src: "/img/lipo-v2/or-1.jpg",
       alt: "Dr. Kalsow in the operating room, behind two canisters of removed fat",
@@ -349,7 +374,6 @@ export const LESSONS_BLOCK: Lv2LessonsBlock = {
       height: 2000,
     },
     { src: "/img/lipo-v2/or-2.jpg", alt: "Dr. Kalsow in surgical gown and cap during liposuction", width: 1125, height: 2000 },
-    { src: "/img/lipo-v2/or-3.jpg", alt: "Dr. Kalsow in scrubs, sitting in his operating room", width: 1536, height: 2048 },
   ],
 };
 

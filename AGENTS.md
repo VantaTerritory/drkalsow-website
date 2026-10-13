@@ -130,8 +130,17 @@ conversión para tráfico pago — repo aparte, no se toca desde acá).
   thousands of patients around the world choose" sobre las cifras) → qué
   es Lipo 360 + clip de marcación → filosofía junto a un resultado →
   galería → candidatura → diagramas → limitaciones → lecciones → banda de
-  cierre → form → testimonios → Instagram → FAQ → incisiones → … → form →
-  capturas de pacientes. **Dos forms:** `#consultation` después de la
+  cierre → form → testimonios → Instagram → incisiones → … → form →
+  capturas de pacientes. Desde el 12 oct (ajustes de Nico, sección por
+  sección) el tramo final va: Instagram → incisiones → why awake →
+  procedimientos adicionales → destino (una sola sección: copy arriba, panel
+  de viaje y fotos abajo) → revisión → FAQ (las tres series de preguntas en
+  una sección, `continues` en el FAQ: cada serie en su caja con scroll
+  propio y un panel fijo a la izquierda que cambia título y foto,
+  `faq-flow.tsx`) → form final (panel dentro del ancho máximo, con las
+  capturas de pacientes en una fila deslizable). "An honest assessment"
+  vive en la banda de consulta. En phones los carruseles no llevan
+  flechas. **Dos forms:** `#consultation` después de la
   banda de cierre (ahí llevan el hero, la galería y la barra fija de
   phones, que es compartida con la A y apunta a ese id) y
   `#consultation-end` cerca del pie; los dos con el fondo del lobby y las

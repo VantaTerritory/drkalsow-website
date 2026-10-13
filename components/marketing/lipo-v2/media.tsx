@@ -46,12 +46,18 @@ export function LoopVideo({
   video,
   start = "visible",
   className,
+  sound = false,
 }: {
   video: Lv2Video;
   start?: "load" | "visible";
   className?: string;
+  /** A clip with a voice (the reel): still starts muted, with a Sound on / off control beside Pause. */
+  sound?: boolean;
 }) {
   const ref = useRef<HTMLVideoElement | null>(null);
+  // Starts muted (browsers only autoplay muted clips); the viewer can turn the voice on.
+  const [muted, setMuted] = useState(true);
+  const mutedRef = useRef(true);
   // Mirrors the element (play / pause events), so the button never lies.
   const [paused, setPaused] = useState(true);
   // A <video> poster is fetched as soon as the tag is parsed, wherever it sits
@@ -69,7 +75,7 @@ export function LoopVideo({
     const wanted = choice.current === "play" || (choice.current === null && ready && !reduced);
     if (wanted && inView) {
       if (el.paused) {
-        el.muted = true;
+        el.muted = mutedRef.current;
         el.play().catch(() => {}); // blocked (e.g. low power mode): stays paused, the button offers Play
       }
     } else if (!el.paused) {
@@ -133,11 +139,25 @@ export function LoopVideo({
     if (!el) return;
     if (el.paused) {
       choice.current = "play";
-      el.muted = true;
+      el.muted = mutedRef.current;
       el.play().catch(() => {});
     } else {
       choice.current = "pause";
       el.pause();
+    }
+  };
+
+  const toggleSound = () => {
+    const el = ref.current;
+    if (!el) return;
+    const next = !mutedRef.current;
+    mutedRef.current = next;
+    el.muted = next;
+    setMuted(next);
+    // turning the voice on also plays a paused clip, from a tap (allowed with sound)
+    if (!next && el.paused) {
+      choice.current = "play";
+      el.play().catch(() => {});
     }
   };
 
@@ -176,6 +196,26 @@ export function LoopVideo({
           </svg>
         )}
       </button>
+      {sound && (
+        <button
+          type="button"
+          className="lv2-loop-toggle lv2-loop-sound"
+          onClick={toggleSound}
+          aria-label={muted ? "Turn sound on" : "Turn sound off"}
+        >
+          {muted ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z" fill="currentColor" />
+              <path d="M11 6l3 4M14 6l-3 4" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z" fill="currentColor" />
+              <path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4" />
+            </svg>
+          )}
+        </button>
+      )}
     </div>
   );
 }

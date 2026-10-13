@@ -5,6 +5,11 @@ import { siteConfig } from "@/lib/site-config";
 import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { SwipeCarousel } from "@/components/ui/swipe-carousel";
+import { LoopRail } from "@/components/marketing/lipo-v2/loop-rail";
+import { RowArrows } from "@/components/marketing/lipo-v2/row-arrows";
+import { FaqFlowAside, type FlowPanel } from "@/components/marketing/lipo-v2/faq-flow";
+import { LazyGuide } from "@/components/marketing/lipo-v2/lazy-guide";
+import { GUIDE_BLOCKS } from "@/lib/landings/lipo-360-v2-guide";
 import { LoopVideo, VideoFacade } from "@/components/marketing/lipo-v2/media";
 import { NearImageRow } from "@/components/marketing/lipo-v2/deferred";
 import type {
@@ -21,6 +26,7 @@ import type {
   Lv2DestinationBlock,
   Lv2InstagramBlock,
   Lv2FaqBlock,
+  Lv2DisclosureBlock,
   Lv2ClosingBlock,
   Lv2ConsultationBlock,
 } from "@/lib/landings/lipo-360-v2";
@@ -123,6 +129,34 @@ export function HeroBlock({ block, h1 }: { block: Lv2HeroBlock; h1: string }) {
     ...(second && { "--lv2-photo2-r": String(second.frame ?? second.width / second.height) }),
     ...(video && { "--lv2-clip-r": String(video.width / video.height) }),
   } as CSSProperties;
+
+  // His portrait alone (12 Oct, Nico): the backdrop of the whole first screen,
+  // fading into the aubergine where the copy sits (see LV2 · HERO BACKDROP)
+  if (layout === "single") {
+    return (
+      <section className="lv2-hero lv2-hero--backdrop lv2-dark lv2-sec" id={block.id}>
+        <div className="lv2-hero-bg">
+          <Image
+            src={first.src}
+            alt={first.alt}
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="(max-width: 899px) 100vw, 62vw"
+          />
+        </div>
+        <div className="container lv2-hero-inner">
+          <div className="lv2-hero-head">
+            <Eyebrow dark>{block.eyebrow}</Eyebrow>
+            <h1 className="h-display lv2-hero-title">
+              <HeroTitle text={h1} />
+            </h1>
+          </div>
+          <HeroDetails hero={block} placement="desktop" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="lv2-hero lv2-dark lv2-sec" id={block.id}>
@@ -304,10 +338,11 @@ export function ProcedureBlock({ block }: { block: Lv2ProcedureBlock }) {
             <Eyebrow>{block.eyebrow}</Eyebrow>
             <h2 className="h-sec">{block.heading}</h2>
             <Divider />
+            {/* the section's first subtitle (12 Oct), as the philosophy's lead that follows */}
+            <p className="lv2-proc-support">{block.support}</p>
             {block.body.map((p) => (
               <p key={p}>{p}</p>
             ))}
-            <p className="lv2-proc-support">{block.support}</p>
           </div>
           <figure className="lv2-proc-still">
             {marking.video ? (
@@ -345,24 +380,37 @@ export function DiagramsBlock({ block }: { block: Lv2DiagramsBlock }) {
           <p>{block.body}</p>
         </div>
 
-        {/* the three diagrams back to back, in the doctor's order: nothing goes between them */}
-        <Reveal className="lv2-diagrams">
-          {block.diagrams.map((d) => (
-            <figure className="lv2-diagram" key={d.src}>
-              <div className="lv2-diagram-frame">
-                <Image
-                  src={d.src}
-                  alt={d.alt}
-                  width={d.width}
-                  height={d.height}
-                  sizes="(max-width: 767px) 92vw, (max-width: 1199px) 31vw, 360px"
-                />
-              </div>
-              <figcaption className="lv2-cap">
-                <LeadIn text={d.caption} />
-              </figcaption>
-            </figure>
-          ))}
+        {/* the three diagrams back to back, in the doctor's order: nothing goes between them.
+            Phones and tablets swipe them (12 Oct); desktops with a pointer turn each card over
+            on hover to read its areas, the caption under it kept for screen readers (LV2 · DIAGRAM CARDS) */}
+        <Reveal className="lv2-diagrams-wrap">
+          <SwipeCarousel className="lv2-diagrams" count={block.diagrams.length} label="Lipo 360 area diagrams" itemNoun="diagram">
+            {block.diagrams.map((d) => (
+              <figure className="lv2-diagram" key={d.src}>
+                <div className="lv2-diagram-card" tabIndex={0}>
+                  <div className="lv2-diagram-inner">
+                    <div className="lv2-diagram-frame">
+                      <Image
+                        src={d.src}
+                        alt={d.alt}
+                        width={d.width}
+                        height={d.height}
+                        sizes="(max-width: 767px) 82vw, (max-width: 899px) 46vw, (max-width: 1199px) 31vw, 360px"
+                      />
+                    </div>
+                    <div className="lv2-diagram-back" aria-hidden="true">
+                      <p>
+                        <LeadIn text={d.caption} />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <figcaption className="lv2-cap">
+                  <LeadIn text={d.caption} />
+                </figcaption>
+              </figure>
+            ))}
+          </SwipeCarousel>
         </Reveal>
       </div>
     </section>
@@ -379,11 +427,22 @@ export function IncisionsBlock({ block }: { block: Lv2IncisionsBlock }) {
             <Eyebrow>{block.eyebrow}</Eyebrow>
             <h2 className="lv2-h3">{block.heading}</h2>
             <p>{block.body}</p>
-            {/* point data in a tile; the explanation stays text */}
-            <p className="lv2-figure-tile">
-              <strong>{block.figure.value}</strong>
-              <span>{block.figure.label}</span>
-            </p>
+            {/* 12 Oct (Nico): the figure and the three facts as one row of same-size cards, scrolled sideways */}
+            <div className="lv2-row-wrap">
+            <RowArrows track=".lv2-inc-row" label="card" />
+            <SwipeCarousel className="lv2-inc-row" count={block.facts.length + 1} label={block.heading} itemNoun="card">
+              <div className="lv2-inc-card lv2-inc-card--figure">
+                <strong>{block.figure.value}</strong>
+                <span>{block.figure.label}</span>
+              </div>
+              {block.facts.map((f) => (
+                <div className="lv2-inc-card" key={f.title}>
+                  <strong>{f.title}</strong>
+                  <span>{f.body}</span>
+                </div>
+              ))}
+            </SwipeCarousel>
+            </div>
           </div>
           <figure className="lv2-inc-media">
             <div className="lv2-frame" style={ratio(block.video)}>
@@ -391,14 +450,6 @@ export function IncisionsBlock({ block }: { block: Lv2IncisionsBlock }) {
             </div>
             {block.video.caption && <figcaption className="lv2-cap">{block.video.caption}</figcaption>}
           </figure>
-          <ul className="lv2-facts">
-            {block.facts.map((f) => (
-              <li key={f.title}>
-                <strong>{f.title}</strong>
-                <span>{f.body}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </section>
@@ -418,24 +469,25 @@ export function TestimonialsBlock({ block }: { block: Lv2TestimonialsBlock }) {
         <Link href={block.more.href} className="btn-secondary lv2-tst-more">
           {block.more.label}
         </Link>
-        {/* a grid from tablet up, one swipe track with dots on phones */}
-        <Reveal className="lv2-tst-reveal">
-          <SwipeCarousel
-            className="lv2-tst-track"
-            count={block.videos.length}
-            label={block.heading}
-            itemNoun="video"
-          >
-            {block.videos.map((v) => (
-              <figure className="lv2-tst-item" key={v.src}>
-                <div className="lv2-frame" style={ratio(v)}>
-                  <VideoFacade video={v} className="lv2-fill" />
-                </div>
-                <ClipCaption video={v} />
-              </figure>
-            ))}
-          </SwipeCarousel>
-        </Reveal>
+      </div>
+      {/* an endless row from the container's left edge off the right of the screen (12 Oct) */}
+      <Reveal className="lv2-tst-reveal">
+        <LoopRail label={block.heading}>
+          {block.videos.map((v) => (
+            <figure className="lv2-tst-item" key={v.src}>
+              <div className="lv2-frame" style={ratio(v)}>
+                <VideoFacade video={v} className="lv2-fill" />
+              </div>
+              <ClipCaption video={v} />
+            </figure>
+          ))}
+        </LoopRail>
+      </Reveal>
+      {/* phones: the button after the videos (the one in the head shows from tablet up) */}
+      <div className="container lv2-tst-more-foot">
+        <Link href={block.more.href} className="btn-secondary lv2-tst-more">
+          {block.more.label}
+        </Link>
       </div>
     </section>
   );
@@ -470,7 +522,7 @@ export function DestinationBlock({ block }: { block: Lv2DestinationBlock }) {
 
         {/* one mosaic, no holes: portrait | practice and team over the call panel | reel */}
         {mosaic && (
-          <Reveal className="lv2-dest-grid" data-images={mosaic.images.length}>
+          <Reveal className="lv2-dest-grid" data-images={mosaic.images.length} data-reel={mosaic.reel ? undefined : "none"}>
             <div className="lv2-dest-portrait">
               <Image
                 src={mosaic.portrait.src}
@@ -492,13 +544,15 @@ export function DestinationBlock({ block }: { block: Lv2DestinationBlock }) {
                 <figcaption className="lv2-cap">{img.caption}</figcaption>
               </figure>
             ))}
-            <figure className="lv2-dest-reel">
-              {/* 9:16 from CSS (lv2-frame--reel), so the mosaic can let it stretch */}
-              <div className="lv2-frame lv2-frame--reel">
-                <VideoFacade video={mosaic.reel} className="lv2-fill" />
-              </div>
-              <ClipCaption video={mosaic.reel} />
-            </figure>
+            {mosaic.reel && (
+              <figure className="lv2-dest-reel">
+                {/* 9:16 from CSS (lv2-frame--reel), so the mosaic can let it stretch */}
+                <div className="lv2-frame lv2-frame--reel">
+                  <VideoFacade video={mosaic.reel} className="lv2-fill" />
+                </div>
+                <ClipCaption video={mosaic.reel} />
+              </figure>
+            )}
             <div className="lv2-dest-call lv2-dark">
               <div>
                 <h3>{mosaic.call.heading}</h3>
@@ -528,24 +582,34 @@ export function InstagramBlock({ block }: { block: Lv2InstagramBlock }) {
             {block.follow.label}
           </a>
         </div>
-        {/* focusable so the sideways roll scrolls from the keyboard */}
-        <div className="lv2-ig-roll" tabIndex={0} role="region" aria-label={`${block.heading} Scroll sideways for more.`}>
-          <figure className="lv2-ig-card">
-            <div className="lv2-frame lv2-frame--reel">
-              <VideoFacade video={block.reel} className="lv2-fill" />
-            </div>
-            <ClipCaption video={block.reel} />
+        {/* a feed bento (12 Oct): the reel plays on its own, muted, with a sound control;
+            the photos and the loop around it, each photo opening his profile (LV2 · IG BENTO) */}
+        <div className="lv2-ig-bento" data-posts={block.posts.length}>
+          <figure className="lv2-ig-tile lv2-ig-reel">
+            <LoopVideo video={block.reel} start="visible" sound className="lv2-fill" />
+            <figcaption className="lv2-ig-cap">
+              <strong>{block.reel.title}</strong>
+            </figcaption>
           </figure>
-          {block.posts.map((post) => (
-            <a className="lv2-ig-card lv2-ig-post" href={block.follow.href} target="_blank" rel="noopener noreferrer" key={post.src}>
-              <span className="lv2-frame lv2-frame--reel">
-                <Image src={post.src} alt={post.alt} fill sizes="(max-width: 767px) 76vw, 300px" />
-              </span>
-              <span className="lv2-media-cap">
+          {block.posts.map((post, i) => (
+            <a
+              className={`lv2-ig-tile lv2-ig-post lv2-ig-post--${i}`}
+              href={block.follow.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={post.src}
+            >
+              <Image src={post.src} alt={post.alt} fill sizes="(max-width: 767px) 40vw, 280px" />
+              <span className="lv2-ig-cap">
                 <strong>{post.caption}</strong>
               </span>
             </a>
           ))}
+          {block.loop && (
+            <figure className="lv2-ig-tile lv2-ig-loop">
+              <LoopVideo video={block.loop} start="visible" className="lv2-fill" />
+            </figure>
+          )}
         </div>
         <p className="lv2-ig-hint">{block.hint}</p>
       </div>
@@ -555,31 +619,66 @@ export function InstagramBlock({ block }: { block: Lv2InstagramBlock }) {
 
 /* ---------------- FAQ (native details: opens without JavaScript) ---------------- */
 export function FaqBlock({ block }: { block: Lv2FaqBlock }) {
-  return (
-    <section className={`${toneClass(block.tone, "cream")} section-py-lg lv2-faq lv2-sec`} id={block.id}>
-      <div className="container-tight">
-        <div className="section-header lv2-faq-head">
-          <Eyebrow>{block.eyebrow}</Eyebrow>
-          <h2 className="h-sec">{block.heading}</h2>
+  // the question sets that continue it (12 Oct): their titles and photos for the pinned panel
+  const sets = (block.continues ?? [])
+    .map((id) => GUIDE_BLOCKS.find((b): b is Lv2DisclosureBlock => b.id === id && b.kind === "disclosure"))
+    .filter((b): b is Lv2DisclosureBlock => !!b);
+  const panels: FlowPanel[] = [
+    { id: block.id, eyebrow: block.eyebrow, heading: block.heading, photo: block.photo },
+    ...sets.map((s) => ({ id: s.id, eyebrow: s.eyebrow, heading: s.heading, photo: s.photo })),
+  ];
+  const groups = (
+    <div className="lv2-faq-groups" tabIndex={0} role="region" aria-label={`${block.heading}. Scroll for more questions.`}>
+      {block.groups.map((group, gi) => (
+        <div className="lv2-faq-group" key={group.title ?? gi}>
+          {group.title && <h3 className="lv2-faq-group-title">{group.title}</h3>}
+          <div className="faq-list">
+            {group.items.map((item) => (
+              <details className="faq-item" key={item.q}>
+                <summary className="faq-question">
+                  {item.q}
+                  <span className="faq-marker" aria-hidden />
+                </summary>
+                <p className="faq-answer">{item.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
-        <Reveal className="lv2-faq-groups">
-          {block.groups.map((group, gi) => (
-            <div className="lv2-faq-group" key={group.title ?? gi}>
-              {group.title && <h3 className="lv2-faq-group-title">{group.title}</h3>}
-              <div className="faq-list">
-                {group.items.map((item) => (
-                  <details className="faq-item" key={item.q}>
-                    <summary className="faq-question">
-                      {item.q}
-                      <span className="faq-marker" aria-hidden />
-                    </summary>
-                    <p className="faq-answer">{item.a}</p>
-                  </details>
-                ))}
-              </div>
+      ))}
+    </div>
+  );
+
+  if (!sets.length) {
+    return (
+      <section className={`${toneClass(block.tone, "cream")} section-py-lg lv2-faq lv2-sec`} id={block.id}>
+        <div className="container-tight">
+          <div className="section-header lv2-faq-head">
+            <Eyebrow>{block.eyebrow}</Eyebrow>
+            <h2 className="h-sec">{block.heading}</h2>
+          </div>
+          <Reveal>{groups}</Reveal>
+        </div>
+      </section>
+    );
+  }
+
+  // one section: the sets run down the right, the pinned panel on the left follows them (LV2 · FAQ FLOW)
+  return (
+    <section className={`${toneClass(block.tone, "cream")} section-py-lg lv2-faq lv2-flow lv2-sec`} id={block.id}>
+      <div className="container lv2-flow-grid">
+        <FaqFlowAside panels={panels} />
+        <div className="lv2-flow-sets">
+          <div className="lv2-flow-set" data-flow-set={block.id}>
+            <div className="lv2-flow-head">
+              <Eyebrow>{block.eyebrow}</Eyebrow>
+              <h2 className="h-sec">{block.heading}</h2>
             </div>
+            {groups}
+          </div>
+          {sets.map((s) => (
+            <LazyGuide id={s.id} key={s.id} />
           ))}
-        </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -600,9 +699,22 @@ export function ClosingBlock({ block }: { block: Lv2ClosingBlock }) {
           </div>
           <p className="lv2-disclaimer">{block.disclaimer}</p>
         </div>
-        <div className="lv2-closing-media">
-          <Image src={block.image.src} alt={block.image.alt} fill sizes="(max-width: 479px) 92vw, 440px" />
-        </div>
+        {block.assessment ? (
+          // his promise as the band's second voice (12 Oct): a large statement, not a side note
+          <figure className="lv2-assessment">
+            <figcaption>{block.assessment.title}</figcaption>
+            <blockquote>
+              <p>{block.assessment.body}</p>
+            </blockquote>
+            <span className="lv2-assessment-sign">Dr. Sergei Kalsow, MD</span>
+          </figure>
+        ) : (
+          block.image && (
+            <div className="lv2-closing-media">
+              <Image src={block.image.src} alt={block.image.alt} fill sizes="(max-width: 479px) 92vw, 440px" />
+            </div>
+          )
+        )}
       </div>
     </section>
   );
@@ -639,6 +751,19 @@ export function ConsultationIntro({ block }: { block: Lv2ConsultationBlock }) {
         <span className="lv2-consult-team" style={ratio(block.teamPhoto)}>
           <Image src={block.teamPhoto.src} alt={block.teamPhoto.alt} fill sizes="(max-width: 899px) 92vw, 480px" />
         </span>
+      )}
+      {/* the patients' messages (12 Oct): a swipe row, pictures and not links (client's wish) */}
+      {block.messages && (
+        <div className="lv2-row-wrap">
+        <RowArrows track=".lv2-consult-msgs" label="message" />
+        <SwipeCarousel className="lv2-consult-msgs" count={block.messages.length} label="Messages from Dr. Kalsow's patients" itemNoun="message">
+          {block.messages.map((m) => (
+            <span className="lv2-consult-msg" style={ratio(m)} key={m.src}>
+              <Image src={m.src} alt={m.alt} fill sizes="220px" />
+            </span>
+          ))}
+        </SwipeCarousel>
+        </div>
       )}
     </div>
   );

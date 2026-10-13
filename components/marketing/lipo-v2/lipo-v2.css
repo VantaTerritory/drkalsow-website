@@ -290,7 +290,9 @@
 .lv2-proc-copy .divider-svg { margin-bottom: var(--space-4); }
 /* direct children only: Eyebrow renders a <p> of its own */
 .lv2-proc-copy > p { margin: 0 0 var(--space-3); max-width: 62ch; font-family: var(--font-sans); font-size: 16px; line-height: 1.75; color: var(--text-secondary); }
-.lv2-proc-copy > p.lv2-proc-support { margin: var(--space-4) 0 0; max-width: 40ch; font-family: var(--font-display); font-size: 23px; font-style: italic; line-height: 1.35; color: var(--text-accent); }
+/* a subtitle under the divider, set as the philosophy's lead (lipo-v2-guide.css) */
+.lv2-proc-copy > p.lv2-proc-support { margin: 0 0 var(--space-4); max-width: 30ch; font-family: var(--font-display); font-size: clamp(25px, 2.5vw, 30px); font-style: italic; line-height: 1.3; color: var(--text-accent); text-wrap: balance; }
+@media (max-width: 767px) { .lv2-proc-copy > p.lv2-proc-support { font-size: 25px; } }
 .lv2-proc-still { margin: 0; justify-self: end; width: 100%; max-width: 440px; }
 .lv2-diagrams { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-8); }
 /* draft 2's "What Is Lipo 360?", right above the diagrams */
@@ -350,6 +352,8 @@
 .lv2-tst-more { grid-area: more; margin-bottom: var(--space-1); }
 .lv2-tst-reveal { grid-area: track; min-width: 0; margin-top: var(--space-6); }
 .lv2-tst-track { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+/* four stories (12 Oct): two by two, never three and one */
+.lv2-tst-track:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .lv2-tst-item { margin: 0; min-width: 0; }
 /* the posters are white: a white frame (no dark slivers in the rounded corners) with a hairline */
 .lv2-tst-item .lv2-frame, .lv2-tst-item .lv2-facade { background: var(--color-neutral-50); }
@@ -410,7 +414,8 @@
 /* ==== LV2 · CLOSING ==== */
 .lv2-closing { --lv2-consult-r: var(--radius-section); }
 .lv2-closing-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: var(--space-7); align-items: center; }
-.lv2-closing .h-sec { max-width: 16ch; margin-bottom: var(--space-3); }
+/* one or two lines, never a word per line (12 Oct) */
+.lv2-closing .h-sec { max-width: 24ch; margin-bottom: var(--space-3); }
 .lv2-closing-body { margin: 0 0 var(--space-5); max-width: 56ch; font-family: var(--font-sans); font-size: 17px; line-height: 1.7; color: var(--color-primary-100); }
 .lv2-disclaimer { margin: var(--space-4) 0 0; max-width: 64ch; font-family: var(--font-sans); font-size: 12px; line-height: 1.6; color: var(--color-primary-200); }
 .lv2-closing-media { position: relative; aspect-ratio: 1; justify-self: end; width: 100%; max-width: 440px; overflow: hidden; border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); background: var(--color-primary-900); }
@@ -1076,6 +1081,101 @@
   }
 }
 
+/* ==== LV2 · HERO BACKDROP (12 Oct, Nico) ==== */
+/* His portrait is the backdrop of the first screen, as tall as the viewport
+   under the header. Desktop: it fills the right of the hero and fades into
+   the aubergine towards the copy (which also hides the practice's sign on
+   its left) and towards the figures. Phones and tablet portrait: it sits on
+   top at full width and fades out around the knot of his tie, where the
+   copy begins. The H1 leads; the doctor's heading reads as its subtitle. */
+.lv2-hero--backdrop {
+  --lv2-title: clamp(56px, 5.6vw, 84px);
+  --lv2-fade: var(--color-primary-800);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  min-height: calc(100svh - var(--lv2-header));
+  padding-block: var(--space-7) var(--space-6);
+}
+.lv2-hero-bg { position: absolute; z-index: -1; inset: 0 0 0 auto; width: min(62%, 1000px); overflow: hidden; }
+/* zoomed from the right edge, so the practice's sign (left of the photo) falls under the fade */
+.lv2-hero-bg img { object-fit: cover; object-position: 60% 22%; transform: scale(1.18); transform-origin: 100% 20%; }
+.lv2-hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--lv2-fade) 0%, color-mix(in srgb, var(--lv2-fade) 88%, transparent) 24%, transparent 56%),
+    linear-gradient(0deg, var(--lv2-fade) 0%, color-mix(in srgb, var(--lv2-fade) 55%, transparent) 20%, transparent 42%);
+}
+.lv2-hero-inner {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr auto auto auto 1fr auto;
+  grid-template-areas: "." "head" "lead" "ctas" "." "stats";
+}
+.lv2-hero--backdrop .lv2-details--desktop { display: contents; }
+.lv2-hero--backdrop .lv2-hero-head { max-width: 640px; }
+.lv2-hero--backdrop .lv2-hero-title { margin: 0; line-height: 1; }
+/* his name: a step down from the procedure, so the H1 has a lead line */
+.lv2-hero--backdrop .lv2-hero-title-by { margin-top: 0.12em; font-size: 0.64em; line-height: 1.1; }
+.lv2-hero--backdrop .lv2-lead { grid-area: lead; }
+.lv2-hero--backdrop .lv2-ctas { grid-area: ctas; }
+.lv2-hero--backdrop .lv2-stats { grid-area: stats; }
+.lv2-hero--backdrop .lv2-lead.lv2-stats-heading {
+  max-width: 30ch;
+  margin-top: var(--space-5);
+  font-size: 20px;
+  font-weight: var(--fw-regular);
+  line-height: 1.5;
+  color: var(--color-primary-100);
+}
+.lv2-hero--backdrop .lv2-ctas { margin-top: var(--space-5); }
+.lv2-hero--backdrop .lv2-stats { margin-top: var(--space-6); }
+/* every figure at one size, words included, so the labels under them line up */
+.lv2-hero--backdrop .lv2-stat-value,
+.lv2-hero--backdrop .lv2-stat-value.lv2-stat-value--word { font-size: clamp(26px, 2.5vw, 36px); white-space: nowrap; }
+.lv2-hero--backdrop .lv2-stat { background: color-mix(in srgb, var(--lv2-fade) 55%, transparent); backdrop-filter: blur(6px); }
+
+@media (max-width: 899px) {
+  .lv2-hero--backdrop {
+    --lv2-title: clamp(40px, 11vw, 58px);
+    /* the photo's box: square-ish on phones, the face to the tie's knot */
+    --lv2-bg-h: min(118vw, 72svh, 760px);
+    display: block;
+    padding-block: 0 var(--space-6);
+  }
+  .lv2-hero-bg { inset: 0 0 auto 0; width: 100%; height: var(--lv2-bg-h); }
+  .lv2-hero-bg img { object-position: 72% 0%; transform: scale(1.12); transform-origin: 100% 0; }
+  .lv2-hero-bg::after {
+    background:
+      linear-gradient(180deg, transparent 38%, color-mix(in srgb, var(--lv2-fade) 60%, transparent) 70%, var(--lv2-fade) 96%),
+      linear-gradient(90deg, color-mix(in srgb, var(--lv2-fade) 92%, transparent) 0%, color-mix(in srgb, var(--lv2-fade) 70%, transparent) 22%, transparent 46%);
+  }
+  /* the copy starts over the fade, at about the knot of his tie */
+  .lv2-hero-inner { display: block; padding-top: calc(var(--lv2-bg-h) * 0.7); }
+  .lv2-hero--backdrop .lv2-details--desktop { display: flex; flex-direction: column; }
+  .lv2-hero--backdrop .eyebrow-group { margin-bottom: var(--space-3); }
+  .lv2-hero--backdrop .lv2-lead.lv2-stats-heading { margin-top: var(--space-4); font-size: 17px; }
+  .lv2-hero--backdrop .lv2-stats { order: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: var(--space-5); }
+  .lv2-hero--backdrop .lv2-ctas { order: 2; flex-direction: column; align-items: stretch; }
+  .lv2-hero--backdrop .lv2-stat { padding: var(--space-3) 14px; }
+  .lv2-hero--backdrop .lv2-stat-value,
+  .lv2-hero--backdrop .lv2-stat-value.lv2-stat-value--word { font-size: 26px; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .lv2-hero--backdrop { --lv2-bg-h: min(100vw, 72svh, 760px); }
+  .lv2-hero-bg img { transform: scale(1.2); object-position: 50% 0; }
+  .lv2-hero--backdrop .lv2-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lv2-hero--backdrop .lv2-ctas { flex-direction: row; align-items: center; }
+}
+@media (max-width: 359px) {
+  .lv2-hero--backdrop .lv2-stat-value,
+  .lv2-hero--backdrop .lv2-stat-value.lv2-stat-value--word { font-size: 22px; }
+}
+
 /* the marking clip in the procedure block, in its still's 4:5 frame, cropped around the hand */
 .lv2-proc-clip .lv2-loop-video { object-position: 50% 64%; }
 
@@ -1154,4 +1254,608 @@
 }
 /* tablets: the reel is narrow and its caption would cover the play button */
 @media (min-width: 768px) and (max-width: 1023px) { .lv2-dest-reel .lv2-media-cap { top: 10px; bottom: auto; } }
+/* ==== LV2 · DIAGRAM CARDS (12 Oct, Nico) ==== */
+/* Desktop: the heading and text centred over the three diagrams; with a
+   pointer, each card turns over on hover (or keyboard focus) to its areas,
+   and the caption under it stays for screen readers only. Phones and
+   tablets: the three cards swipe, captions under them, dots below. */
+.lv2-diagrams-intro + .lv2-diagrams-wrap { margin-top: var(--space-6); }
+.lv2-diagrams-wrap > .lv2-diagrams { margin-top: 0; }
+.lv2-diagram { position: relative; }
+.lv2-diagram-card { border-radius: var(--radius-xl); outline-offset: 4px; }
+.lv2-diagram-inner { display: grid; }
+.lv2-diagram-inner > * { grid-area: 1 / 1; min-width: 0; }
+.lv2-diagram-back { display: none; }
+@media (min-width: 900px) {
+  .lv2-diagrams-intro { margin-inline: auto; text-align: center; }
+}
+@media (hover: hover) and (min-width: 900px) {
+  .lv2-diagram-card { perspective: 1400px; }
+  .lv2-diagram-inner { transform-style: preserve-3d; transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .lv2-diagram-frame, .lv2-diagram-back { backface-visibility: hidden; }
+  /* a hint on the front, gone once the card turns */
+  .lv2-diagram-frame { position: relative; }
+  .lv2-diagram-frame::after {
+    content: "Hover to see the areas";
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-3);
+    transform: translateX(-50%);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--color-primary-900) 78%, transparent);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: var(--fw-medium);
+    line-height: 16px;
+    letter-spacing: 0.04em;
+    color: var(--color-neutral-50);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .lv2-diagram-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    border-radius: var(--radius-xl);
+    background: var(--color-primary-800);
+    text-align: center;
+    transform: rotateY(180deg);
+  }
+  /* legible on the aubergine (12 Oct): the label heavier, the text near white */
+  .lv2-diagram-back p { margin: 0; max-width: 30ch; font-family: var(--font-sans); font-size: 16px; font-weight: var(--fw-medium); line-height: 1.65; color: var(--color-neutral-50); }
+  .lv2-diagram-back strong { display: block; margin-bottom: var(--space-3); font-family: var(--font-display); font-size: clamp(26px, 2.4vw, 32px); font-weight: var(--fw-semibold); line-height: 1.15; letter-spacing: 0.005em; color: var(--color-neutral-50); text-wrap: balance; }
+  .lv2-diagram-card:hover .lv2-diagram-inner,
+  .lv2-diagram-card:focus-visible .lv2-diagram-inner { transform: rotateY(180deg); }
+  .lv2-diagram > .lv2-cap { position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (hover: hover) and (min-width: 900px) and (prefers-reduced-motion: reduce) {
+  /* no turn: the back fades in over the front */
+  .lv2-diagram-inner, .lv2-diagram-card:hover .lv2-diagram-inner, .lv2-diagram-card:focus-visible .lv2-diagram-inner { transform: none; transition: none; }
+  .lv2-diagram-back { transform: none; opacity: 0; transition: opacity var(--transition-base); }
+  .lv2-diagram-card:hover .lv2-diagram-back, .lv2-diagram-card:focus-visible .lv2-diagram-back { opacity: 1; }
+}
+@media (max-width: 899px) {
+  .lv2-diagrams { display: flex; gap: var(--space-3); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .lv2-diagrams::-webkit-scrollbar { display: none; }
+  .lv2-diagram { flex: 0 0 82%; scroll-snap-align: start; }
+  .lv2-diagrams + .swipe-dots { display: flex; margin-top: var(--space-4); }
+  /* the card is not a control here */
+  .lv2-diagram-card { outline: none; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .lv2-diagram { flex-basis: 46%; }
+}
+
+/* ==== LV2 · CLOSING ON PHONES (12 Oct) ==== */
+/* the image right under the heading, not lost after the buttons, and shorter */
+@media (max-width: 767px) {
+  .lv2-closing-grid { gap: 0; }
+  .lv2-closing-copy { display: contents; }
+  .lv2-closing-copy > .eyebrow-group { order: 1; }
+  .lv2-closing .h-sec { order: 2; }
+  .lv2-closing-media { order: 3; aspect-ratio: 16 / 10; max-width: none; margin: var(--space-2) 0 var(--space-5); }
+  .lv2-closing-body { order: 4; }
+  .lv2-closing .lv2-ctas { order: 5; }
+  .lv2-disclaimer { order: 6; }
+}
+
+/* ==== LV2 · IG BENTO (12 Oct, Nico) ==== */
+/* An Instagram feed around the reel: the reel plays on its own, muted, as
+   the tall tile (sound and pause controls on it); his photos at work and the
+   operating room loop fill the cells around it. Each photo opens his
+   profile; a hover darkens it and shows its caption. Phones keep the same
+   feed: the reel over two columns, two photos beside it, three under it. */
+.lv2-ig-bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "p0 reel p2 loop" "p1 reel p3 p4";
+  gap: var(--space-3);
+}
+.lv2-ig-tile { position: relative; min-width: 0; min-height: 0; margin: 0; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-primary-900); }
+.lv2-ig-reel { grid-area: reel; aspect-ratio: 9 / 16; border-radius: var(--radius-xl); }
+.lv2-ig-tile > .lv2-fill { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lv2-ig-loop { grid-area: loop; }
+.lv2-ig-post--0 { grid-area: p0; }
+.lv2-ig-post--1 { grid-area: p1; }
+.lv2-ig-post--2 { grid-area: p2; }
+.lv2-ig-post--3 { grid-area: p3; }
+.lv2-ig-post--4 { grid-area: p4; }
+.lv2-ig-post img { object-fit: cover; object-position: 50% 28%; transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+.lv2-ig-post::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--color-primary-900) 0%, transparent); transition: background var(--transition-base); pointer-events: none; }
+.lv2-ig-cap {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 1;
+  max-width: calc(100% - 20px);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-primary-900) 78%, transparent);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--color-neutral-50);
+  pointer-events: none;
+}
+.lv2-ig-cap strong { font-weight: var(--fw-medium); }
+/* the reel's title on top (its controls own the bottom) */
+.lv2-ig-reel .lv2-ig-cap { top: 10px; bottom: auto; }
+.lv2-ig-post .lv2-ig-cap { opacity: 0; transform: translateY(4px); transition: opacity var(--transition-base), transform var(--transition-base); }
+.lv2-ig-post:hover::after, .lv2-ig-post:focus-visible::after { background: color-mix(in srgb, var(--color-primary-900) 32%, transparent); }
+.lv2-ig-post:hover .lv2-ig-cap, .lv2-ig-post:focus-visible .lv2-ig-cap { opacity: 1; transform: none; }
+.lv2-ig-post:hover img { transform: scale(1.04); }
+.lv2-ig-post:focus-visible { outline: 2px solid var(--color-primary-600); outline-offset: 3px; }
+/* sound beside pause */
+.lv2-loop-toggle.lv2-loop-sound { right: 52px; }
+@media (prefers-reduced-motion: reduce) {
+  .lv2-ig-post img, .lv2-ig-post .lv2-ig-cap { transition: none; }
+  .lv2-ig-post:hover img { transform: none; }
+}
+@media (hover: none) {
+  /* no hover to reveal them: the captions stay */
+  .lv2-ig-post .lv2-ig-cap { opacity: 1; transform: none; }
+}
+@media (max-width: 767px) {
+  .lv2-ig-bento {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-areas: "reel reel p0" "reel reel p1" "p2 p3 loop";
+    gap: var(--space-2);
+  }
+  .lv2-ig-post--2, .lv2-ig-post--3, .lv2-ig-loop { aspect-ratio: 1; }
+  .lv2-ig-post--4 { display: none; }
+  .lv2-ig-tile { border-radius: var(--radius-md); }
+  .lv2-ig-reel { border-radius: var(--radius-lg); }
+  /* the small cells are pictures here, their captions too long for them */
+  .lv2-ig-post .lv2-ig-cap { display: none; }
+  .lv2-ig-loop .lv2-loop-toggle { right: 6px; bottom: 6px; width: 28px; height: 28px; }
+}
+
+/* ==== LV2 · FAQ BOX (12 Oct, Nico) ==== */
+/* Near the foot of the page: heading and the consultation room photo on the
+   left (it stays while reading), the questions in a box with a scroll of
+   its own on the right, so the long FAQ is not one endless scroll. Phones:
+   heading, photo, then the same box, a little shorter. */
+.lv2-faq-split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); column-gap: var(--space-7); align-items: start; }
+.lv2-faq-split .lv2-faq-head { position: sticky; top: calc(var(--header-h, 95px) + var(--space-5)); margin-bottom: 0; text-align: left; }
+.lv2-faq-split .lv2-faq-head .h-sec { margin-inline: 0; }
+.lv2-faq-photo { position: relative; display: block; margin-top: var(--space-5); overflow: hidden; border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); background: var(--color-primary-100); }
+.lv2-faq-photo img { object-fit: cover; }
+.lv2-faq-split .lv2-faq-groups {
+  max-width: none;
+  max-height: min(680px, calc(100svh - var(--header-h, 95px) - var(--space-8)));
+  margin: 0;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-soft);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-200) transparent;
+  /* the last line fades out where the box cuts it */
+  mask-image: linear-gradient(180deg, var(--color-neutral-900) calc(100% - 48px), transparent);
+}
+.lv2-faq-split .lv2-faq-groups:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 4px; }
+@media (max-width: 899px) {
+  .lv2-faq-split { grid-template-columns: minmax(0, 1fr); }
+  .lv2-faq-split .lv2-faq-head { position: static; margin-bottom: var(--space-5); }
+  .lv2-faq-photo { max-width: 520px; }
+  .lv2-faq-split .lv2-faq-groups { max-height: 72svh; padding: var(--space-4) var(--space-3) var(--space-5); }
+}
+
+/* ==== LV2 · FINAL FORM, INSET (12 Oct, Nico) ==== */
+/* The last form is a rounded panel inside the page's max width, not edge to
+   edge; the patients' messages swipe under its intro. */
+.lv2-form-end { padding-inline: var(--space-5); padding-bottom: var(--space-7); }
+.lv2-page .lv2-form-end #consultation-end { max-width: 1240px; margin-inline: auto; border-radius: var(--radius-section); }
+.lv2-consult-msgs { display: flex; gap: var(--space-3); margin-top: var(--space-5); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.lv2-consult-msgs::-webkit-scrollbar { display: none; }
+.lv2-consult-msg { position: relative; flex: none; height: 300px; aspect-ratio: var(--lv2-r, 3 / 4); overflow: hidden; border-radius: var(--radius-lg); background: var(--color-neutral-50); box-shadow: inset 0 0 0 1px var(--border-medium); scroll-snap-align: start; }
+.lv2-consult-msg img { object-fit: cover; }
+.lv2-consult-msgs + .swipe-dots { display: flex; justify-content: flex-start; margin-top: var(--space-3); }
+@media (max-width: 767px) {
+  .lv2-form-end { padding-inline: var(--space-3); padding-bottom: var(--space-5); }
+  .lv2-page .lv2-form-end #consultation-end { border-radius: var(--radius-xl); }
+  .lv2-consult-msg { height: 260px; }
+}
+
+/* ==== LV2 · FULL MEASURE (12 Oct, Nico) ==== */
+/* Headings and the italic subtitles take the width of their column, as the
+   text under them does, instead of a narrow measure of their own that left
+   them at half of it. They wrap "pretty" (no lone last word) rather than
+   balanced, which shortened every line. */
+.lv2-page :is(.lv2-proc-copy, .lv2-prose-head, .lv2-pts-copy, .lv2-lim-copy, .lv2-disc-title, .lv2-sec-head, .lv2-dest-copy, .lv2-closing, .lv2-lessons-head, .lv2-ig-head, .lv2-tst-head) .h-sec,
+.lv2-page .lv2-proc-copy > p.lv2-proc-support,
+.lv2-page .lv2-prose-copy > p.lv2-prose-lead {
+  max-width: none;
+  text-wrap: pretty;
+}
+
+/* ==== LV2 · LOOP RAIL (testimonials, 12 Oct) ==== */
+/* The row starts on the container's left edge and runs off the right of the
+   screen; Prev / Next sit over it on the right, level with the container. */
+.lv2-testimonials .lv2-tst { grid-template-areas: "head more"; }
+.lv2-rail { --lv2-rail-g: var(--space-5); --lv2-rail-pad: max(var(--lv2-rail-g), calc((100% - 1200px) / 2 + var(--lv2-rail-g))); }
+.lv2-testimonials .lv2-tst-reveal { margin-top: var(--space-5); }
+.lv2-rail-nav { display: flex; justify-content: flex-end; gap: var(--space-2); padding-inline: var(--lv2-rail-pad); margin-bottom: var(--space-4); }
+.lv2-rail-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.lv2-rail-btn:hover { background: var(--bg-surface); border-color: var(--color-primary-400); }
+.lv2-rail-btn:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 2px; }
+.lv2-rail-track {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--lv2-rail-pad);
+  padding-inline: var(--lv2-rail-pad) 0;
+  scrollbar-width: none;
+}
+.lv2-rail-track::-webkit-scrollbar { display: none; }
+.lv2-rail-track:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 4px; }
+.lv2-rail-item { flex: 0 0 min(560px, 44vw); min-width: 0; scroll-snap-align: start; }
+@media (max-width: 1024px) { .lv2-rail { --lv2-rail-g: var(--space-4); } .lv2-rail-item { flex-basis: 60vw; } }
+@media (max-width: 768px) {
+  .lv2-rail { --lv2-rail-g: var(--space-3); }
+  .lv2-rail-item { flex-basis: 84vw; }
+  .lv2-rail-track { gap: var(--space-3); }
+  .lv2-testimonials .lv2-tst { grid-template-areas: "head" "more"; }
+  .lv2-testimonials .lv2-tst-more { margin-top: var(--space-4); }
+}
+
+/* ==== LV2 · IG BENTO, HIS PHOTOS ONLY (12 Oct) ==== */
+/* three photos of him, the reel and the loop: photo | reel | photo, loop */
+.lv2-ig-bento[data-posts="3"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas: "p0 reel p2" "p1 reel loop";
+}
+@media (max-width: 767px) {
+  .lv2-ig-bento[data-posts="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas: "reel reel p0" "reel reel p1" "p2 loop loop";
+  }
+  .lv2-ig-bento[data-posts="3"] .lv2-ig-loop { aspect-ratio: auto; }
+}
+
+/* ==== LV2 · POINT CARDS (12 Oct, Nico: no dot on a rule) ==== */
+/* Short facts and points read as soft cards: a short accent bar over the
+   title, no top rule. White on the cream bands, lavender on the white ones. */
+.lv2-page :is(.lv2-facts li, .lv2-ruled li, .lv2-pts-list > li, .lv2-prose-point) {
+  padding: var(--space-5);
+  border-top: 0;
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  box-shadow: inset 0 0 0 1px var(--border-soft);
+}
+.lv2-page .bg-white :is(.lv2-facts li, .lv2-ruled li, .lv2-pts-list > li, .lv2-prose-point),
+.lv2-page .bg-white:is(section) :is(.lv2-facts li, .lv2-ruled li, .lv2-pts-list > li, .lv2-prose-point) { background: var(--color-primary-50); box-shadow: none; }
+.lv2-page :is(.lv2-facts li, .lv2-ruled li, .lv2-pts-list > li, .lv2-prose-point)::before {
+  position: static;
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--text-accent);
+}
+/* the callout keeps its rule, without the dot */
+.lv2-page .lv2-callout-tile::before { display: none; }
+/* the aside (a second, related topic) as a tinted card with an accent bar, not a rule */
+.lv2-page .lv2-prose-aside {
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  border-top: 0;
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+  background: var(--color-primary-50);
+}
+.lv2-page .bg-cream .lv2-prose-aside { background: var(--bg-surface); box-shadow: inset 0 0 0 1px var(--border-soft); }
+.lv2-page .lv2-prose-aside::before {
+  content: "";
+  position: static;
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--text-accent);
+}
+@media (max-width: 767px) { .lv2-page .lv2-prose-aside { padding: var(--space-4) var(--space-4) var(--space-5); } }
+
+/* ==== LV2 · DESTINATION, ONE SECTION (12 Oct, Nico) ==== */
+/* The copy and the approach first, then the travel panel as the lead of the
+   mosaic: his portrait, the panel across, the hotel and the team under it. */
+.lv2-dest-grid[data-reel="none"] {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas: "portrait call call" "portrait img0 img1";
+  margin-top: var(--space-7);
+}
+.lv2-dest-grid[data-reel="none"] .lv2-dest-call {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+.lv2-dest-grid[data-reel="none"] .lv2-dest-call h3 { font-size: clamp(30px, 3vw, 40px); margin-bottom: var(--space-3); }
+.lv2-dest-grid[data-reel="none"] .lv2-dest-call p { font-size: 16px; color: var(--color-neutral-50); }
+.lv2-dest-grid[data-reel="none"] .lv2-dest-portrait { min-height: 0; border-radius: var(--radius-xl); }
+.lv2-dest-grid[data-reel="none"] .lv2-dest-portrait img { object-position: 50% 15%; }
+@media (max-width: 1023px) {
+  .lv2-dest-grid[data-reel="none"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "call call" "portrait img0" "portrait img1"; }
+  .lv2-dest-grid[data-reel="none"] .lv2-dest-call { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 767px) {
+  .lv2-dest-grid[data-reel="none"] { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "call call" "portrait portrait" "img0 img1"; gap: var(--space-3); }
+  .lv2-dest-grid[data-reel="none"] .lv2-dest-call { padding: var(--space-5) var(--space-4); align-items: stretch; }
+  .lv2-dest-grid[data-reel="none"] .lv2-dest-portrait { aspect-ratio: 4 / 5; }
+}
+
+/* ==== LV2 · CLOSING WITH THE ASSESSMENT (12 Oct, Nico) ==== */
+/* "An honest assessment" is the band's second voice: a large statement in
+   the right column with a quote mark and his name, the copy and CTAs on the
+   left. The two columns share the band's height, nothing floats in it. */
+.lv2-closing-grid:has(.lv2-assessment) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: stretch; gap: var(--space-8); }
+.lv2-closing-grid:has(.lv2-assessment) .lv2-closing-copy { align-self: center; }
+.lv2-assessment {
+  position: relative;
+  margin: 0;
+  padding: var(--space-7) var(--space-7) var(--space-6);
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+  background: var(--color-primary-100);
+  color: var(--color-primary-800);
+}
+.lv2-assessment::before {
+  content: "\201C" / "";
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-5);
+  font-family: var(--font-display);
+  font-size: 160px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-primary-800) 14%, transparent);
+  pointer-events: none;
+}
+.lv2-assessment figcaption { margin-bottom: var(--space-4); font-family: var(--font-sans); font-size: 12px; font-weight: var(--fw-semibold); letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-primary-600); }
+.lv2-assessment blockquote { margin: 0; }
+.lv2-assessment p { margin: 0; font-family: var(--font-display); font-size: clamp(22px, 1.9vw, 27px); font-weight: var(--fw-medium); line-height: 1.42; color: var(--color-primary-800); text-wrap: pretty; }
+.lv2-assessment-sign { display: block; margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid color-mix(in srgb, var(--color-primary-800) 18%, transparent); font-family: var(--font-sans); font-size: 13px; font-weight: var(--fw-semibold); letter-spacing: 0.06em; color: var(--color-primary-800); }
+@media (max-width: 1023px) {
+  .lv2-closing-grid:has(.lv2-assessment) { gap: var(--space-6); }
+  .lv2-assessment { padding: var(--space-6) var(--space-5) var(--space-5); }
+}
+@media (max-width: 899px) {
+  .lv2-closing-grid:has(.lv2-assessment) { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .lv2-closing-grid:has(.lv2-assessment) { gap: var(--space-5); }
+  .lv2-closing-grid:has(.lv2-assessment) .lv2-closing-copy { display: block; }
+  .lv2-assessment { padding: var(--space-5) var(--space-4) var(--space-4); }
+  .lv2-assessment::before { font-size: 110px; right: var(--space-3); }
+  .lv2-assessment p { font-size: 21px; }
+}
+
+/* ==== LV2 · FAQ FLOW (12 Oct, Nico) ==== */
+/* The FAQ and the two question sets after it, one section: the questions
+   run down the right; on the left one pinned panel (faq-flow.tsx) whose
+   eyebrow, heading and photo cross-fade to the set being read. Phones: no
+   panel, each set opens with its own heading. */
+.lv2-flow-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); column-gap: var(--space-7); align-items: start; }
+.lv2-flow-aside { position: sticky; top: calc(var(--header-h, 95px) + var(--space-6)); display: grid; }
+.lv2-flow-panel { grid-area: 1 / 1; opacity: 0; transform: translateY(12px); transition: opacity 420ms ease-out, transform 520ms cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
+.lv2-flow-panel[data-active] { opacity: 1; transform: none; }
+.lv2-flow-eyebrow { margin: 0 0 var(--space-3); }
+.lv2-flow-heading { margin: 0; max-width: none; color: var(--text-primary); text-wrap: pretty; }
+.lv2-flow-photo { position: relative; display: block; margin-top: var(--space-5); aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-xl); background: var(--color-primary-100); }
+.lv2-flow-photo img { object-fit: cover; }
+.lv2-flow-sets { min-width: 0; display: grid; gap: var(--space-8); }
+.lv2-flow-set { min-width: 0; scroll-margin-top: calc(var(--header-h, 95px) + var(--space-4)); }
+.lv2-flow-set .lv2-faq-groups { max-width: none; margin: 0; display: grid; gap: var(--space-6); }
+/* desktop: the panel shows the heading, the set's own stays for screen readers (the intro shows) */
+.lv2-flow-head { margin-bottom: var(--space-5); }
+@media (min-width: 900px) {
+  .lv2-flow-head > .eyebrow-group, .lv2-flow-head > .h-sec { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+  .lv2-flow-head:not(:has(.lv2-intro)) { margin-bottom: 0; }
+}
+@media (max-width: 899px) {
+  .lv2-flow-grid { grid-template-columns: minmax(0, 1fr); }
+  .lv2-flow-aside { display: none; }
+  .lv2-flow-sets { gap: var(--space-7); }
+}
+@media (prefers-reduced-motion: reduce) { .lv2-flow-panel { transition: none; transform: none; } }
+
+/* ==== LV2 · REVISION QUESTIONS AS CARDS (12 Oct) ==== */
+/* the three questions as numbered cards, like the candidacy checks */
+.lv2-page .lv2-rev-questions { display: grid; gap: var(--space-3); border-bottom: 0; }
+.lv2-page .lv2-rev-questions li {
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  font-size: 21px;
+}
+.lv2-page .lv2-rev-num {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-800);
+  font-size: 19px;
+  color: var(--color-neutral-50);
+}
+
+/* ==== LV2 · WHY AWAKE (12 Oct, Nico) ==== */
+/* photo | heading and text, both from the top; the photo a rounded rectangle;
+   the alternatives across the width under them */
+.lv2-page #why-awake .lv2-frame.lv2-prose-frame--arch { aspect-ratio: 4 / 5; border-radius: var(--radius-xl); }
+.lv2-page #why-awake .lv2-prose-more--aside { margin-top: var(--space-6); }
+.lv2-page #why-awake .lv2-prose-more--aside .lv2-prose-aside { max-width: none; margin-top: 0; }
+.lv2-page #why-awake .lv2-prose-aside p { max-width: 90ch; }
+@media (min-width: 900px) {
+  .lv2-page #why-awake .lv2-prose-grid { grid-template-rows: auto 1fr; grid-template-areas: "media head" "media copy"; align-items: start; }
+  .lv2-page #why-awake .lv2-prose-grid[data-side="end"] { grid-template-areas: "head media" "copy media"; }
+  .lv2-page #why-awake .lv2-prose-figure { align-self: start; }
+}
+
+/* ==== LV2 · INCISIONS ROW (12 Oct, Nico) ==== */
+/* copy, then the 3 mm figure and the three facts as same-size cards in a
+   sideways row; the clip beside, larger */
+.lv2-page #lipo-360-details .lv2-incisions { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); grid-template-areas: "copy media"; align-items: center; }
+.lv2-page #lipo-360-details .lv2-inc-media { max-width: none; }
+.lv2-inc-row {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.lv2-inc-row::-webkit-scrollbar { display: none; }
+.lv2-inc-card {
+  flex: 0 0 min(280px, 78%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 210px;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  box-shadow: inset 0 0 0 1px var(--border-soft);
+  scroll-snap-align: start;
+}
+.lv2-inc-card strong { font-family: var(--font-display); font-size: 23px; font-weight: var(--fw-medium); line-height: 1.2; color: var(--text-primary); }
+.lv2-inc-card span { font-family: var(--font-sans); font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
+.lv2-inc-card--figure { justify-content: flex-end; background: var(--color-primary-800); box-shadow: none; border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl); }
+.lv2-inc-card--figure strong { font-size: 64px; line-height: 0.9; letter-spacing: -0.02em; color: var(--text-on-dark); }
+.lv2-inc-card--figure span { font-size: 15px; color: var(--color-primary-100); }
+.lv2-inc-row + .swipe-dots { display: flex; justify-content: flex-start; margin-top: var(--space-3); }
+@media (max-width: 767px) {
+  .lv2-page #lipo-360-details .lv2-incisions { grid-template-columns: minmax(0, 1fr); grid-template-areas: "copy" "media"; }
+}
+
+/* ==== LV2 · ROW ARROWS (12 Oct) ==== */
+/* Prev / Next over the right end of a sideways row, beside its dots */
+.lv2-row-wrap { position: relative; min-width: 0; }
+.lv2-row-arrows { position: absolute; right: 0; bottom: -6px; z-index: 1; display: flex; gap: var(--space-2); }
+.lv2-row-arrows .lv2-rail-btn { width: 40px; height: 40px; background: var(--bg-surface); }
+.lv2-row-arrows .lv2-rail-btn:disabled { opacity: 0.35; cursor: default; }
+.lv2-row-wrap .swipe-dots { min-height: 40px; align-items: center; }
+
 /* LV2-PAGE-END */
+/* ==== LV2 · NO ORPHANS (12 Oct, Nico) ==== */
+/* never a lone last word in the page's text */
+.lv2-page :is(p, li, h2, h3, figcaption, summary, blockquote) { text-wrap: pretty; }
+/* the assessment (12 Oct): not the lavender of the lessons' light cards just above,
+   and set smaller so it is about as tall as the copy beside it */
+.lv2-assessment { padding: var(--space-5) var(--space-6); background: var(--color-neutral-50); }
+.lv2-assessment::before { font-size: 120px; top: 0; color: color-mix(in srgb, var(--color-primary-800) 10%, transparent); }
+.lv2-assessment figcaption { margin-bottom: var(--space-3); }
+.lv2-assessment p { font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; }
+.lv2-assessment-sign { margin-top: var(--space-4); padding-top: var(--space-3); }
+.lv2-closing-grid:has(.lv2-assessment) { align-items: center; }
+@media (max-width: 767px) { .lv2-assessment { padding: var(--space-5) var(--space-4) var(--space-4); } .lv2-assessment p { font-size: 18px; } }
+/* the alternatives across the width: the text uses it too */
+.lv2-page #why-awake .lv2-prose-aside p { max-width: none; }
+/* each set's questions in a box with its own scroll (12 Oct, Nico): the page
+   passes them by on the side; the pinned panel still turns set by set */
+.lv2-flow-set .lv2-faq-groups {
+  max-height: min(620px, calc(100svh - var(--header-h, 95px) - var(--space-8)));
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-soft);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-200) transparent;
+  mask-image: linear-gradient(180deg, var(--color-neutral-900) calc(100% - 48px), transparent);
+}
+.lv2-flow-set .lv2-faq-groups:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 4px; }
+.lv2-flow-sets { gap: var(--space-7); }
+@media (max-width: 899px) {
+  .lv2-flow-set .lv2-faq-groups { max-height: 70svh; padding: var(--space-3) var(--space-3) var(--space-5); }
+}
+/* why awake (12 Oct): the photo as tall as the heading and text beside it,
+   cropped from the bottom (the legs go, the faces stay) */
+@media (min-width: 900px) {
+  .lv2-page #why-awake .lv2-prose-figure { align-self: stretch; display: flex; flex-direction: column; height: 100%; }
+  .lv2-page #why-awake .lv2-frame.lv2-prose-frame--arch { flex: 1 1 0; min-height: 0; height: auto; aspect-ratio: auto; }
+  .lv2-page #why-awake .lv2-prose-frame > img { object-position: 50% 15%; }
+}
+/* phones and tablets (12 Oct, Nico): the assessment is read first, before the
+   consultation, as plain text on the band (no box), a rule under it */
+@media (max-width: 899px) {
+  .lv2-closing-grid:has(.lv2-assessment) { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .lv2-closing-grid:has(.lv2-assessment) .lv2-closing-copy { display: block; order: 2; }
+  .lv2-assessment {
+    order: 1;
+    margin: 0 0 var(--space-6);
+    padding: 0 0 var(--space-6);
+    border-radius: 0;
+    background: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-neutral-50) 18%, transparent);
+  }
+  .lv2-assessment::before { display: none; }
+  .lv2-assessment figcaption { color: var(--color-primary-200); }
+  .lv2-assessment p { font-size: 22px; line-height: 1.45; color: var(--color-neutral-50); }
+  .lv2-assessment-sign { border-top: 0; padding-top: 0; color: var(--color-primary-100); }
+}
+/* phones (12 Oct, Nico): no arrows on any row (the thumb swipes); testimonials
+   read heading, text, videos, then the button */
+.lv2-tst-more-foot { display: none; }
+@media (max-width: 767px) {
+  .lv2-rail-nav, .lv2-row-arrows { display: none; }
+  .lv2-testimonials .lv2-tst > .lv2-tst-more { display: none; }
+  .lv2-tst-more-foot { display: block; margin-top: var(--space-5); }
+  .lv2-tst-more-foot .lv2-tst-more { display: flex; justify-content: center; width: 100%; margin: 0; }
+}
+/* incisions on phones (12 Oct, Nico): heading, text, the clip, then the cards */
+@media (max-width: 767px) {
+  .lv2-page #lipo-360-details .lv2-incisions { display: flex; flex-direction: column; gap: 0; }
+  .lv2-page #lipo-360-details .lv2-inc-copy { display: contents; }
+  .lv2-page #lipo-360-details .lv2-inc-copy > * { order: 1; }
+  .lv2-page #lipo-360-details .lv2-inc-media { order: 2; margin-top: var(--space-5); }
+  .lv2-page #lipo-360-details .lv2-inc-copy > .lv2-row-wrap { order: 3; }
+}
+/* destination on phones (12 Oct, Nico): no portrait, the panel then hotel and team */
+@media (max-width: 767px) {
+  .lv2-dest-grid[data-reel="none"] { grid-template-areas: "call call" "img0 img1"; }
+  .lv2-dest-grid[data-reel="none"] .lv2-dest-portrait { display: none; }
+}
+@media (max-width: 767px) {
+  .lv2-page #lipo-360-details .lv2-incisions { align-items: stretch; }
+  .lv2-page #lipo-360-details .lv2-incisions > *, .lv2-page #lipo-360-details .lv2-inc-copy > * { min-width: 0; max-width: 100%; }
+  .lv2-inc-card { flex-basis: 78%; }
+}
+/* final form on phones and tablets (12 Oct, Nico): intro, the form, then the patients' messages */
+@media (max-width: 899px) {
+  .lv2-page #consultation-end .contact-form-layout { display: flex; flex-direction: column; }
+  .lv2-page #consultation-end .contact-form-intro { display: contents; }
+  .lv2-page #consultation-end .contact-form-intro > * { order: 1; }
+  .lv2-page #consultation-end .contact-form-layout > :not(.contact-form-intro) { order: 2; }
+  .lv2-page #consultation-end .contact-form-intro > .lv2-row-wrap { order: 3; min-width: 0; max-width: 100%; }
+}
+@media (max-width: 899px) {
+  .lv2-page #consultation-end .contact-form-layout { gap: 0; }
+  .lv2-page #consultation-end .contact-form-layout > :not(.contact-form-intro) { margin-top: var(--space-5); }
+  .lv2-page #consultation-end .contact-form-intro > .lv2-row-wrap { margin-top: var(--space-6); }
+}

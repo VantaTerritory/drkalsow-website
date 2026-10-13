@@ -37,8 +37,6 @@ import {
   CANDIDATE_BLOCK,
   CHOICES_BLOCK,
   LIMITATIONS_BLOCK,
-  UNHAPPY_BLOCK,
-  COMPLICATIONS_BLOCK,
   LESSONS_BLOCK,
   REVISION_BLOCK,
   MORE_BLOCK,
@@ -217,7 +215,8 @@ export type Lv2DestinationBlock = {
     /** The hotel near the practice and the team. The mosaic is laid out for two. */
     images: Lv2Figure[];
     call: { heading: string; body: string; link: Lv2Link };
-    reel: Lv2Video;
+    /** Beside the call panel; without it the panel takes the row. */
+    reel?: Lv2Video;
   };
 };
 
@@ -231,6 +230,8 @@ export type Lv2InstagramBlock = {
   intro: string;
   follow: Lv2Link;
   reel: Lv2Video;
+  /** A silent loop among the posts (12 Oct bento). */
+  loop?: Lv2Video;
   posts: Lv2Figure[];
   hint: string;
 };
@@ -259,6 +260,15 @@ export type Lv2ProseBlock = {
   image?: Lv2Picture;
   /** The image's side from tablet up (phones stack it). Default "end". */
   imageSide?: "start" | "end";
+  /**
+   * Continues the block above as one section (same tone): no top padding,
+   * and phones read its text before the photo, as they do the block above.
+   */
+  joined?: boolean;
+  /** The aside under the photo and text, across the container (why awake, 12 Oct). */
+  asideWide?: boolean;
+  /** "checklist": a short list of goals beside a narrow full-length photo (candidacy, 12 Oct). */
+  variant?: "checklist";
 };
 
 /** Titled points in a ruled grid. */
@@ -274,6 +284,12 @@ export type Lv2PointsBlock = {
   columns: 2 | 3;
   numbered?: boolean;
   image?: Lv2Picture;
+  /**
+   * "track": the photo and the points as one row of cards. From 900px the
+   * section holds still while the row slides past (vertical scroll drives
+   * it); phones swipe it. `columns` is ignored there.
+   */
+  layout?: "track";
 };
 
 /** Long lists as native <details>, in groups (why some patients are unhappy, complications). */
@@ -285,6 +301,9 @@ export type Lv2DisclosureBlock = {
   heading: string;
   intro?: string;
   groups: { title?: string; items: Lv2Card[] }[];
+  /** Rendered inside the FAQ's flow (12 Oct): its questions under the FAQ's, its heading and photo in the pinned panel. */
+  flow?: boolean;
+  photo?: Lv2Image;
 };
 
 /** The doctor's first-person lessons, on a dark band under three photos of him at work. */
@@ -294,6 +313,9 @@ export type Lv2LessonsBlock = {
   eyebrow: string;
   heading: string;
   items: Lv2Card[];
+  /** 1-based notes set as wide light cards (his lines to the patient, 12 Oct). */
+  wide?: number[];
+  /** The bento's lead photo first. */
   photos: Lv2Image[];
 };
 
@@ -320,6 +342,10 @@ export type Lv2FaqBlock = {
   heading: string;
   /** The first group is the prototype's ten questions, in his order; the rest come from draft 2. */
   groups: { title?: string; items: Lv2Faq[] }[];
+  /** In the pinned panel beside the questions from 900px. */
+  photo?: Lv2Image;
+  /** Question sets (disclosure blocks, by id) that continue the FAQ in one section. */
+  continues?: string[];
 };
 
 export type Lv2ClosingBlock = {
@@ -331,7 +357,9 @@ export type Lv2ClosingBlock = {
   call: Lv2Link;
   primary: Lv2Link;
   disclaimer: string;
-  image: Lv2Image;
+  image?: Lv2Image;
+  /** The doctor's promise at the consultation, set as a quote over the image (12 Oct). */
+  assessment?: { title: string; body: string };
 };
 
 /** A consultation form; its intro column. */
@@ -345,6 +373,8 @@ export type Lv2ConsultationBlock = {
   photo?: Lv2Image;
   /** Under the intro's text. */
   teamPhoto?: Lv2Image;
+  /** The patients' messages as a swipe row under the intro's text (final form, 12 Oct). */
+  messages?: Lv2Image[];
 };
 
 export type Lv2GuideBlock =
@@ -395,12 +425,43 @@ const NO_FAT_TRANSFER: Lv2Image = {
   width: 1536,
   height: 1920,
 };
+/* The patients' messages (round 3, last on the page until 12 Oct; consent
+   confirmed by Nico on 28 Sep): the doctor's two ChatGPT compositions of the
+   screenshots, one card per patient. Since 12 Oct a swipe row in the final
+   form, where the consultation room photo was. */
+const PATIENT_MESSAGES: Lv2Image[] = [
+  {
+    src: "/img/lipo-v2/testimonials/t1-corvette.jpg",
+    alt: "A patient's message: “I'm so happy with my results!!! My husband is so happy too, he said that its like having a new Corvette”, with a photo of her after surgery.",
+    width: 970,
+    height: 1365,
+  },
+  {
+    src: "/img/lipo-v2/testimonials/t2-review.jpg",
+    alt: "A patient's review with her photo: “Dr. kalsow is a great license experience Doctor. Dr Kalsow Did my 360 BBL on January 25,2020. I give Dr.Kalsow All 5 stars. He Grant me excellent results with my 360 BBL surgery. He definitely enhanced my figure and gave me a wonderful shape that I'm in love with. I'm glad I had my 360 BBL surgery with Dr.Kalsow. He's the best for 360 Bbl if you in need of a excellent Doctor Dr. is your man. I'm A K-Doll now. Thank you so much Dr. Kalsow.” The practice adds: “This patient wanted a tiny waist and to be curvy, she couldn't be happier with her results!”",
+    width: 580,
+    height: 950,
+  },
+  {
+    src: "/img/lipo-v2/testimonials/t3-seven-weeks.jpg",
+    alt: "Two patient messages. A mirror photo with “Thank you, I love my result”, and a direct message: “Hiii! I'm almost 7 weeks post op and I just wanted to say I LOVE my results, you're amazing, thank you so much”.",
+    width: 450,
+    height: 1000,
+  },
+  {
+    src: "/img/lipo-v2/testimonials/t4-one-year.jpg",
+    alt: "A patient's message: “Hello Dr K. In 4 days it'll be exactly a year since you changed my life. I'm still in stock with the changes and the motivation it's brought my life. Couldn't thank you enough!!”, with her photo. The practice adds: “The photo is distorted but the curves are visible!”",
+    width: 450,
+    height: 684,
+  },
+];
+
 const CONSULTATION_INTRO = {
   eyebrow: "Request a consultation",
   heading: "Tell Dr. Kalsow about your goals.",
   body: "Consultations are held in person at 635 Madison Avenue or by FaceTime. Share a few details and the office will be in touch to schedule.",
-  // round 3: a small result beside the heading and the consultation room under the text
-  photo: NO_FAT_TRANSFER,
+  // round 3: the consultation room under the text (12 Oct: the small result beside
+  // the heading left, it repeated the philosophy's photo and crowded the heading)
   teamPhoto: {
     src: "/img/lipo-v2/consultation-team.jpg",
     alt: "Dr. Kalsow and a member of his team in the consultation room, the Manhattan skyline behind them",
@@ -458,7 +519,8 @@ export const LIPO_360_V2: Lv2Page = {
           frame: 0.76,
         },
       ],
-      mobileDetailsAfter: "top",
+      // the portrait is the hero's backdrop (12 Oct): phones keep the lead,
+      // figures and CTAs in the hero, under his face
     },
     {
       kind: "procedure",
@@ -492,7 +554,9 @@ export const LIPO_360_V2: Lv2Page = {
       kind: "prose",
       // round 3: no heading, and a result beside it instead of his photo
       id: "philosophy-highlight",
-      tone: "white",
+      // the second half of "A signature procedure" (12 Oct, Nico): its band, its lead as a subtitle
+      tone: "cream",
+      joined: true,
       // Draft 2, word for word (its em dashes as commas).
       lead: "The goal is the best possible result while maintaining safety.",
       body: [
@@ -637,17 +701,18 @@ export const LIPO_360_V2: Lv2Page = {
       eyebrow: "Consultation",
       heading: "Your Anatomy Determines The Plan.",
       body: "A consultation is the point where the procedure becomes specific: your frame, target waist, prior liposuction, skin quality, candidacy for awake surgery and the contour that can realistically be created for you.",
+      // Draft 2's "An Honest Assessment", word for word (its em dash as a comma):
+      // a loose band near the foot until 12 Oct, here it is what the consultation promises
+      assessment: {
+        title: "An honest assessment",
+        body: "Dr. Kalsow will tell you what is possible, what is not, and how much fat he expects he can remove or transfer, so you can decide whether surgery is right for you. If he believes the change would be too small or that you would be unhappy with the result, he will tell you, and may advise against surgery. His priority is a meaningful result for you, not putting you through surgery and recovery without a worthwhile benefit.",
+      },
       call: CALL,
       // the first form follows the band since round 3
       primary: REQUEST,
       disclaimer:
         "Surgical procedures have risks and results vary. A consultation is required to determine candidacy and the appropriate treatment plan.",
-      image: {
-        src: "/img/lipo-v2/sk-empire.jpg",
-        alt: "The SK monogram of Dr. Sergei Kalsow over the Manhattan skyline and the Empire State Building at dusk",
-        width: 1000,
-        height: 1000,
-      },
+      // 12 Oct (Nico): the SK image left this band, the honest assessment takes its column
     },
     { kind: "consultation", id: "consultation", ...CONSULTATION_INTRO },
     {
@@ -676,6 +741,17 @@ export const LIPO_360_V2: Lv2Page = {
           height: 540,
           title: "Lucille",
           caption: "Lipo 360, BBL + blepharoplasty",
+        },
+        // 12 Oct (Nico: every Lipo 360 story there is): only Alex and Lucille
+        // are Lipo 360 by name; the compilation is mostly liposuction and body
+        // contouring patients. Michelle (chin) and the coordinator stay on /testimonials.
+        {
+          src: "/video/testimonials.mp4",
+          poster: "/video/testimonials-poster.jpg",
+          width: 1280,
+          height: 720,
+          title: "Patient stories",
+          caption: "Several patients on their care and results",
         },
         {
           src: "/video/testimonials/sami.mp4",
@@ -729,14 +805,128 @@ export const LIPO_360_V2: Lv2Page = {
           caption: "Behind the scenes",
         },
       ],
-      hint: "Scroll to explore · See more on Instagram",
+      // the operating room loop of the home page's About section
+      loop: {
+        src: "/video/about-or-loop.mp4",
+        poster: "/video/about-or-loop.jpg",
+        width: 1440,
+        height: 810,
+        title: "Dr. Kalsow performing surgery in the operating room",
+      },
+      hint: "See more on Instagram",
     },
+    {
+      kind: "incisions",
+      id: "lipo-360-details",
+      eyebrow: "Scars and incisions",
+      // 3 mm, as the doctor's draft 2 has it ("usually about 3 mm long");
+      // settled by Nico on 28 Sep over the 4 mm said on the 23 Sep call.
+      heading: "Small 3 mm access points.",
+      // the size is in the heading and the figure tile, not a third time here
+      body: "Fat is removed through small access points. Dr. Kalsow places them where they allow him to reach and sculpt each planned area, choosing natural creases or existing scars when possible.",
+      figure: { value: "3 mm", label: "Approximate size of each access point" },
+      facts: [
+        {
+          title: "About 12 small incisions",
+          body: "For a typical Lipo 360: three on the lower abdomen, one inside the belly button, one beneath each breast, four along the sides and two on the back. Fat transfer usually adds one beneath each gluteal crease.",
+        },
+        {
+          title: "No routine drains",
+          body: "Dr. Kalsow typically leaves the small incisions without sutures so excess fluid can drain. He does not routinely use surgical drains.",
+        },
+        {
+          title: "Small, discreet scars",
+          body: "The incisions are designed to leave small, discreet scars, though all incisions leave some degree of scarring.",
+        },
+      ],
+      video: {
+        src: "/video/landing/awake-lipo-360-incision.mp4",
+        poster: "/video/landing/awake-lipo-360-incision-poster.jpg",
+        width: 960,
+        height: 960,
+        title: "A healed access incision",
+        caption: "On a patient’s flank, filmed at the practice.",
+      },
+    },
+    CHOICES_BLOCK,
+    MORE_BLOCK,
+    {
+      kind: "destination",
+      id: "destination",
+      tone: "cream",
+      intro: {
+        eyebrow: "Why patients travel",
+        heading: "A Destination Practice For Awake Lipo 360.",
+        body: [
+          "Dr. Kalsow treats patients who come to New York from many U.S. states and from outside the United States. A large portion of the practice has grown through patient referrals and patients who specifically seek his approach to waist and back contouring.",
+          "Surgeons from outside the United States have also observed his technique. His practice includes both primary cases and complex revision body contouring.",
+        ],
+        approach: {
+          title: "What Defines The Approach",
+          items: [
+            "Complete circumferential planning rather than isolated-area liposuction",
+            "Strong emphasis on waist narrowing and back contour",
+            "Strategic fat removal based on the patient’s skeletal frame",
+            "Small access points (approx. 3 mm) placed with scar visibility in mind",
+            "No drains for routine Awake Lipo 360 in Dr. Kalsow’s technique",
+            "Personal surgical planning and follow-up with Dr. Kalsow",
+          ],
+        },
+      },
+      // 12 Oct (Nico): one section, the copy first and the travel panel, the
+      // hotel, the team and his portrait under it; the reel left (it is in the
+      // Instagram bento)
+      mosaic: {
+        portrait: {
+          src: "/img/portrait/dr-kalsow-suit.webp",
+          alt: "Dr. Sergei Kalsow, MD, smiling, in a blue blazer",
+          width: 1312,
+          height: 1456,
+        },
+        images: [
+          // Both from the doctor's Squarespace prototype page. The Plaza photo
+          // was 732 px wide there: upscaled with Real-ESRGAN (x4, then 1600 px).
+          {
+            src: "/img/lipo-v2/hotel-plaza.jpg",
+            alt: "The Plaza hotel on Fifth Avenue at dusk, a few blocks from Dr. Kalsow’s practice",
+            width: 1600,
+            height: 1200,
+            caption: "The Plaza, a few blocks from the practice",
+          },
+          {
+            src: "/img/lipo-v2/team-office.jpg",
+            alt: "Dr. Kalsow with two members of his team in maroon scrubs at the practice",
+            width: 1200,
+            height: 800,
+            caption: "Dr. Kalsow and his team",
+          },
+        ],
+        // From draft 2, "For Our Destination Patients".
+        call: {
+          heading: "Traveling to New York?",
+          body: `Once you land in New York, call or text us at ${PHONE} to let us know you’ve arrived. Send us the name of your hotel or the address where you’ll be staying and the best number to reach you while you’re here. If your flight is delayed or your plans change, just keep us updated.`,
+          link: CALL,
+        },
+      },
+    },
+    // 12 Oct (Nico): revision first, then the three question sets back to back
+    REVISION_BLOCK,
     {
       kind: "faq",
       id: "faq",
       tone: "cream",
       eyebrow: "Frequently asked questions",
       heading: "Awake Lipo 360 FAQ",
+      // 12 Oct (Nico): the two question sets that followed continue it, one section
+      continues: ["why-unhappy", "complications"],
+      // 12 Oct (Nico): near the foot, the questions in a scroll box of their own
+      // beside the consultation room photo (it left the final form)
+      photo: {
+        src: "/img/lipo-v2/consultation-team.jpg",
+        alt: "Dr. Kalsow and a member of his team in the consultation room, the Manhattan skyline behind them",
+        width: 1672,
+        height: 941,
+      },
       groups: [
         {
           // The prototype's ten questions, in his order. Answers from the
@@ -888,158 +1078,6 @@ export const LIPO_360_V2: Lv2Page = {
         },
       ],
     },
-    {
-      kind: "incisions",
-      id: "lipo-360-details",
-      eyebrow: "Scars and incisions",
-      // 3 mm, as the doctor's draft 2 has it ("usually about 3 mm long");
-      // settled by Nico on 28 Sep over the 4 mm said on the 23 Sep call.
-      heading: "Small 3 mm access points.",
-      // the size is in the heading and the figure tile, not a third time here
-      body: "Fat is removed through small access points. Dr. Kalsow places them where they allow him to reach and sculpt each planned area, choosing natural creases or existing scars when possible.",
-      figure: { value: "3 mm", label: "Approximate size of each access point" },
-      facts: [
-        {
-          title: "About 12 small incisions",
-          body: "For a typical Lipo 360: three on the lower abdomen, one inside the belly button, one beneath each breast, four along the sides and two on the back. Fat transfer usually adds one beneath each gluteal crease.",
-        },
-        {
-          title: "No routine drains",
-          body: "Dr. Kalsow typically leaves the small incisions without sutures so excess fluid can drain. He does not routinely use surgical drains.",
-        },
-        {
-          title: "Small, discreet scars",
-          body: "The incisions are designed to leave small, discreet scars, though all incisions leave some degree of scarring.",
-        },
-      ],
-      video: {
-        src: "/video/landing/awake-lipo-360-incision.mp4",
-        poster: "/video/landing/awake-lipo-360-incision-poster.jpg",
-        width: 960,
-        height: 960,
-        title: "A healed access incision",
-        caption: "On a patient’s flank, filmed at the practice.",
-      },
-    },
-    CHOICES_BLOCK,
-    MORE_BLOCK,
-    {
-      kind: "destination",
-      id: "destination-media",
-      tone: "cream",
-      // round 3: the mosaic on its own, right above the copy
-      mosaic: {
-        portrait: {
-          src: "/img/portrait/dr-kalsow-suit.webp",
-          alt: "Dr. Sergei Kalsow, MD, smiling, in a blue blazer",
-          width: 1312,
-          height: 1456,
-        },
-        images: [
-          // Both from the doctor's Squarespace prototype page. The Plaza photo
-          // was 732 px wide there: upscaled with Real-ESRGAN (x4, then 1600 px).
-          {
-            src: "/img/lipo-v2/hotel-plaza.jpg",
-            alt: "The Plaza hotel on Fifth Avenue at dusk, a few blocks from Dr. Kalsow’s practice",
-            width: 1600,
-            height: 1200,
-            caption: "The Plaza, a few blocks from the practice",
-          },
-          {
-            src: "/img/lipo-v2/team-office.jpg",
-            alt: "Dr. Kalsow with two members of his team in maroon scrubs at the practice",
-            width: 1200,
-            height: 800,
-            caption: "Dr. Kalsow and his team",
-          },
-        ],
-        // From draft 2, "For Our Destination Patients".
-        call: {
-          heading: "Traveling to New York?",
-          body: `Once you land in New York, call or text us at ${PHONE} to let us know you’ve arrived. Send us the name of your hotel or the address where you’ll be staying and the best number to reach you while you’re here. If your flight is delayed or your plans change, just keep us updated.`,
-          link: CALL,
-        },
-        reel: {
-          src: "/video/lipo-v2/reel-misconception.mp4",
-          poster: "/video/lipo-v2/reel-misconception-poster.jpg",
-          width: 720,
-          height: 1280,
-          title: "Dr. Kalsow on a common misconception",
-          caption: "From Dr. Kalsow’s Instagram, @doctor.serge.",
-        },
-      },
-    },
-    {
-      kind: "destination",
-      id: "destination",
-      tone: "cream",
-      intro: {
-        eyebrow: "Why patients travel",
-        heading: "A Destination Practice For Awake Lipo 360.",
-        body: [
-          "Dr. Kalsow treats patients who come to New York from many U.S. states and from outside the United States. A large portion of the practice has grown through patient referrals and patients who specifically seek his approach to waist and back contouring.",
-          "Surgeons from outside the United States have also observed his technique. His practice includes both primary cases and complex revision body contouring.",
-        ],
-        approach: {
-          title: "What Defines The Approach",
-          items: [
-            "Complete circumferential planning rather than isolated-area liposuction",
-            "Strong emphasis on waist narrowing and back contour",
-            "Strategic fat removal based on the patient’s skeletal frame",
-            "Small access points (approx. 3 mm) placed with scar visibility in mind",
-            "No drains for routine Awake Lipo 360 in Dr. Kalsow’s technique",
-            "Personal surgical planning and follow-up with Dr. Kalsow",
-          ],
-        },
-      },
-    },
-    {
-      kind: "callout",
-      id: "honest-assessment",
-      tone: "white",
-      eyebrow: "At your consultation",
-      heading: "An Honest Assessment",
-      // Draft 2, word for word (its em dash as a comma).
-      body: "Dr. Kalsow will tell you what is possible, what is not, and how much fat he expects he can remove or transfer, so you can decide whether surgery is right for you. If he believes the change would be too small or that you would be unhappy with the result, he will tell you, and may advise against surgery. His priority is a meaningful result for you, not putting you through surgery and recovery without a worthwhile benefit.",
-    },
-    UNHAPPY_BLOCK,
-    REVISION_BLOCK,
-    COMPLICATIONS_BLOCK,
-    { kind: "consultation", id: "consultation-end", ...CONSULTATION_INTRO },
-    {
-      kind: "why",
-      id: "why-dr-kalsow",
-      // Round 3: only the patients' messages, last on the page (the reasons
-      // went; their heading now sits over the hero's figures).
-      // The doctor's two ChatGPT compositions of the screenshots (on his
-      // Squarespace prototype page), split into one card per patient
-      // (consent confirmed by Nico on 28 Sep).
-      messages: [
-        {
-          src: "/img/lipo-v2/testimonials/t1-corvette.jpg",
-          alt: "A patient's message: “I'm so happy with my results!!! My husband is so happy too, he said that its like having a new Corvette”, with a photo of her after surgery.",
-          width: 970,
-          height: 1365,
-        },
-        {
-          src: "/img/lipo-v2/testimonials/t2-review.jpg",
-          alt: "A patient's review with her photo: “Dr. kalsow is a great license experience Doctor. Dr Kalsow Did my 360 BBL on January 25,2020. I give Dr.Kalsow All 5 stars. He Grant me excellent results with my 360 BBL surgery. He definitely enhanced my figure and gave me a wonderful shape that I'm in love with. I'm glad I had my 360 BBL surgery with Dr.Kalsow. He's the best for 360 Bbl if you in need of a excellent Doctor Dr. is your man. I'm A K-Doll now. Thank you so much Dr. Kalsow.” The practice adds: “This patient wanted a tiny waist and to be curvy, she couldn't be happier with her results!”",
-          width: 580,
-          height: 950,
-        },
-        {
-          src: "/img/lipo-v2/testimonials/t3-seven-weeks.jpg",
-          alt: "Two patient messages. A mirror photo with “Thank you, I love my result”, and a direct message: “Hiii! I'm almost 7 weeks post op and I just wanted to say I LOVE my results, you're amazing, thank you so much”.",
-          width: 450,
-          height: 1000,
-        },
-        {
-          src: "/img/lipo-v2/testimonials/t4-one-year.jpg",
-          alt: "A patient's message: “Hello Dr K. In 4 days it'll be exactly a year since you changed my life. I'm still in stock with the changes and the motivation it's brought my life. Couldn't thank you enough!!”, with her photo. The practice adds: “The photo is distorted but the curves are visible!”",
-          width: 450,
-          height: 684,
-        },
-      ],
-    },
+    { kind: "consultation", id: "consultation-end", ...CONSULTATION_INTRO, teamPhoto: undefined, messages: PATIENT_MESSAGES },
   ],
 };

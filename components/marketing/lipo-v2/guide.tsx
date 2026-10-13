@@ -5,6 +5,8 @@ import { Eyebrow, Divider } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { BeforeAfterGalleryV2, type BaGalleryPatient } from "@/components/marketing/lipo-v2/ba-gallery";
 import { NearImage } from "@/components/marketing/lipo-v2/deferred";
+import { LessonsList } from "@/components/marketing/lipo-v2/lessons-list";
+import { LimitationsTrack } from "@/components/marketing/lipo-v2/limitations-track";
 import type {
   Lv2Tone,
   Lv2Picture,
@@ -24,7 +26,8 @@ import type {
    the data. Styled by ./lipo-v2-guide.css (lv2-prose-*, lv2-pts-*,
    lv2-disc-*, lv2-lessons-*, lv2-rev-*) on top of the shared pieces of
    lipo-v2.css (lv2-frame, lv2-cap, lv2-intro, lv2-ruled-num, lv2-dark).
-   Server components: the client parts are Reveal and the gallery.
+   Server components: the client parts are Reveal, the gallery and the
+   limitations row (limitations-track.tsx).
 
    The client's brief for these sections: nobody reads walls of text.
    Text columns stay near 60-65ch, lists run in two or three columns on
@@ -55,7 +58,7 @@ function sectionClass(tone: Lv2Tone, own: string) {
 
 /* ---------------- prose ---------------- */
 
-function ProseFigure({ image }: { image: Lv2Picture }) {
+function ProseFigure({ image, sizes }: { image: Lv2Picture; sizes?: string }) {
   const tall = isTall(image);
   const shape = image.plain ? "lv2-prose-frame--plain" : tall ? "lv2-prose-frame--arch" : "lv2-frame--bubble";
   return (
@@ -66,7 +69,7 @@ function ProseFigure({ image }: { image: Lv2Picture }) {
           src={image.src}
           alt={image.alt}
           fill
-          sizes={tall ? "(max-width: 479px) 92vw, 440px" : "(max-width: 599px) 92vw, 560px"}
+          sizes={sizes ?? (tall ? "(max-width: 479px) 92vw, 440px" : "(max-width: 599px) 92vw, 560px")}
         />
       </div>
       {image.caption && (
@@ -102,7 +105,7 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
   const media = image ? (isTall(image) ? "tall" : "wide") : "none";
 
   return (
-    <section id={block.id} className={sectionClass(block.tone, "lv2-prose")}>
+    <section id={block.id} className={sectionClass(block.tone, `lv2-prose${block.joined ? " lv2-prose--joined" : ""}${block.variant === "checklist" ? " lv2-prose--check" : ""}`)}>
       <div className="container">
         {/* without a heading: the photo beside the text, both from the top (data-head="none") */}
         <div
@@ -110,6 +113,7 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
           data-media={media}
           data-side={block.imageSide ?? "end"}
           data-head={block.heading ? undefined : "none"}
+          data-variant={block.variant}
         >
           {block.heading && (
             <div className="lv2-prose-head">
@@ -118,7 +122,7 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
               <Divider />
             </div>
           )}
-          {image && <ProseFigure image={image} />}
+          {image && <ProseFigure image={image} sizes={block.variant === "checklist" ? "(max-width: 899px) 220px, 288px" : undefined} />}
           <div className="lv2-prose-copy">
             {block.lead && <p className="lv2-prose-lead">{block.lead}</p>}
             {block.body.map((p) => (
@@ -132,10 +136,15 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
               </ul>
             )}
             {!hasPoints && outro && <p className="lv2-prose-outro">{outro}</p>}
-            {!hasPoints && aside && <ProseAside aside={aside} />}
+            {!hasPoints && aside && !block.asideWide && <ProseAside aside={aside} />}
           </div>
         </div>
 
+        {!hasPoints && aside && block.asideWide && (
+          <div className="lv2-prose-more lv2-prose-more--aside">
+            <ProseAside aside={aside} />
+          </div>
+        )}
         {hasPoints && (
           <div className="lv2-prose-more">
             {/* "Lead-in: text" pairs: a term and its description */}
@@ -165,6 +174,7 @@ export function ProseBlock({ block }: { block: Lv2ProseBlock }) {
  * across the container.
  */
 export function PointsBlock({ block }: { block: Lv2PointsBlock }) {
+  if (block.layout === "track") return <TrackPointsBlock block={block} />;
   const { image } = block;
   return (
     <section id={block.id} className={sectionClass(block.tone, "lv2-pts")}>
@@ -204,6 +214,55 @@ export function PointsBlock({ block }: { block: Lv2PointsBlock }) {
   );
 }
 
+/**
+ * Layout "track": the photo and the points as one row of cards under a
+ * compact heading. LimitationsTrack holds the section still from 900px
+ * while the page's scroll slides the row; phones swipe it.
+ */
+function TrackPointsBlock({ block }: { block: Lv2PointsBlock }) {
+  const { image } = block;
+  const List = block.numbered ? "ol" : "ul";
+  return (
+    <LimitationsTrack
+      id={block.id}
+      className={sectionClass(block.tone, "lv2-lim")}
+      label={block.heading}
+      count={block.items.length + (image ? 1 : 0)}
+      head={
+        <>
+          <Eyebrow>{block.eyebrow}</Eyebrow>
+          <h2 className="h-sec">{keep(block.heading)}</h2>
+          {block.intro && <p className="lv2-intro">{block.intro}</p>}
+        </>
+      }
+    >
+      {image && (
+        <figure className="lv2-lim-photo" data-lim-card="">
+          <div className="lv2-frame lv2-frame--bubble lv2-lim-frame">
+            <Image src={image.src} alt={image.alt} fill sizes="(max-width: 899px) 80vw, 340px" />
+          </div>
+          {image.caption && <figcaption className="lv2-cap">{image.caption}</figcaption>}
+        </figure>
+      )}
+      <List className="lv2-lim-list">
+        {block.items.map((item, i) => (
+          <li key={item.title} className="lv2-lim-card" data-lim-card="">
+            {block.numbered && (
+              <span className="lv2-ruled-num lv2-lim-num" aria-hidden>
+                {pad(i + 1)}
+              </span>
+            )}
+            <h3>{keep(item.title)}</h3>
+            {paragraphs(item.body).map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </li>
+        ))}
+      </List>
+    </LimitationsTrack>
+  );
+}
+
 /* ---------------- disclosure ---------------- */
 
 /**
@@ -214,6 +273,36 @@ export function PointsBlock({ block }: { block: Lv2PointsBlock }) {
  * other, in the data's sequence.
  */
 export function DisclosureBlock({ block }: { block: Lv2DisclosureBlock }) {
+  // inside the FAQ's flow (12 Oct): its own heading (phones; the pinned panel shows it on desktop) and its questions
+  if (block.flow) {
+    return (
+      <div className="lv2-flow-set" data-flow-set={block.id} id={block.id}>
+        <div className="lv2-flow-head">
+          <Eyebrow>{block.eyebrow}</Eyebrow>
+          <h2 className="h-sec">{keep(block.heading)}</h2>
+          {block.intro && <p className="lv2-intro">{block.intro}</p>}
+        </div>
+        <div className="lv2-faq-groups" tabIndex={0} role="region" aria-label={`${block.heading}. Scroll for more questions.`}>
+          {block.groups.map((group, gi) => (
+            <div className="lv2-faq-group" key={group.title ?? `group-${gi}`}>
+              {group.title && <h3 className="lv2-faq-group-title">{keep(group.title)}</h3>}
+              <div className="faq-list">
+                {group.items.map((item) => (
+                  <details className="faq-item" key={item.title}>
+                    <summary className="faq-question">
+                      {item.title}
+                      <span className="faq-marker" aria-hidden />
+                    </summary>
+                    <p className="faq-answer">{item.body}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <section id={block.id} className={sectionClass(block.tone, "lv2-disc")}>
       <div className="container">
@@ -260,6 +349,8 @@ export function DisclosureBlock({ block }: { block: Lv2DisclosureBlock }) {
  * photos of him at work (round 3), then the numbered list, in two columns
  * from 1200px.
  */
+const LESSON_TILES = ["lead", "one", "two"] as const;
+
 export function LessonsBlock({ block }: { block: Lv2LessonsBlock }) {
   return (
     <section id={block.id} className="section-py-lg lv2-sec lv2-dark lv2-lessons">
@@ -268,24 +359,20 @@ export function LessonsBlock({ block }: { block: Lv2LessonsBlock }) {
           <Eyebrow dark>{block.eyebrow}</Eyebrow>
           <h2 className="h-sec">{keep(block.heading)}</h2>
         </div>
-        <div className="lv2-lessons-strip">
-          {block.photos.map((ph) => (
-            <span className="lv2-lessons-photo" key={ph.src}>
-              <Image src={ph.src} alt={ph.alt} fill sizes="(max-width: 767px) 31vw, 380px" />
-            </span>
+        {/* a bento of his three photos (12 Oct), pinned beside the notes on desktop */}
+        <div className="lv2-lessons-bento">
+          {block.photos.map((ph, i) => (
+            <figure className="lv2-lessons-tile" data-tile={LESSON_TILES[i]} key={ph.src}>
+              <Image
+                src={ph.src}
+                alt={ph.alt}
+                fill
+                sizes={i === 0 ? "(max-width: 599px) 92vw, (max-width: 899px) 55vw, 450px" : "(max-width: 599px) 46vw, (max-width: 899px) 40vw, 220px"}
+              />
+            </figure>
           ))}
         </div>
-        <Reveal as="ol" className="lv2-lessons-list">
-          {block.items.map((item, i) => (
-            <li key={item.title}>
-              <span className="lv2-lessons-num" aria-hidden>
-                {pad(i + 1)}
-              </span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </li>
-          ))}
-        </Reveal>
+        <LessonsList items={block.items} wide={block.wide} />
       </div>
     </section>
   );
