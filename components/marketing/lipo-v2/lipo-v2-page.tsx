@@ -101,7 +101,7 @@ function Block({
     case "why":
       return <WhyBlock block={block} />;
     case "results":
-      return <ResultsBlock block={block} />;
+      return null;
     case "callout":
       return <CalloutBlock block={block} />;
     case "procedure":
@@ -109,7 +109,7 @@ function Block({
     case "diagrams":
       return <DiagramsBlock block={block} />;
     case "incisions":
-      return <IncisionsBlock block={block} />;
+      return null;
     case "instagram":
       return <InstagramBlock block={block} />;
     case "testimonials":

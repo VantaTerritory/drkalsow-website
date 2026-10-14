@@ -36,7 +36,6 @@ import { siteConfig } from "@/lib/site-config";
 import {
   CANDIDATE_BLOCK,
   CHOICES_BLOCK,
-  LIMITATIONS_BLOCK,
   LESSONS_BLOCK,
   REVISION_BLOCK,
   MORE_BLOCK,
@@ -550,23 +549,7 @@ export const LIPO_360_V2: Lv2Page = {
           "Dr. Kalsow marking the patient for Lipo 360. The procedure illustrates the target areas of the Lipo 360 procedure.",
       },
     },
-    {
-      kind: "prose",
-      // round 3: no heading, and a result beside it instead of his photo
-      id: "philosophy-highlight",
-      // the second half of "A signature procedure" (12 Oct, Nico): its band, its lead as a subtitle
-      tone: "cream",
-      joined: true,
-      // Draft 2, word for word (its em dashes as commas).
-      lead: "The goal is the best possible result while maintaining safety.",
-      body: [
-        "In liposuction, the surgeon must be able to remove the maximum amount of fat possible safely for each person’s body. That is the first requirement. The name of a technique or piece of equipment matters far less than what the surgeon can accomplish with it.",
-        "The second requirement is the ability to sculpt: knowing where to remove the most fat, how to shape the transition between areas, and where to be more conservative to avoid dents, particularly in the lower abdomen.",
-        "Every part of Dr. Kalsow’s approach, from numbing and positioning to the tools he uses, is focused on removing the maximum amount of fat possible safely while creating a smooth, sculpted result.",
-      ],
-      image: { ...NO_FAT_TRANSFER, plain: true },
-      imageSide: "start",
-    },
+    
     {
       kind: "results",
       id: "results",
@@ -693,7 +676,7 @@ export const LIPO_360_V2: Lv2Page = {
         },
       ],
     },
-    LIMITATIONS_BLOCK,
+    
     LESSONS_BLOCK,
     {
       kind: "closing",

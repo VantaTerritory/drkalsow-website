@@ -412,9 +412,7 @@ export function RevisionBlock({ block, patient }: { block: Lv2RevisionBlock; pat
             </a>
           </div>
         </div>
-        <div className="lv2-rev-gallery">
-          <BeforeAfterGalleryV2 patients={[patient]} />
-        </div>
+        
       </div>
     </section>
   );
