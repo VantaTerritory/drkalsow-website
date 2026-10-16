@@ -305,6 +305,19 @@ export const SITE_PAGES: readonly SitePage[] = [
     inSitemap: false,
     noindex: true,
   },
+  // The doctor's own edit of variant B (his commit on `development`, 14 Oct
+  // 2026), for him to see in production. Outside the A/B test, same rules.
+  {
+    path: "/lipo-360-v3",
+    label: "Awake Lipo 360",
+    title: "Awake Lipo 360 NYC | Dr. Sergei Kalsow",
+    description:
+      "Explore Awake Lipo 360 in New York City with Dr. Sergei Kalsow. Learn treatment areas, candidacy, recovery, results, and what to expect. Request a consultation.",
+    h1: "Awake Lipo 360 by Sergei Kalsow, MD",
+    group: "experiment",
+    inSitemap: false,
+    noindex: true,
+  },
 
   // ---- Practice / secondary ----
   // ⚠️ These two exist live (200, indexable) but do NOT appear in the SEO

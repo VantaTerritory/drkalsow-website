@@ -403,7 +403,7 @@ export type Lv2Block =
 export type Lv2Page = {
   path: string;
   /** Pushed to the dataLayer as landing_variant / landing_test. */
-  variant: "B";
+  variant: "B" | "V3";
   test: string;
   blocks: Lv2Block[];
 };

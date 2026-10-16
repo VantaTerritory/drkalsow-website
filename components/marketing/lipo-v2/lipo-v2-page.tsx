@@ -6,6 +6,7 @@ import {
   LIPO_360_V2,
   type Lv2Block,
   type Lv2HeroBlock,
+  type Lv2Page,
   type Lv2Patient,
   type Lv2ResultsBlock,
 } from "@/lib/landings/lipo-360-v2";
@@ -49,18 +50,20 @@ import {
  * sheet), route stylesheets, so nothing here reaches variant A, not even
  * as downloaded bytes.
  * No page JSON-LD: B is a noindex test page.
+ * `data` is another block list on the same design (/lipo-360-v3, the
+ * doctor's own edit of B, outside the test).
  */
-export function LipoV2Page() {
-  const page = getPage(LIPO_360_V2.path);
-  const { blocks } = LIPO_360_V2;
+export function LipoV2Page({ data = LIPO_360_V2 }: { data?: Lv2Page }) {
+  const page = getPage(data.path);
+  const { blocks } = data;
   const hero = blocks.find((b): b is Lv2HeroBlock => b.kind === "hero");
   const patients = blocks.find((b): b is Lv2ResultsBlock => b.kind === "results")?.patients ?? [];
   // the foot form keeps its rounded top; any other runs square, as in variant A
   const lastForm = blocks.findLast((b) => b.kind === "consultation")?.id;
 
   return (
-    <div className="ld-page lv2-page" data-landing-variant={LIPO_360_V2.variant}>
-      <VariantTracker variant={LIPO_360_V2.variant} test={LIPO_360_V2.test} />
+    <div className="ld-page lv2-page" data-landing-variant={data.variant}>
+      <VariantTracker variant={data.variant} test={data.test} />
       {blocks.map((block) => (
         <Fragment key={block.id}>
           <Block block={block} h1={page.h1} source={page.path} patients={patients} foot={block.id === lastForm} />
@@ -140,7 +143,7 @@ function Block({
       return <LessonsBlock block={block} />;
     case "revision": {
       const patient = patients.find((p) => p.number === block.patient);
-      return patient ? <RevisionBlock block={block} patient={galleryPatient(patient)} /> : null;
+      return <RevisionBlock block={block} patient={patient && galleryPatient(patient)} />;
     }
   }
 }

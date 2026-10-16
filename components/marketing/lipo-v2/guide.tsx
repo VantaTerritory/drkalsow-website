@@ -384,9 +384,10 @@ export function LessonsBlock({ block }: { block: Lv2LessonsBlock }) {
  * Revision liposuction: the heading, its sentence and the link to the
  * whole results block beside the three questions he asks himself (from
  * 900px; phones read heading, sentence, questions, link), then the views
- * of one patient of that block, with its lightbox.
+ * of one patient of that block, with its lightbox (left out on a page
+ * without the results block, /lipo-360-v3).
  */
-export function RevisionBlock({ block, patient }: { block: Lv2RevisionBlock; patient: BaGalleryPatient }) {
+export function RevisionBlock({ block, patient }: { block: Lv2RevisionBlock; patient?: BaGalleryPatient }) {
   return (
     <section id={block.id} className={sectionClass(block.tone, "lv2-rev")}>
       <div className="container">
@@ -412,9 +413,11 @@ export function RevisionBlock({ block, patient }: { block: Lv2RevisionBlock; pat
             </a>
           </div>
         </div>
-        <div className="lv2-rev-gallery">
-          <BeforeAfterGalleryV2 patients={[patient]} />
-        </div>
+        {patient && (
+          <div className="lv2-rev-gallery">
+            <BeforeAfterGalleryV2 patients={[patient]} />
+          </div>
+        )}
       </div>
     </section>
   );

@@ -14,7 +14,7 @@ import {
  * One of draft 2's long-form blocks, by id, rendered in the browser (loaded
  * by lazy-guide.tsx). Its copy travels in this chunk, not in the page's
  * HTML. `patient` is the revision block's patient, already stripped of
- * the Drive file names by the page.
+ * the Drive file names by the page (none on a page without the results).
  */
 export default function GuideById({ id, patient }: { id: string; patient?: BaGalleryPatient }) {
   const block = GUIDE_BLOCKS.find((b) => b.id === id);
@@ -29,6 +29,6 @@ export default function GuideById({ id, patient }: { id: string; patient?: BaGal
     case "lessons":
       return <LessonsBlock block={block} />;
     case "revision":
-      return patient ? <RevisionBlock block={block} patient={patient} /> : null;
+      return <RevisionBlock block={block} patient={patient} />;
   }
 }
