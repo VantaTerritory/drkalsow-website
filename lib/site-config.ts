@@ -169,6 +169,8 @@ export const siteConfig = {
     gtmId: "GTM-PFS393F8",
     ga4Id: "G-BHMK3DX4N1",
     metaPixelId: "1634976034378886",
+    // Search Console HTML-tag verification (root layout metadata, every page).
+    googleSiteVerification: "opgN7scD2F5FEJtZbRT7krodDQnTmPlufw25DCW-7mM",
   },
 } as const;
 

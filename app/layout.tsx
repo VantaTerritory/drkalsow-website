@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     template: `%s`,
   },
   description: home.description,
+  verification: { google: siteConfig.tracking.googleSiteVerification },
 };
 
 export const viewport: Viewport = {
