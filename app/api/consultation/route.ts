@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/lib/site-config";
-import { CONSULT_TYPES, REFERRAL_SOURCES } from "@/lib/contact/form-options";
+import { CONSULT_TYPES, HONEYPOT_FIELD, REFERRAL_SOURCES } from "@/lib/contact/form-options";
 
 /**
  * Consultation requests from /call-our-office.
@@ -45,10 +45,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Malformed request." }, { status: 400 });
   }
 
-  // Honeypot: answer 200 so the bot believes it succeeded and moves on.
-  if (clean(payload.company, 200)) {
-    return NextResponse.json({ ok: true });
-  }
+  // Honeypot. A filled one is not dropped: autofill can reach inputs nobody sees,
+  // and a lost patient costs more than a spam email. The request is still
+  // delivered, flagged in the subject so the inbox can sort it out.
+  const suspect = Boolean(clean(payload[HONEYPOT_FIELD], 200));
+  if (suspect) console.warn("[consultation] honeypot filled, delivering flagged");
 
   const firstName = clean(payload.firstName, MAX.name);
   const lastName = clean(payload.lastName, MAX.name);
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
         from,
         to: [to],
         reply_to: email,
-        subject: `${consultType}: ${name}`,
+        subject: `${suspect ? "[Possible spam] " : ""}${consultType}: ${name}`,
         html,
       }),
     });

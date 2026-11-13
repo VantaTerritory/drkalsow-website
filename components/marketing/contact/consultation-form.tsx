@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { siteConfig } from "@/lib/site-config";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { CallLink } from "@/components/ui/call-link";
-import { CONSULT_TYPES, REFERRAL_SOURCES } from "@/lib/contact/form-options";
+import { CONSULT_TYPES, HONEYPOT_FIELD, REFERRAL_SOURCES } from "@/lib/contact/form-options";
 
 type Status = "idle" | "sending" | "error";
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "phone" | "referral", string>>;
@@ -234,10 +234,21 @@ export function ConsultationForm({
           />
         </div>
 
-        {/* bots fill this; people never see it */}
+        {/* Bots fill this; people never see it. No autofill-friendly name or
+            label (see HONEYPOT_FIELD), and password managers are told to skip it. */}
         <div className="honeypot" aria-hidden>
-          <label htmlFor={`${id}-company`}>Company</label>
-          <input id={`${id}-company`} name="company" tabIndex={-1} autoComplete="off" />
+          <label htmlFor={`${id}-hp`}>Leave this empty</label>
+          <input
+            id={`${id}-hp`}
+            name={HONEYPOT_FIELD}
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
+          />
         </div>
 
         <p className="form-consent">
